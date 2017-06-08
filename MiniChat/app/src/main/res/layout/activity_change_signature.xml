@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".changeSignature"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="15dp">
+
+        <ImageView
+            android:id="@+id/backToInformation"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:src="@mipmap/new_arrow"
+            android:layout_gravity="center_vertical"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.0"
+            android:text="Mini签名"
+            android:textSize="20sp"
+            android:layout_gravity="center_vertical"
+            android:textColor="@color/colorBlack"
+            android:layout_marginLeft="20dp"/>
+
+        <Button
+            android:id="@+id/save_signature"
+            android:layout_width="70dp"
+            android:layout_height="30dp"
+            android:text="保存"
+            android:textSize="15sp"
+            android:textColor="@color/colorWhite"
+            android:background="@color/colorGreen"
+            android:layout_gravity="center_vertical" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/edit_change_signature"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textSize="17sp"
+        android:textColor="@color/colorBlack"
+        android:maxLength="15"/>
+
+</LinearLayout>

@@ -115,6 +115,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        Button info_btn = (Button)findViewById(R.id.info);
+        info_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, personalInformation.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
