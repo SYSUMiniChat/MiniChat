@@ -133,9 +133,17 @@
             android:name="XG_V2_ACCESS_KEY"
             android:value="AA2MH1Z88Y3N" />
 
-        <activity android:name=".personalInformation" android:label="个人信息" />
-        <activity android:name=".changeName"  android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".changeSignature" android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
+        <activity
+            android:name=".personalInformation"
+            android:label="个人信息" />
+        <activity
+            android:name=".changeName"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".changeSignature"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".changeAddress"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>

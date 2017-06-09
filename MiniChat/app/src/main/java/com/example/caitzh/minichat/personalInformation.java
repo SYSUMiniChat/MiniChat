@@ -23,11 +23,14 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class personalInformation extends AppCompatActivity {
 
@@ -48,9 +51,12 @@ public class personalInformation extends AppCompatActivity {
             if (bundle.getString("signature") != null) {
                 details[4] = bundle.getString("signature");
             }
+            if (bundle.getString("address") != null) {
+                details[3] = bundle.getString("address");
+            }
         }
 
-        // 点击头像这一栏 选择本地相册
+        // 点击头像这一栏 选择本地相册图片 暂未实现拍摄
         TextView test_avatar = (TextView) findViewById(R.id.test_avatar);
         test_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,22 +65,36 @@ public class personalInformation extends AppCompatActivity {
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, 1);
-                Toast.makeText(personalInformation.this, "头像这一栏被点击", Toast.LENGTH_LONG).show();
             }
         });
+
         // 点击头像放大
         final ImageView avatar = (ImageView) findViewById(R.id.avatar);
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // 方法一：自定义对话框，显示头像大图
                 LayoutInflater inflater = LayoutInflater.from(personalInformation.this);
                 View toshow_view = inflater.inflate(R.layout.show_avatar, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(personalInformation.this);
-                Bitmap bitmap =((BitmapDrawable) ((ImageView) avatar).getDrawable()).getBitmap();
-                ImageView show_avatar = (ImageView) toshow_view.findViewById(R.id.show_avatar);
-                show_avatar.setImageBitmap(bitmap);
+                Bitmap bitmap =((BitmapDrawable) avatar.getDrawable()).getBitmap();
+                ImageView toshow_avatar = (ImageView) toshow_view.findViewById(R.id.show_avatar);
+                toshow_avatar.setImageBitmap(bitmap);
                 builder.setView(toshow_view).create().show();
-                Toast.makeText(personalInformation.this, "头像被点击", Toast.LENGTH_LONG).show();
+
+                // 方法二：跳转到新的页面
+//                Intent intent = new Intent(personalInformation.this, show_avatar.class);
+//                Bundle bundle1 = new Bundle();
+//                bundle1.putParcelable("bitmap", bitmap);
+//                intent.putExtras(bundle1)
+//                intent.putExtra("bitmap", bitmap);
+
+//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+//                byte[] bitmapByte = outputStream.toByteArray();
+//                intent.putExtra("bitmap", bitmapByte);
+//                startActivity(intent);
+
             }
         });
 
@@ -141,7 +161,12 @@ public class personalInformation extends AppCompatActivity {
                         }
                     }).create().show();
                 } else if (position == 3) { // 修改地区
-                    Toast.makeText(personalInformation.this, "定位功能暂未开启", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(personalInformation.this, changeAddress.class);
+                    String cur_address = list.get(position).get("detail");
+                    Bundle bundle = new Bundle();
+                    bundle.putString("address", cur_address);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 } else if (position == 4) { // 修改Mini签名
                     Intent intent = new Intent(personalInformation.this, changeSignature.class);
                     String cur_signature = list.get(position).get("detail");
@@ -172,6 +197,8 @@ public class personalInformation extends AppCompatActivity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
 }
 
 
