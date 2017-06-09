@@ -13,19 +13,19 @@
 
 
     <LinearLayout
-        android:id="@+id/test_avatar"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
+            android:id="@+id/test_avatar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="头像"
             android:textSize="18sp"
             android:textColor="@color/colorBlack"
             android:layout_weight="1"
-            android:layout_gravity="center_vertical"/>
+            android:gravity="center_vertical"/>
 
         <ImageView
             android:id="@+id/avatar"

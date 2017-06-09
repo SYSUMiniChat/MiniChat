@@ -1,19 +1,29 @@
 package com.example.caitzh.minichat;
 
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +49,35 @@ public class personalInformation extends AppCompatActivity {
                 details[4] = bundle.getString("signature");
             }
         }
+
+        // 点击头像这一栏 选择本地相册
+        TextView test_avatar = (TextView) findViewById(R.id.test_avatar);
+        test_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(intent, 1);
+                Toast.makeText(personalInformation.this, "头像这一栏被点击", Toast.LENGTH_LONG).show();
+            }
+        });
+        // 点击头像放大
+        final ImageView avatar = (ImageView) findViewById(R.id.avatar);
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = LayoutInflater.from(personalInformation.this);
+                View toshow_view = inflater.inflate(R.layout.show_avatar, null);
+                AlertDialog.Builder builder = new AlertDialog.Builder(personalInformation.this);
+                Bitmap bitmap =((BitmapDrawable) ((ImageView) avatar).getDrawable()).getBitmap();
+                ImageView show_avatar = (ImageView) toshow_view.findViewById(R.id.show_avatar);
+                show_avatar.setImageBitmap(bitmap);
+                builder.setView(toshow_view).create().show();
+                Toast.makeText(personalInformation.this, "头像被点击", Toast.LENGTH_LONG).show();
+            }
+        });
+
 
         final List<Map<String, String>> list = new ArrayList<>();
         for (int i = 0; i < 5; ++i) {
@@ -113,6 +152,25 @@ public class personalInformation extends AppCompatActivity {
                 }
             }
         });
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            Log.i("uri", uri.toString());
+            ContentResolver cr = this.getContentResolver();
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                ImageView imageView = (ImageView) findViewById(R.id.avatar);
+                imageView.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                Log.e("Exception", e.getMessage(), e);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
 
