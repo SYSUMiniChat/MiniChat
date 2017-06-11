@@ -142,7 +142,10 @@
         <activity
             android:name=".changeSignature"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".changeAddress"
+        <activity
+            android:name=".changeAddress"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".changePassword"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 

@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -39,8 +40,9 @@ public class personalInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_information);
 
-        String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名"};
-        String[] details = new String[] {"海tiu~","cht1012536506","男","广东广州","最喜欢你啦"};
+        // TODO：引入数据库后修改默认数据
+        String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名", "修改密码"};
+        String[] details = new String[] {"海tiu~","cht1012536506","男","广东广州","最喜欢你啦", ""};
 
         // 如果是从修改页面跳转过来的，则更新listView的内容并显示
         Bundle bundle = this.getIntent().getExtras();
@@ -56,7 +58,7 @@ public class personalInformation extends AppCompatActivity {
             }
         }
 
-        // 点击头像这一栏 选择本地相册图片 暂未实现拍摄
+        // 点击头像这一栏 选择本地相册图片 暂未实现拍摄功能
         TextView test_avatar = (TextView) findViewById(R.id.test_avatar);
         test_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +102,7 @@ public class personalInformation extends AppCompatActivity {
 
 
         final List<Map<String, String>> list = new ArrayList<>();
-        for (int i = 0; i < 5; ++i) {
+        for (int i = 0; i < 6; ++i) {
             Map<String, String> listItem = new HashMap<>();
             listItem.put("name", names[i]);
             listItem.put("detail", details[i]);
@@ -174,10 +176,37 @@ public class personalInformation extends AppCompatActivity {
                     bundle.putString("signature", cur_signature);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                } else if (position == 5) {  // 修改密码
+                    // 先弹出对话框，输入原密码
+                    LayoutInflater inflater = LayoutInflater.from(personalInformation.this);
+                    final View newView = inflater.inflate(R.layout.comfirm_password, null);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(personalInformation.this);
+                    builder.setView(newView)
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // 原密码输入正确，可跳转到修改密码页面,否则提示密码错误
+                                    EditText editText = (EditText) newView.findViewById(R.id.originPassword);
+                                    String input = editText.getText().toString();
+                                    if (input.equals("123456")) {  // TODO: 这里先用123456测试，引入数据库后再修改
+                                        Intent intent = new Intent(personalInformation.this, changePassword.class);
+                                        intent.putExtra("miniNumber", list.get(1).get("detail"));  // 传递参数: mini号
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(personalInformation.this, "密码错误，请重新输入", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(personalInformation.this, "取消修改密码", Toast.LENGTH_LONG).show();
+                                }
+                            })
+                            .create().show();
                 }
             }
         });
-
 
     }
 
