@@ -14,7 +14,7 @@ import com.example.caitzh.minichat.R;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/6/10 0010.
+ * 聊天窗口每个item的适配器
  */
 
 public class ChatWindowAdapter extends BaseAdapter{

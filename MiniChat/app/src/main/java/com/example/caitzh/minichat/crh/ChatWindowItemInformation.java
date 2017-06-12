@@ -1,7 +1,7 @@
 package com.example.caitzh.minichat.crh;
 
 /**
- * Created by Administrator on 2017/6/10 0010.
+ * 聊天窗口每个聊天的item
  */
 
 public class ChatWindowItemInformation {

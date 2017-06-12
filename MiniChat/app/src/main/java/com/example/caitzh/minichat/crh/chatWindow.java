@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.example.caitzh.minichat.R;
 
 /**
- * Created by Administrator on 2017/6/10 0010.
+ * 微信登陆后的第一个页面：聊天窗口
  */
 
 public class chatWindow extends AppCompatActivity{

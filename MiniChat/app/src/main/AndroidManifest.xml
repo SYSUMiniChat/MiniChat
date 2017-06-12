@@ -144,6 +144,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".changeAddress"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".crh.chatWindow"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".crh.MainSlider"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
     </application>
 
 </manifest>
