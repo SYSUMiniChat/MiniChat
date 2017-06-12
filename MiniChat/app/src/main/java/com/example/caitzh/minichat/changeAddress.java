@@ -27,6 +27,7 @@ public class changeAddress extends AppCompatActivity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();  // 结束当前activity
                 Intent intent = new Intent(changeAddress.this, personalInformation.class);
                 startActivity(intent);
             }
@@ -42,6 +43,7 @@ public class changeAddress extends AppCompatActivity {
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("address", editText.getText().toString());
                 intent.putExtras(bundle1);
+                finish();  // 结束当前activity
                 startActivity(intent);
             }
         });

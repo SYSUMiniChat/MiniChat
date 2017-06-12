@@ -3,10 +3,12 @@ package com.example.caitzh.minichat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 
 public class changeName extends AppCompatActivity {
 
@@ -14,6 +16,7 @@ public class changeName extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_name);
+
 
         final EditText editText = (EditText)findViewById(R.id.edit_change_name);
         Bundle bundle = this.getIntent().getExtras();
@@ -27,6 +30,7 @@ public class changeName extends AppCompatActivity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();  // 结束当前activity
                 Intent intent = new Intent(changeName.this, personalInformation.class);
                 startActivity(intent);
             }
@@ -42,6 +46,7 @@ public class changeName extends AppCompatActivity {
                 Bundle bundle1 = new Bundle();
                 bundle1.putString("name", editText.getText().toString());
                 intent.putExtras(bundle1);
+                finish();  // 结束当前activity
                 startActivity(intent);
             }
         });

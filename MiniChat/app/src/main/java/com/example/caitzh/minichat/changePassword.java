@@ -26,6 +26,7 @@ public class changePassword extends AppCompatActivity {
         btn_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                finish();  // 结束当前activity
                 Intent intent = new Intent(changePassword.this, personalInformation.class);
                 startActivity(intent);
             }
@@ -41,6 +42,7 @@ public class changePassword extends AppCompatActivity {
                 String text_password = password.getText().toString();
                 String text_comfirm = comfirm_password.getText().toString();
                 if (text_password.equals(text_comfirm)) {  // 密码前后一致
+                    finish();  // 结束当前activity
                     Intent intent = new Intent(changePassword.this, personalInformation.class);
                     // TODO 更新数据库内容 密码
                     startActivity(intent);

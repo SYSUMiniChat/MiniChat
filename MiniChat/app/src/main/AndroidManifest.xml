@@ -145,8 +145,17 @@
         <activity
             android:name=".changeAddress"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity android:name=".changePassword"
+        <activity
+            android:name=".changePassword"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".register"
+            android:label="注册MiniChat" />
+        <activity
+            android:name=".signIn"
+            android:label="登录MiniChat" />
+        <activity android:name=".forgetPassword"
+            android:label="忘记密码"/>
     </application>
 
 </manifest>
