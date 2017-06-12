@@ -37,6 +37,7 @@
             android:textColor="@color/colorWhite"
             android:background="@color/colorGreen"
             android:layout_gravity="center_vertical" />
+
     </LinearLayout>
 
     <View
@@ -57,5 +58,6 @@
         android:layout_height="wrap_content"
         android:text="好名字可以让你的朋友更容易记住你。"
         android:layout_marginLeft="20dp"/>
+
 
 </LinearLayout>

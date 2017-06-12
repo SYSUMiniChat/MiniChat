@@ -15,6 +15,13 @@
         android:text="Hello World!"
         android:id="@+id/message"/>
     <Button
+        android:id="@+id/signIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="登录"
+        android:layout_above="@+id/info"
+        android:layout_alignStart="@+id/info" />
+    <Button
         android:id="@+id/info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

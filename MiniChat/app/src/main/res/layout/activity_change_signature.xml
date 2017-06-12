@@ -39,6 +39,11 @@
             android:layout_gravity="center_vertical" />
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGray" />
+
     <EditText
         android:id="@+id/edit_change_signature"
         android:layout_width="match_parent"
