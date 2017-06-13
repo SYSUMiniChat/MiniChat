@@ -3,6 +3,7 @@ package com.example.caitzh.minichat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,17 +21,6 @@ public class changePassword extends AppCompatActivity {
         Intent intent = this.getIntent();
         TextView miniNumber = (TextView) findViewById(R.id.miniNumber);
         miniNumber.setText(intent.getStringExtra("miniNumber"));
-
-        // 点击返回箭头
-        ImageView btn_back = (ImageView) findViewById(R.id.backToInformation);
-        btn_back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();  // 结束当前activity
-                Intent intent = new Intent(changePassword.this, personalInformation.class);
-                startActivity(intent);
-            }
-        });
 
         // 点击保存按钮
         Button btn_save = (Button) findViewById(R.id.save_password);
@@ -52,5 +42,23 @@ public class changePassword extends AppCompatActivity {
                 }
             }
         });
+        // 给AppCompatActivity的标题栏上加上返回按钮
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null){
+            actionBar.setHomeButtonEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
+    }
+
+    // 返回按钮
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish(); // back button
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
