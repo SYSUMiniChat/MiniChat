@@ -188,7 +188,7 @@ public class personalInformation extends AppCompatActivity {
                                     // 原密码输入正确，可跳转到修改密码页面,否则提示密码错误
                                     EditText editText = (EditText) newView.findViewById(R.id.originPassword);
                                     String input = editText.getText().toString();
-                                    if (input.equals("123456")) {  // TODO: 这里先用123456测试，引入数据库后再修改
+                                    if (input.equals("123")) {  // TODO: 这里先用123测试，引入数据库后再修改
                                         Intent intent = new Intent(personalInformation.this, changePassword.class);
                                         intent.putExtra("miniNumber", list.get(1).get("detail"));  // 传递参数: mini号
                                         startActivity(intent);

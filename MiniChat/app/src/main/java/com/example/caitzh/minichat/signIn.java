@@ -67,7 +67,7 @@ public class signIn extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(signIn.this, forgetPassword.class);
                 startActivity(intent);
-                Toast.makeText(signIn.this, "不要急哟~静待海涛完善该页面", Toast.LENGTH_LONG).show();
+//                Toast.makeText(signIn.this, "不要急哟~静待海涛完善该页面", Toast.LENGTH_LONG).show();
             }
         });
 
