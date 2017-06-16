@@ -34,12 +34,19 @@
             android:layout_height="wrap_content"
             android:text="密码"
             android:textSize="18sp"
-            android:textColor="@color/colorBlack"/>
+            android:textColor="@color/colorBlack"
+            android:layout_gravity="center_vertical"/>
         <EditText
             android:id="@+id/password"
-            android:hint="填写密码"
+            android:hint="请填写密码,最长16位"
             style="@style/myEditText"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:maxLength="16"/>
+        <ImageView
+            android:id="@+id/visible"
+            android:layout_width="22dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/invisible"/>
     </LinearLayout>
 
     <View

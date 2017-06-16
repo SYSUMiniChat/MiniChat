@@ -1,17 +1,26 @@
 package com.example.caitzh.minichat;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Selection;
+import android.text.Spannable;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,33 +31,76 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 
 public class register extends AppCompatActivity {
 
+    EditText nickname, miniNumber, password, confirmPassword;
+    ImageView password_visible, confirm_visible;
+    boolean visible = false;
+    boolean confirmVisible = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        nickname = (EditText) findViewById(R.id.nickname);
+        miniNumber = (EditText) findViewById(R.id.miniNumber);
+        password = (EditText) findViewById(R.id.password);
+        confirmPassword = (EditText) findViewById(R.id.confirmPassword);
+        password_visible = (ImageView) findViewById(R.id.passwordVisible);
+        confirm_visible = (ImageView) findViewById(R.id.confirmPasswordVisible);
+
         try {
+            // 点击密码可见按钮，切换输入框密码是否可见
+            password_visible.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!visible) {
+                        password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                        password_visible.setImageDrawable(getResources().getDrawable(R.mipmap.visible));
+                    } else {
+                        password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                        password_visible.setImageDrawable(getResources().getDrawable(R.mipmap.invisible));
+                    }
+                    visible = !visible;
+                    password.postInvalidate();
+                    password.setSelection(password.length());
+                }
+            });
+            confirm_visible.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!confirmVisible) {
+                        confirmPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                        confirm_visible.setImageDrawable(getResources().getDrawable(R.mipmap.visible));
+                    } else {
+                        confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                        confirm_visible.setImageDrawable(getResources().getDrawable(R.mipmap.invisible));
+                    }
+                    confirmVisible = !confirmVisible;
+                    confirmPassword.postInvalidate();
+                    confirmPassword.setSelection(confirmPassword.length());
+                }
+            });
             // 点击 注册按钮
             Button btn_register = (Button) findViewById(R.id.register);
             btn_register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // 判断输入密码前后是否一致
-                    String password = ( (EditText) findViewById(R.id.password)).getText().toString();
-                    String confirmPassword = ( (EditText) findViewById(R.id.confirmPassword)).getText().toString();
-                    if (password.equals(confirmPassword)) {  // 密码前后一致
+                    String password_ = password.getText().toString();
+                    String confirmPassword_ = confirmPassword.getText().toString();
+                    if (password_.equals(confirmPassword_)) {  // 密码前后一致
                         if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
                             sendRequestWithHttpConnection();  // 发送Http请求
                         } else {
                             Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        ((EditText) findViewById(R.id.confirmPassword)).setText(""); // 为方便重新用户输入密码，清空输入内容
+                        confirmPassword.setText(""); // 为方便重新用户输入密码，清空输入内容
                         Toast.makeText(register.this, "前后密码不一致，请重新填写喔~", Toast.LENGTH_LONG).show();
                     }
                 }
@@ -119,13 +171,14 @@ public class register extends AppCompatActivity {
                     connection.setRequestMethod("POST");
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
+
                     // 获取注册时输入内容等参数，并将其以流的形式写入connection中
-                    String nickname = ((EditText) findViewById(R.id.nickname)).getText().toString();
-                    String phone = ((EditText) findViewById(R.id.miniNumber)).getText().toString();
-                    String password = ((EditText) findViewById(R.id.password)).getText().toString();
+                    String nickname_ = nickname.getText().toString();
+                    String phone = miniNumber.getText().toString();
+                    String password_ = password.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    nickname = URLEncoder.encode(nickname, "utf-8");
-                    outputStream.writeBytes("phone=" + phone + "&nickname=" + nickname + "&password=" + password);
+                    nickname_ = URLEncoder.encode(nickname_, "utf-8");
+                    outputStream.writeBytes("phone=" + phone + "&nickname=" + nickname_ + "&password=" + password_);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
@@ -139,15 +192,14 @@ public class register extends AppCompatActivity {
                     JSONObject result = new JSONObject(response.toString());
                     String code = result.getString("code");
                     String message = result.getString("message");
-
+                    // test
                     Log.i("code:", code);
                     Log.i("message", message);
-
                     if (code.equals("0")) {  // 注册成功
                         finish();  // 结束当前activity
                         Intent intent = new Intent(register.this, signIn.class); // 跳转到登录页面
                         startActivity(intent);
-                        // 在子线程中使用Looper弹出Toast内容
+                        // 在子线程中弹出Toast内容需使用Looper
                         Looper.prepare();
                         Toast.makeText(register.this, "注册成功，赶快登录吧~", Toast.LENGTH_LONG).show();
                         Looper.loop();
@@ -165,4 +217,7 @@ public class register extends AppCompatActivity {
             }
         }).start();
     }
+
 }
+
+

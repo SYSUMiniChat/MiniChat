@@ -3,6 +3,8 @@ package com.example.caitzh.minichat;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -13,32 +15,73 @@ import android.widget.Toast;
 
 public class changePassword extends AppCompatActivity {
 
+    TextView miniNumber;
+    Button btn_save;
+    EditText password, confirmPassword;
+    ImageView password_visible, confirm_visible;
+    boolean visible = false, confirmVisible = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
 
+        miniNumber = (TextView) findViewById(R.id.miniNumber);
+        btn_save = (Button) findViewById(R.id.save_password);
+        password = (EditText) findViewById(R.id.password);
+        confirmPassword = (EditText) findViewById(R.id.confirmPassword);
+        password_visible = (ImageView) findViewById(R.id.visible);
+        confirm_visible = (ImageView) findViewById(R.id.confirmVisible);
+
         Intent intent = this.getIntent();
-        TextView miniNumber = (TextView) findViewById(R.id.miniNumber);
-        miniNumber.setText(intent.getStringExtra("miniNumber"));
+        miniNumber.setText(intent.getStringExtra("miniNumber"));  // 获取跳转页面时传递的参数:mini账号
+
+        // 点击密码可见按钮
+        password_visible.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!visible) {
+                    password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    password_visible.setImageDrawable(getResources().getDrawable(R.mipmap.visible));
+                } else {
+                    password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    password_visible.setImageDrawable(getResources().getDrawable(R.mipmap.invisible));
+                }
+                visible = !visible;
+                password.postInvalidate();
+                password.setSelection(password.length());
+            }
+        });
+        confirm_visible.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!confirmVisible) {
+                    confirmPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    confirm_visible.setImageDrawable(getResources().getDrawable(R.mipmap.visible));
+                } else {
+                    confirmPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    confirm_visible.setImageDrawable(getResources().getDrawable(R.mipmap.invisible));
+                }
+                confirmVisible = !confirmVisible;
+                confirmPassword.postInvalidate();
+                confirmPassword.setSelection(confirmPassword.length());
+            }
+        });
+
 
         // 点击保存按钮
-        Button btn_save = (Button) findViewById(R.id.save_password);
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText password = (EditText) findViewById(R.id.password);
-                EditText comfirm_password = (EditText) findViewById(R.id.confirmPassword);
                 String text_password = password.getText().toString();
-                String text_comfirm = comfirm_password.getText().toString();
-                if (text_password.equals(text_comfirm)) {  // 密码前后一致
+                String text_confirm = confirmPassword.getText().toString();
+                if (text_password.equals(text_confirm)) {  // 密码前后一致
                     finish();  // 结束当前activity
                     Intent intent = new Intent(changePassword.this, personalInformation.class);
-                    // TODO 更新数据库内容 密码
                     startActivity(intent);
                 } else {
                     Toast.makeText(changePassword.this, "密码前后不一致，请重新输入", Toast.LENGTH_LONG).show();
-                    comfirm_password.setText("");
+                    confirmPassword.setText("");
                 }
             }
         });
