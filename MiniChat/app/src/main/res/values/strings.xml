@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MiniChat</string>
+    <string name="go_to_register"><u>还没有账号？点击前往注册</u></string>
+    <string name="register">点击上面的注册按钮，即表明你同意<u>《MiniChat软件许可及服务协议》</u> 和<u>《MiniChat隐私政策》</u></string>
+    <string name="go_to_siginin"><u>已注册？点击前往登录页面</u></string>
+    <string name="nextStep"><u>下一步>></u></string>
 </resources>

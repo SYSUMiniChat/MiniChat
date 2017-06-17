@@ -14,11 +14,26 @@
         android:layout_height="wrap_content"
         android:text="Hello World!"
         android:id="@+id/message"/>
+    <Button
+        android:id="@+id/signIn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="登录"
+        android:layout_above="@+id/info"
+        android:layout_alignStart="@+id/info" />
+    <Button
+        android:id="@+id/info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="个人信息"
+        android:layout_above="@+id/linearLayout"
+        android:layout_alignEnd="@+id/linearLayout" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:id="@+id/linearLayout">
         <EditText
             android:id="@+id/sendMsg"
             android:layout_width="0dp"

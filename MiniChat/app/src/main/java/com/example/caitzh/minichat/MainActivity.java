@@ -115,6 +115,25 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        // 跳转到个人信息页面
+        Button info_btn = (Button)findViewById(R.id.info);
+        info_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, personalInformation.class);
+                startActivity(intent);
+            }
+        });
+        // 跳转到登录页面
+        Button signin_btn = (Button) findViewById(R.id.signIn);
+        signin_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, signIn.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
