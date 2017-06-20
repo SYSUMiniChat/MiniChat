@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/6/12 0012.
+ * 实现页面滑动
  */
 // TODO:加入图片和tab名称
 public class MainSlider extends AppCompatActivity implements View.OnClickListener {
