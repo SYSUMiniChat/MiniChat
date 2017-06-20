@@ -296,14 +296,10 @@ public class personalInformation extends AppCompatActivity {
                         // 跳转到登录页面
                         Intent intent = new Intent(personalInformation.this, signIn.class);
                         startActivity(intent);
-                        Looper.prepare();
-                        Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    } else {
-                        Looper.prepare();
-                        Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();  // 弹出退出登录失败原因
-                        Looper.loop();
                     }
+                    Looper.prepare();
+                    Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {  // 关闭connection
