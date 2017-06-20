@@ -119,8 +119,8 @@ public class MainSlider extends AppCompatActivity implements View.OnClickListene
         LayoutInflater mInflater = LayoutInflater.from(this);//创建一个LayoutInflater对象
         View tab01 = mInflater.inflate(R.layout.activity_chat_window, null);//通过inflate方法动态加载一个布局文件
         // TODO: 更改通讯录以及个人信息的Layout的id
-        View tab02 = mInflater.inflate(R.layout.tab02, null);
-        View tab03 = mInflater.inflate(R.layout.tab03, null);
+        View tab02 = mInflater.inflate(R.layout.activity_friends_list, null);
+        View tab03 = mInflater.inflate(R.layout.activity_personal_information, null);
         mViews.add(tab01);
         mViews.add(tab02);
         mViews.add(tab03);
