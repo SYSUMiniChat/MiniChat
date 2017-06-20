@@ -36,7 +36,7 @@
             android:textColor="@color/colorBlack"/>
         <EditText
             android:id="@+id/miniNumber"
-            android:hint="手机号码或者邮箱"
+            android:hint="你的电子邮箱"
             style="@style/myEditText"/>
     </LinearLayout>
 
@@ -53,9 +53,15 @@
             android:textColor="@color/colorBlack" />
         <EditText
             android:id="@+id/password"
-            android:hint="请填写密码"
+            android:hint="请填写密码，最长16位"
             style="@style/myEditText"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:maxLength="16"/>
+        <ImageView
+            android:id="@+id/passwordVisible"
+            android:layout_width="22dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/invisible"/>
     </LinearLayout>
 
     <View
@@ -73,7 +79,14 @@
             android:id="@+id/confirmPassword"
             android:hint="请重新填写密码"
             style="@style/myEditText"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword"
+            android:maxLength="16"/>
+        <ImageView
+            android:id="@+id/confirmPasswordVisible"
+            android:layout_width="22dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/invisible"
+            android:layout_gravity="center_vertical"/>
     </LinearLayout>
 
     <View

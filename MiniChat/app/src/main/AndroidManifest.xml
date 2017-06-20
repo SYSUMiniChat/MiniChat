@@ -138,16 +138,16 @@
             android:label="个人信息" />
         <activity
             android:name=".changeName"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:label="更改昵称" />
         <activity
             android:name=".changeSignature"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:label="Mini签名" />
         <activity
             android:name=".changeAddress"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:label="更改地区" />
         <activity
             android:name=".changePassword"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+            android:label="设置密码" />
         <activity
             android:name=".register"
             android:label="注册MiniChat" />

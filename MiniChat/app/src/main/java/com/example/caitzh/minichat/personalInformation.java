@@ -1,12 +1,16 @@
 package com.example.caitzh.minichat;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.Looper;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,9 +28,17 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,9 +52,9 @@ public class personalInformation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_information);
 
+        String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名", "修改密码", "退出登录"};
         // TODO：引入数据库后修改默认数据
-        String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名", "修改密码"};
-        String[] details = new String[] {"海tiu~","cht1012536506","男","广东广州","最喜欢你啦", ""};
+        String[] details = new String[] {"海tiu~","cht1012536506","男","广东广州","最喜欢你啦", "", ""};
 
         // 如果是从修改页面跳转过来的，则更新listView的内容并显示
         Bundle bundle = this.getIntent().getExtras();
@@ -102,7 +114,7 @@ public class personalInformation extends AppCompatActivity {
 
 
         final List<Map<String, String>> list = new ArrayList<>();
-        for (int i = 0; i < 6; ++i) {
+        for (int i = 0; i < 7; ++i) {
             Map<String, String> listItem = new HashMap<>();
             listItem.put("name", names[i]);
             listItem.put("detail", details[i]);
@@ -188,7 +200,7 @@ public class personalInformation extends AppCompatActivity {
                                     // 原密码输入正确，可跳转到修改密码页面,否则提示密码错误
                                     EditText editText = (EditText) newView.findViewById(R.id.originPassword);
                                     String input = editText.getText().toString();
-                                    if (input.equals("123456")) {  // TODO: 这里先用123456测试，引入数据库后再修改
+                                    if (input.equals("123")) {  // TODO: 这里先用123测试，引入数据库后再修改
                                         Intent intent = new Intent(personalInformation.this, changePassword.class);
                                         intent.putExtra("miniNumber", list.get(1).get("detail"));  // 传递参数: mini号
                                         startActivity(intent);
@@ -204,6 +216,12 @@ public class personalInformation extends AppCompatActivity {
                                 }
                             })
                             .create().show();
+                } else if (position == 6) {  // 退出登录
+                    if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
+                        sendRequestWithHttpConnection();  // 发送Http请求
+                    } else {
+                        Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -227,7 +245,74 @@ public class personalInformation extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    // 判断是否有可用网络
+    private boolean checkHasNet(Context context) {
+        // 使用 ConnectivityManager 获取手机所有连接管理对象
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            // 使用 manager 获取网络连接管理的NetworkInfo对象
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo == null || !networkInfo.isAvailable()) {  // 是否为空或为非连接状态
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private static final String url = "http://119.29.238.202:8000/logout";
+    private void sendRequestWithHttpConnection() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                try {
+                    Log.i("key", "Begin the connection");
+                    // 获取一个HttpURLConnection实例化对象
+                    connection = (HttpURLConnection) ((new URL(url).openConnection()));
+                    // 设置请求方式和响应时间
+                    connection.setRequestMethod("GET");
+                    connection.setReadTimeout(8000);
+                    connection.setConnectTimeout(8000);
+                    // 提交到的数据转化为字符串
+                    InputStream inputStream = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    // 从返回的JSON数据中提取关键信息
+                    JSONObject result = new JSONObject(response.toString());
+                    String code = result.getString("code");
+                    String message = result.getString("message");
+                    // test
+                    Log.i("code:", code);
+                    Log.i("message", message);
+                    if (code.equals("0")) {  // 退出成功
+                        finish();  // 结束当前activity
+                        // 跳转到登录页面
+                        Intent intent = new Intent(personalInformation.this, signIn.class);
+                        startActivity(intent);
+                        Looper.prepare();
+                        Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
+                        Looper.loop();
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();  // 弹出退出登录失败原因
+                        Looper.loop();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {  // 关闭connection
+                    if (connection != null)
+                        connection.disconnect();
+                }
+            }
+        }).start();
+    }
 }
 
 

@@ -10,8 +10,6 @@
     android:orientation="vertical"
     tools:context="com.example.caitzh.minichat.personalInformation">
 
-
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
