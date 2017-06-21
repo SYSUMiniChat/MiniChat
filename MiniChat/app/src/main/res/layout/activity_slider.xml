@@ -26,4 +26,5 @@
             </android.support.v4.view.PagerTabStrip>
         </LinearLayout>
     </android.support.v4.view.ViewPager>
+    <include layout="@layout/activity_slider_bottom"/>
 </LinearLayout>

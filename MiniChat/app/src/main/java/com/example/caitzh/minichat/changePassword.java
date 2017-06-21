@@ -1,6 +1,9 @@
 package com.example.caitzh.minichat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -103,5 +106,21 @@ public class changePassword extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private boolean checkHasNet(Context context) {
+        // 使用 ConnectivityManager 获取手机所有连接管理对象
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            // 使用 manager 获取网络连接管理的NetworkInfo对象
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo == null || !networkInfo.isAvailable()) {  // 是否为空或为非连接状态
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return false;
     }
 }
