@@ -113,9 +113,29 @@ public class register extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "点击注册按钮", Toast.LENGTH_LONG).show();
                     String password_ = password.getText().toString();
                     String confirmPassword_ = confirmPassword.getText().toString();
+                    /**
+                     * 获取昵称和账号 begin
+                     */
+                    String s_nickname = nickname.getText().toString();
+                    String s_miniNumber = miniNumber.getText().toString();
+                    /**
+                     * end
+                     */
                     if (password_.equals(confirmPassword_)) {  // 密码前后一致
                         if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
+
                             sendRequestWithHttpConnection(url_register, "POST");  // 发送post请求
+                            /**
+                             * 测试用户数据库 by zhengsd
+                             * 开始 将信息插入本地数据库
+                             */
+                            userDB db = new userDB(getBaseContext());
+                            db.insert2Table(s_nickname, s_miniNumber, password_);
+                            /**
+                             * end
+                             */
+
+
                         } else {
                             Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
                         }

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ListView
+        android:id="@+id/PersonalChatWindowListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:divider="#ffffff"
+        android:layout_weight="0.25" >
+    </ListView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:gravity="bottom" >
+        <EditText
+            android:id="@+id/PersonalChatWindowInputBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:textColor="#ffffff"
+            android:inputType="text"
+            android:hint="请输入要发送的消息">
+            <requestFocus />
+        </EditText>
+        <Button
+            android:id="@+id/PersonalChatWindowBtnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:text="发送"
+            android:textColor="#ffffff"/>
+    </LinearLayout>
+</LinearLayout>
