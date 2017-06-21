@@ -109,7 +109,7 @@ public class register extends AppCompatActivity {
                              * 开始 将信息插入本地数据库
                              */
                             userDB db = new userDB(getBaseContext());
-                            db.insert2Table(s_nickname, s_miniNumber, password_);
+                            db.insert2Table(s_miniNumber,s_nickname, "testday");
                             /**
                              * end
                              */
