@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 页面切换的适配器
@@ -15,46 +16,32 @@ import java.util.ArrayList;
 
 public class ViewPagerAdapter extends PagerAdapter {
 
-    private ArrayList<View> list;
-    private ArrayList<String> titleContainer;
-    private Context context;
+    private List<View> mViewList = new ArrayList<>();
 
-    public ViewPagerAdapter(ArrayList<View> inputList, ArrayList<String> inputTitleContainer, Context inputContext) {
-        this.list = inputList;
-        this.titleContainer = inputTitleContainer;
-        this.context = inputContext;
+    public ViewPagerAdapter(List<View> inputViewList) {
+        this.mViewList = inputViewList;
     }
 
     //viewpager中的组件数量
     @Override
     public int getCount() {
-        return list.size();
+        return mViewList.size();
     }
     //滑动切换的时候销毁当前的组件
     @Override
     public void destroyItem(ViewGroup container, int position,
                             Object object) {
-        ((ViewPager)container).removeView(list.get(position));
+        ((ViewPager)container).removeView(mViewList.get(position));
     }
     //每次滑动的时候生成的组件
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        ((ViewPager)container).addView(list.get(position));
-        return list.get(position);
+        ((ViewPager)container).addView(mViewList.get(position));
+        return mViewList.get(position);
     }
 
     @Override
     public boolean isViewFromObject(View arg0, Object arg1) {
         return arg0 == arg1;
-    }
-
-    @Override
-    public int getItemPosition(Object object) {
-        return super.getItemPosition(object);
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return titleContainer.get(position);
     }
 }
