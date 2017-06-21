@@ -37,10 +37,12 @@ import java.net.URLEncoder;
 
 public class register extends AppCompatActivity {
 
-    EditText nickname, miniNumber, password, confirmPassword;
+    EditText nickname, miniNumber, password, confirmPassword, verifyCode;
     ImageView password_visible, confirm_visible;
     boolean visible = false;
     boolean confirmVisible = false;
+    Button getCode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,7 @@ public class register extends AppCompatActivity {
         confirmPassword = (EditText) findViewById(R.id.confirmPassword);
         password_visible = (ImageView) findViewById(R.id.passwordVisible);
         confirm_visible = (ImageView) findViewById(R.id.confirmPasswordVisible);
+        verifyCode = (EditText) findViewById(R.id.verificationCode);
 
         try {
             // 点击密码可见按钮，切换输入框密码是否可见
@@ -85,12 +88,29 @@ public class register extends AppCompatActivity {
                     confirmPassword.setSelection(confirmPassword.length());
                 }
             });
+
+            getCode = (Button) findViewById(R.id.getCode);
+            // 点击 获取验证码 按钮
+            getCode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getCode.setText("发送中...");
+                    Toast.makeText(getApplicationContext(), "验证码已发送", Toast.LENGTH_LONG).show();
+                    if (checkHasNet(getApplicationContext())) {   // 判断当前是否有可用网络
+                        sendRequestWithHttpConnection(url_getCode, "GET");  // 发送get请求
+                    } else {
+                        Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
+                    }
+                }
+            });
+
             // 点击 注册按钮
             Button btn_register = (Button) findViewById(R.id.register);
             btn_register.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // 判断输入密码前后是否一致
+                    Toast.makeText(getApplicationContext(), "点击注册按钮", Toast.LENGTH_LONG).show();
                     String password_ = password.getText().toString();
                     String confirmPassword_ = confirmPassword.getText().toString();
                     /**
@@ -103,16 +123,18 @@ public class register extends AppCompatActivity {
                      */
                     if (password_.equals(confirmPassword_)) {  // 密码前后一致
                         if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
-                            sendRequestWithHttpConnection();  // 发送Http请求
+
+                            sendRequestWithHttpConnection(url_register, "POST");  // 发送post请求
                             /**
                              * 测试用户数据库 by zhengsd
                              * 开始 将信息插入本地数据库
                              */
                             userDB db = new userDB(getBaseContext());
-                            db.insert2Table(s_nickname, s_miniNumber, password_);
+                            db.insert2Table(s_miniNumber,s_nickname, "testday");
                             /**
                              * end
                              */
+
 
                         } else {
                             Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
@@ -174,9 +196,10 @@ public class register extends AppCompatActivity {
         return false;
     }
 
-    private static final String url = "http://119.29.238.202:8000/register";
+    private static final String url_register = "http://119.29.238.202:8000/register";
+    private static final String url_getCode = "http://119.29.238.202:8000/getVerifycode/";
 
-    private void sendRequestWithHttpConnection() {
+    private void sendRequestWithHttpConnection(final String url, final String method) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -184,19 +207,29 @@ public class register extends AppCompatActivity {
                 try {
                     Log.i("key", "Begin the connection");
                     // 获取一个HttpURLConnection实例化对象
-                    connection = (HttpURLConnection) ((new URL(url).openConnection()));
+                    String id = miniNumber.getText().toString();
+                    if (url.equals(url_register)) {
+                        Log.i("cur url:", url);
+                        connection = (HttpURLConnection) ((new URL(url).openConnection()));
+                    } else if (url.equals(url_getCode)) {
+                        Log.i("cur url:", url+id);
+                        connection = (HttpURLConnection) ((new URL(url+id).openConnection()));
+                    }
+
                     // 设置请求方式和响应时间
-                    connection.setRequestMethod("POST");
+                    connection.setRequestMethod(method);
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
 
-                    // 获取注册时输入内容等参数，并将其以流的形式写入connection中
-                    String nickname_ = nickname.getText().toString();
-                    String phone = miniNumber.getText().toString();
-                    String password_ = password.getText().toString();
-                    DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    nickname_ = URLEncoder.encode(nickname_, "utf-8");
-                    outputStream.writeBytes("phone=" + phone + "&nickname=" + nickname_ + "&password=" + password_);
+                    if (url.equals(url_register)) {
+                        // 获取注册时输入内容等参数，并将其以流的形式写入connection中
+                        String nickname_ = nickname.getText().toString();
+                        String password_ = password.getText().toString();
+                        String verifyCode_ = verifyCode.getText().toString();
+                        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                        nickname_ = URLEncoder.encode(nickname_, "utf-8");
+                        outputStream.writeBytes("id=" + id + "&nickname=" + nickname_ + "&password=" + password_ + "&code=" + verifyCode_);
+                    }
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
@@ -213,19 +246,19 @@ public class register extends AppCompatActivity {
                     // test
                     Log.i("code:", code);
                     Log.i("message", message);
-                    if (code.equals("0")) {  // 注册成功
-                        finish();  // 结束当前activity
-                        Intent intent = new Intent(register.this, signIn.class); // 跳转到登录页面
-                        startActivity(intent);
-                        // 在子线程中弹出Toast内容需使用Looper
-                        Looper.prepare();
-                        Toast.makeText(register.this, "注册成功，赶快登录吧~", Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    } else {  // 注册失败
-                        Looper.prepare();
-                        Toast.makeText(register.this, message, Toast.LENGTH_LONG).show();  // 弹出注册失败原因
-                        Looper.loop();
+                    if (code.equals("0")) {
+                        if (url.equals(url_register)) {   // 注册成功
+                            finish();  // 结束当前activity
+                            Intent intent = new Intent(register.this, signIn.class); // 跳转到登录页面
+                            startActivity(intent);
+                        } else {
+                            getCode.setText("发送成功!");
+                        }
                     }
+                    // 在子线程中弹出Toast内容需使用Looper
+                    Looper.prepare();
+                    Toast.makeText(register.this, message, Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {  // 关闭connection
@@ -235,7 +268,6 @@ public class register extends AppCompatActivity {
             }
         }).start();
     }
-
 }
 
 

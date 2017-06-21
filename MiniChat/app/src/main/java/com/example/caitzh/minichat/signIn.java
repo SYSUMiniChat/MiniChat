@@ -121,6 +121,7 @@ public class signIn extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         // 给AppCompatActivity的标题栏上加上返回按钮
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -174,10 +175,10 @@ public class signIn extends AppCompatActivity {
                     connection.setConnectTimeout(8000);
 
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
-                    String phone = miniNumber.getText().toString();
+                    String id = miniNumber.getText().toString();
                     String password_ = password.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    outputStream.writeBytes("phone=" + phone + "&password=" + password_);
+                    outputStream.writeBytes("id=" + id + "&password=" + password_);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
@@ -196,17 +197,14 @@ public class signIn extends AppCompatActivity {
                     Log.i("message", message);
                     if (code.equals("0")) {  // 登录成功
                         finish();  // 结束当前activity
-                        // TODO 跳转到用户信息页面(后面应该改成用户页面)
+                        // TODO 跳转到用户信息页面
                         Intent intent = new Intent(signIn.this, personalInformation.class);
+                        intent.putExtra("state", "login");  // 表明状态是已登录
                         startActivity(intent);
-                        Looper.prepare();
-                        Toast.makeText(signIn.this, message, Toast.LENGTH_LONG).show();
-                        Looper.loop();
-                    } else {
-                        Looper.prepare();
-                        Toast.makeText(signIn.this, message, Toast.LENGTH_LONG).show();  // 弹出登录失败原因
-                        Looper.loop();
                     }
+                    Looper.prepare();
+                    Toast.makeText(signIn.this, message, Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {  // 关闭connection
