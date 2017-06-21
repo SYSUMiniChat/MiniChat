@@ -47,14 +47,23 @@ import java.util.concurrent.ExecutionException;
 
 public class personalInformation extends AppCompatActivity {
 
+    String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名", "修改密码", "退出登录"};
+    String[] details = new String[] {"海tiu~","cht1012536506","男","广东广州","最喜欢你啦", "", ""};  // 个人信息页面每一栏的具体内容
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_information);
 
-        String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名", "修改密码", "退出登录"};
-        // TODO：引入数据库后修改默认数据
-        String[] details = new String[] {"海tiu~","cht1012536506","男","广东广州","最喜欢你啦", "", ""};
+        Intent intent = this.getIntent();
+        if (intent.getStringExtra("state") != null && intent.getStringExtra("state").equals("login")) {  // 登录后才能获取用户信息
+            Log.i("status", "获取用户信息中");
+            if (checkHasNet(getApplicationContext())) {
+                sendRequestWithHttpConnection(url_getUserInfo, "GET");
+            } else {
+                Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
+            }
+        }
 
         // 如果是从修改页面跳转过来的，则更新listView的内容并显示
         Bundle bundle = this.getIntent().getExtras();
@@ -218,7 +227,7 @@ public class personalInformation extends AppCompatActivity {
                             .create().show();
                 } else if (position == 6) {  // 退出登录
                     if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
-                        sendRequestWithHttpConnection();  // 发送Http请求
+                        sendRequestWithHttpConnection(url_logout, "GET");  // 发送Http请求
                     } else {
                         Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
                     }
@@ -262,8 +271,11 @@ public class personalInformation extends AppCompatActivity {
         return false;
     }
 
-    private static final String url = "http://119.29.238.202:8000/logout";
-    private void sendRequestWithHttpConnection() {
+    private static final String url_logout = "http://119.29.238.202:8000/logout";
+    private static final String url_getUserInfo = "http://119.29.238.202:8000/getUserInfo";
+    private static final String url_updateUser = "http://119.29.238.202:8000/updateUser";
+
+    private void sendRequestWithHttpConnection(final String url, final String method) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -273,9 +285,12 @@ public class personalInformation extends AppCompatActivity {
                     // 获取一个HttpURLConnection实例化对象
                     connection = (HttpURLConnection) ((new URL(url).openConnection()));
                     // 设置请求方式和响应时间
-                    connection.setRequestMethod("GET");
+                    connection.setRequestMethod(method);
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
+
+                    Log.i("status code", connection.getResponseCode()+"");
+
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -291,15 +306,29 @@ public class personalInformation extends AppCompatActivity {
                     // test
                     Log.i("code:", code);
                     Log.i("message", message);
-                    if (code.equals("0")) {  // 退出成功
-                        finish();  // 结束当前activity
-                        // 跳转到登录页面
-                        Intent intent = new Intent(personalInformation.this, signIn.class);
-                        startActivity(intent);
+                    if (code.equals("0")) {
+                        if (url.equals(url_logout)) { // 退出成功
+                            finish();  // 结束当前activity
+                            // 跳转到登录页面
+                            Intent intent = new Intent(personalInformation.this, signIn.class);
+                            startActivity(intent);
+                        } else if (url.equals(url_getUserInfo)) {  // 获取用户信息
+                            Log.i("message", message);
+                            JSONObject informations = new JSONObject(message);
+                            String avatar = informations.getString("avatar");
+                            String city = informations.getString("city");
+                            String id = informations.getString("id");
+                            String nickname = informations.getString("caitzh");
+                            String sex = informations.getString("sex");
+                            String siganature = informations.getString("signature");
+                            details = new String[] {nickname, id, sex, city, siganature, "", ""};
+                            // TODO 头像设置
+                        }
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
-                    Looper.prepare();
-                    Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
-                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {  // 关闭connection
