@@ -90,15 +90,18 @@ public class changePassword extends AppCompatActivity {
                 String text_password = password.getText().toString();
                 String text_confirm = confirmPassword.getText().toString();
                 if (text_password.equals(text_confirm)) {  // 密码前后一致
-                    finish();  // 结束当前activity
-                    Intent intent = new Intent(changePassword.this, personalInformation.class);
-                    startActivity(intent);
+                    if (checkHasNet(getApplicationContext())) {
+                        sendRequestWithHttpConnection();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     Toast.makeText(changePassword.this, "密码前后不一致，请重新输入", Toast.LENGTH_LONG).show();
                     confirmPassword.setText("");
                 }
             }
         });
+
         // 给AppCompatActivity的标题栏上加上返回按钮
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
@@ -146,12 +149,13 @@ public class changePassword extends AppCompatActivity {
                     Log.i("key", "Begin the connection");
                     // 获取一个HttpURLConnection实例化对象
                     connection = (HttpURLConnection) ((new URL(url).openConnection()));
+                    // 需要登录的操作在连接之前设置好cookie
+                    MyCookieManager.setCookie(connection);
                     // 设置请求方式和响应时间
                     connection.setRequestMethod("POST");
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
 
-                    Log.i("response code", connection.getResponseCode()+"");
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
                     String password_ = password.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
@@ -173,9 +177,11 @@ public class changePassword extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 修改成功
-                        finish();  // 结束当前activity
                         Intent intent = new Intent(changePassword.this, personalInformation.class);
-                        startActivity(intent);
+                        intent.putExtra("value", password.getText().toString());  // 传递修改后的内容
+                        intent.putExtra("index", 5);
+                        setResult(RESULT_FIRST_USER, intent);  // 返回code为修改密码对应的list下标
+                        finish();  // 结束当前activity
                     }
                     Looper.prepare();
                     Toast.makeText(changePassword.this, message, Toast.LENGTH_LONG).show();

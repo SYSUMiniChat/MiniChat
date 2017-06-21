@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 public class changeAddress extends AppCompatActivity {
     EditText editText;
@@ -99,15 +100,17 @@ public class changeAddress extends AppCompatActivity {
                     Log.i("key", "Begin the connection");
                     // 获取一个HttpURLConnection实例化对象
                     connection = (HttpURLConnection) ((new URL(url).openConnection()));
+                    // 需要登录的操作在连接之前设置好cookie
+                    MyCookieManager.setCookie(connection);
                     // 设置请求方式和响应时间
                     connection.setRequestMethod("POST");
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
 
-                    Log.i("response code", connection.getResponseCode()+"");
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
                     String city = editText.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                    city = URLEncoder.encode(city, "utf-8");
                     outputStream.writeBytes("city=" + city);
 
                     // 提交到的数据转化为字符串
@@ -126,9 +129,11 @@ public class changeAddress extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 修改成功
-                        finish();  // 结束当前activity
                         Intent intent = new Intent(changeAddress.this, personalInformation.class);
-                        startActivity(intent);
+                        intent.putExtra("value", editText.getText().toString());  // 传递修改后的内容
+                        intent.putExtra("index", 3);
+                        setResult(RESULT_FIRST_USER, intent);   // 返回码为修改城市对应的list下标
+                        finish();  // 结束当前activity
                     }
                     Looper.prepare();
                     Toast.makeText(changeAddress.this, message, Toast.LENGTH_LONG).show();

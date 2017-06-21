@@ -196,10 +196,9 @@ public class signIn extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 登录成功
+                        MyCookieManager.getCookie(connection);  // 获取cookie
                         finish();  // 结束当前activity
-                        // TODO 跳转到用户信息页面
-                        Intent intent = new Intent(signIn.this, personalInformation.class);
-                        intent.putExtra("state", "login");  // 表明状态是已登录
+                        Intent intent = new Intent(signIn.this, personalInformation.class);  // 跳转到用户信息页面
                         startActivity(intent);
                     }
                     Looper.prepare();
