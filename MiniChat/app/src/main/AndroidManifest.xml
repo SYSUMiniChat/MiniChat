@@ -156,8 +156,11 @@
             android:label="登录MiniChat" />
         <activity android:name=".forgetPassword"
             android:label="忘记密码"/>
+        <activity
+            android:name=".friendsList"
+            android:label="好友列表" />
 
-        <activity android:name=".crh.ChatWindow"
+        <activity android:name=".crh.chatWindow"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".crh.MainSlider"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
