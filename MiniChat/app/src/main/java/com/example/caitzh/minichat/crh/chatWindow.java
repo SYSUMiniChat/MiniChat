@@ -11,7 +11,7 @@ import com.example.caitzh.minichat.R;
  * 微信登陆后的第一个页面：聊天窗口
  */
 
-public class ChatWindow extends AppCompatActivity{
+public class chatWindow extends AppCompatActivity{
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
