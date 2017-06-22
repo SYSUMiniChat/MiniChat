@@ -13,7 +13,7 @@ public class ChatWindowItemInformation {
     private String time;
     private String userID;
 
-    private ChatWindowItemInformation(String inputUserID, String inputUsername, String inputInformation, String inputTime) {
+    protected ChatWindowItemInformation(String inputUserID, String inputUsername, String inputInformation, String inputTime) {
         this.userID = inputUserID;
         this.username = inputUsername;
         this.information = inputInformation;
