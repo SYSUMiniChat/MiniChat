@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -51,7 +52,16 @@ public class ChatWindowAdapter extends BaseAdapter{
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.activity_chat_window_listview, null);
         }
-        // TODO: 更改ChatWindowItemInformation类并把相应信息给予对应内容
+        // TODO: 更改头像
+        ImageView icon = (ImageView)view.findViewById(R.id.chat_window_listview_icon);
+        TextView information = (TextView)view.findViewById(R.id.chat_window_listview_information);
+        TextView time = (TextView)view.findViewById(R.id.chat_window_listview_time);
+        TextView username = (TextView)view.findViewById(R.id.chat_window_listview_username);
+        TextView userid = (TextView)view.findViewById(R.id.chat_window_listview_userid);
+        information.setText(list.get(i).getInformation());
+        time.setText(list.get(i).getTime());
+        username.setText(list.get(i).getUsername());
+        userid.setText(list.get(i).getUserID());
         return view;
     }
 }
