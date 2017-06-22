@@ -26,6 +26,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+
+import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
 public class changePassword extends AppCompatActivity {
 
@@ -34,6 +37,7 @@ public class changePassword extends AppCompatActivity {
     EditText password, confirmPassword;
     ImageView password_visible, confirm_visible;
     boolean visible = false, confirmVisible = false;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,8 @@ public class changePassword extends AppCompatActivity {
         confirm_visible = (ImageView) findViewById(R.id.confirmVisible);
 
         Intent intent = this.getIntent();
-        miniNumber.setText(intent.getStringExtra("miniNumber"));  // 获取跳转页面时传递的参数:mini账号
+        id = intent.getStringExtra("miniNumber");   // 获取跳转页面时传递的参数:mini账号
+        miniNumber.setText(id);
 
         // 点击密码可见按钮
         password_visible.setOnClickListener(new View.OnClickListener() {
@@ -122,24 +127,7 @@ public class changePassword extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // 判断是否有可用网络
-    private boolean checkHasNet(Context context) {
-        // 使用 ConnectivityManager 获取手机所有连接管理对象
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            // 使用 manager 获取网络连接管理的NetworkInfo对象
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isAvailable()) {  // 是否为空或为非连接状态
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static final String url = "http://119.29.238.202:8000/updateUser";
+    private static final String url = "http://119.29.238.202:8000/resetPassword";
     private void sendRequestWithHttpConnection() {
         new Thread(new Runnable() {
             @Override
@@ -159,7 +147,9 @@ public class changePassword extends AppCompatActivity {
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
                     String password_ = password.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    outputStream.writeBytes("password=" + password_);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    String date = simpleDateFormat.format(new java.util.Date());
+                    outputStream.writeBytes("id=" + id + "&password=" + password_ + "&timestamp=" + date);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();

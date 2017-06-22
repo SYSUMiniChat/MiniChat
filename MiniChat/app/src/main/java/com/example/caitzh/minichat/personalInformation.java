@@ -38,12 +38,15 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import android.os.Handler;
+
+import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
 
 public class personalInformation extends AppCompatActivity {
@@ -248,23 +251,6 @@ public class personalInformation extends AppCompatActivity {
         }
     }
 
-    // 判断是否有可用网络
-    private boolean checkHasNet(Context context) {
-        // 使用 ConnectivityManager 获取手机所有连接管理对象
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            // 使用 manager 获取网络连接管理的NetworkInfo对象
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isAvailable()) {  // 是否为空或为非连接状态
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static final String url_logout = "http://119.29.238.202:8000/logout";
     private static final String url_getUserInfo = "http://119.29.238.202:8000/getUserInfo";
     private static final String url_updateUser = "http://119.29.238.202:8000/updateUser";
@@ -358,12 +344,13 @@ public class personalInformation extends AppCompatActivity {
                     if (url.equals(url_verifyOldPw)) {
                         outputStream.writeBytes("password=" + value);
                     } else if (url.equals(url_updateUser)) {
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        String date = simpleDateFormat.format(new java.util.Date());
                         if (parameter.equals("sex")) {
                             String sex = URLEncoder.encode(value, "utf-8");
-                            Log.i("parameter: ", sex);
-                            outputStream.writeBytes("sex=" + sex);
+                            outputStream.writeBytes("sex=" + sex + "&timestamp=" + date);
                         } else if (parameter.equals("avatar")) {
-                            outputStream.writeBytes("avatar=" + value);
+                            outputStream.writeBytes("avatar=" + value + "&timestamp=" + date);
                         }
                     }
                     // 提交到的数据转化为字符串

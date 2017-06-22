@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.MyDB;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,7 +24,7 @@ public class userDB extends SQLiteOpenHelper {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 +TABLE_NAME
                 +" (ID TEXT PRIMARY KEY, nickname TEXT, sex TEXT, " +
-                "city TEXT, signature TEXT, avatar INTEGER, avatarName TEXT, finalDate TEXT)";
+                "city TEXT, signature TEXT, avatar INTEGER, avatarName TEXT, finalDate DATETIME)";
         db.execSQL(CREATE_TABLE);
     }
     // 数据库open时

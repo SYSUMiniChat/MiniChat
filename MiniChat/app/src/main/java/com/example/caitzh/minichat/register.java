@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.userDB;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -34,6 +36,9 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+
+import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
 public class register extends AppCompatActivity {
 
@@ -179,23 +184,6 @@ public class register extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // 判断是否有可用网络
-    private boolean checkHasNet(Context context) {
-        // 使用 ConnectivityManager 获取手机所有连接管理对象
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            // 使用 manager 获取网络连接管理的NetworkInfo对象
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isAvailable()) {  // 是否为空或为非连接状态
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static final String url_register = "http://119.29.238.202:8000/register";
     private static final String url_getCode = "http://119.29.238.202:8000/getVerifycode/";
 
@@ -228,7 +216,9 @@ public class register extends AppCompatActivity {
                         String verifyCode_ = verifyCode.getText().toString();
                         DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                         nickname_ = URLEncoder.encode(nickname_, "utf-8");
-                        outputStream.writeBytes("id=" + id + "&nickname=" + nickname_ + "&password=" + password_ + "&code=" + verifyCode_);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        String date = simpleDateFormat.format(new java.util.Date());
+                        outputStream.writeBytes("id=" + id + "&nickname=" + nickname_ + "&password=" + password_ + "&code=" + verifyCode_  + "&timestamp=" + date);
                     }
 
                     // 提交到的数据转化为字符串

@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.MyDB;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -41,7 +41,7 @@ public class recordDB extends SQLiteOpenHelper {
 
     /**
      *
-     * @param type 消息类型 0为时间，1为发送， 2为接受
+     * @param type 消息类型 0为发送，1为接收
      * @param sender 发送者ID，即用户ID
      * @param receiver 接受者ID
      * @param content 消息内容
