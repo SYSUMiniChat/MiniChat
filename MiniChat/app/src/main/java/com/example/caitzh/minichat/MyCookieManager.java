@@ -15,6 +15,7 @@ import java.util.Map;
  */
 public class MyCookieManager {
     private static CookieManager cookieManager = null;
+    private static String userId = null;
     private static void createCookieManager() {
         Log.i("cookie:", "create manager");
         cookieManager = new java.net.CookieManager();
@@ -51,5 +52,13 @@ public class MyCookieManager {
                 }
             }
         }
+    }
+
+    public static void setUserId(String id) {
+        userId = id;
+    }
+
+    public static String getUserId() {
+        return userId;
     }
 }
