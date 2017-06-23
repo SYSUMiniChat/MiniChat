@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.userDB;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -35,6 +37,8 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+
+import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
 public class register extends AppCompatActivity {
 
@@ -178,23 +182,6 @@ public class register extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    // 判断是否有可用网络
-    private boolean checkHasNet(Context context) {
-        // 使用 ConnectivityManager 获取手机所有连接管理对象
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            // 使用 manager 获取网络连接管理的NetworkInfo对象
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isAvailable()) {  // 是否为空或为非连接状态
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
     }
 
     private static final String url_register = "http://119.29.238.202:8000/register";

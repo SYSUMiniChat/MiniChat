@@ -25,6 +25,8 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 
+import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
+
 
 public class changeName extends AppCompatActivity {
     EditText editText;
@@ -75,24 +77,6 @@ public class changeName extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-    // 判断是否有可用网络
-    private boolean checkHasNet(Context context) {
-        // 使用 ConnectivityManager 获取手机所有连接管理对象
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            // 使用 manager 获取网络连接管理的NetworkInfo对象
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isAvailable()) {  // 是否为空或为非连接状态
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     private static final String url = "http://119.29.238.202:8000/updateUser";
     private void sendRequestWithHttpConnection() {
