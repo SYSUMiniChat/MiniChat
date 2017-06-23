@@ -90,4 +90,9 @@ public class recordDB extends SQLiteOpenHelper {
         cursor.moveToLast();
         return cursor;
     }
+
+    public void deleteItems(String sender, String receiver) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NAME, "sender=? AND receiver=?", new String[] {sender, receiver});
+    }
 }
