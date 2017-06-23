@@ -24,7 +24,7 @@ public class userDB extends SQLiteOpenHelper {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 +TABLE_NAME
                 +" (ID TEXT PRIMARY KEY, nickname TEXT, sex TEXT, " +
-                "city TEXT, signature TEXT, avatar INTEGER, avatarName TEXT, finalDate DATETIME)";
+                "city TEXT, signature TEXT, avatar TEXT, finalDate DATETIME)";
         db.execSQL(CREATE_TABLE);
     }
     // 数据库open时
@@ -44,42 +44,6 @@ public class userDB extends SQLiteOpenHelper {
     // 创建新用户，注册时
 
     /**
-     * 插入函数 用于注册时
-     * @default sex 0 表示未知， 1表示男， 2表示 女
-     * @default
-     * @param nickname
-     * @param id
-     * @return 是否插入成功
-     */
-    public boolean insert2Table(String id, String nickname, String finalDate) {
-        SQLiteDatabase db = getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        String sex = "未知";
-        String city = "未知";
-        String signature = "什么都没留下";
-        int avatar = 0;
-        String avatarName = "head.png";
-        cv.put("ID", id);
-        //cv.put("password", password);
-        cv.put("nickname", nickname);
-        cv.put("sex", sex);
-        cv.put("city", city);
-        cv.put("signature", signature);
-        cv.put("avatar", avatar);
-        cv.put("avatarName", avatarName);
-        cv.put("finalDate", finalDate);
-        long result = 0;
-        try {
-            result = db.insert(TABLE_NAME, null, cv);
-        } catch (Exception e) {
-            Log.e("error", e.toString());
-        }
-        db.close();
-        Log.e("result = ", " "+result);
-        return result == 1;
-    }
-
-    /**
      * 重载插入 将从服务器获取到的信息存到本地数据库
      * @param id
      * @param nickname
@@ -88,11 +52,10 @@ public class userDB extends SQLiteOpenHelper {
      * @param city
      * @param signature
      * @param avatar
-     * @param avatarName
      * @return
      */
-    public boolean insert2Table(String id, String nickname, String finalDate, String sex, String city,
-                                String signature, int avatar, String avatarName) {
+    public boolean insert2Table(String id, String nickname, String sex, String city,
+                                String signature, String avatar, String finalDate) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("ID", id);
@@ -101,7 +64,6 @@ public class userDB extends SQLiteOpenHelper {
         cv.put("city", city);
         cv.put("signature", signature);
         cv.put("avatar", avatar);
-        cv.put("avatarName", avatarName);
         cv.put("finalDate", finalDate);
         long result = 0;
         try {
@@ -111,7 +73,7 @@ public class userDB extends SQLiteOpenHelper {
         }
         db.close();
         Log.e("result = ", " "+result);
-        return result == 1;
+        return result != -1;
     }
 
     /**
@@ -125,4 +87,28 @@ public class userDB extends SQLiteOpenHelper {
         cursor.moveToFirst();
         return cursor;
     }
+
+    /**
+     * 更新昵称 下同
+     * @param id
+     * @param col 列名
+     * @param value 新的值
+     * @param date
+     * @return
+     */
+    public void updateInfo(String id, String col, String value, String date) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(col, value);
+        cv.put("finalDate", date);
+        try {
+            db.update(TABLE_NAME, cv, "ID=?", new String[]{id});
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+    }
+
+
 }

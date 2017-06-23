@@ -60,7 +60,7 @@ public class recentListDB extends SQLiteOpenHelper {
             Log.e("Insert Recent Eroor", e.toString());
         }
         db.close();
-        return result == 1;
+        return result != -1;
     }
 
     /**

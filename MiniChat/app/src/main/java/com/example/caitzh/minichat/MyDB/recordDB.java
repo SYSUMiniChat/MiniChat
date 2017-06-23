@@ -22,7 +22,7 @@ public class recordDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 + TABLE_NAME
-                + " (type INTEGER, sender TEXT, receiver TEXT, content TEXT, time DATETIME)";
+                + " (ID INTEGER PRIMARY KEY autoincrement, type INTEGER, sender TEXT, receiver TEXT, content TEXT, time DATETIME)";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -62,7 +62,7 @@ public class recordDB extends SQLiteOpenHelper {
             Log.e("Insert RecordDB Error", e.toString());
         }
         db.close();
-        return result == 1;
+        return result != -1;
     }
 
     /**
