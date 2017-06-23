@@ -22,7 +22,8 @@ public class recordDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 + TABLE_NAME
-                + " (type INTEGER, sender TEXT, receiver TEXT, content TEXT)";
+                + " (type INTEGER, sender TEXT, receiver TEXT, content TEXT, time DATETIME)";
+        db.execSQL(CREATE_TABLE);
     }
 
     @Override
@@ -46,13 +47,14 @@ public class recordDB extends SQLiteOpenHelper {
      * @param content 消息内容
      * @return
      */
-    public boolean insertOne(int type, String sender, String receiver, String content) {
+    public boolean insertOne(int type, String sender, String receiver, String content, String time) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("type", type);
         cv.put("sender", sender);
         cv.put("receiver", receiver);
         cv.put("content", content);
+        cv.put("time", time);
         long result = 0;
         try {
             result = db.insert(TABLE_NAME, null, cv);
