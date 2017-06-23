@@ -34,6 +34,7 @@ public class changePassword extends AppCompatActivity {
     EditText password, confirmPassword;
     ImageView password_visible, confirm_visible;
     boolean visible = false, confirmVisible = false;
+    String id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,8 @@ public class changePassword extends AppCompatActivity {
         confirm_visible = (ImageView) findViewById(R.id.confirmVisible);
 
         Intent intent = this.getIntent();
-        miniNumber.setText(intent.getStringExtra("miniNumber"));  // 获取跳转页面时传递的参数:mini账号
+        id = intent.getStringExtra("miniNumber");   // 获取跳转页面时传递的参数:mini账号
+        miniNumber.setText(id);
 
         // 点击密码可见按钮
         password_visible.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +141,7 @@ public class changePassword extends AppCompatActivity {
         return false;
     }
 
-    private static final String url = "http://119.29.238.202:8000/updateUser";
+    private static final String url = "http://119.29.238.202:8000/resetPassword";
     private void sendRequestWithHttpConnection() {
         new Thread(new Runnable() {
             @Override
@@ -159,7 +161,7 @@ public class changePassword extends AppCompatActivity {
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
                     String password_ = password.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    outputStream.writeBytes("password=" + password_);
+                    outputStream.writeBytes("id=" + id + "&password=" + password_);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
