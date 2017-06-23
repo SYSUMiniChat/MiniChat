@@ -1,10 +1,13 @@
 package com.example.caitzh.minichat.crh;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
+import com.example.caitzh.minichat.MyCookieManager;
+import com.example.caitzh.minichat.MyDB.recordDB;
 import com.example.caitzh.minichat.R;
 
 import java.util.ArrayList;
@@ -19,11 +22,15 @@ public class PersonalChatWindow extends AppCompatActivity {
     private ListView listView;
     private List<MiniChatMessage> mData;
     private PersonalChatWindowAdapter personalChatWindowAdapter;
+    private recordDB myRecordDB;
+    private String receiveid;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_chat_window);
+        Bundle bundle = this.getIntent().getExtras();
+        receiveid = bundle.getString("receiveid");
         initViews();
     }
 
@@ -34,44 +41,20 @@ public class PersonalChatWindow extends AppCompatActivity {
         listView.setAdapter(personalChatWindowAdapter);
     }
 
+    // TODO 从数据库读入聊天记录
     private List<MiniChatMessage> LoadData() {
         List<MiniChatMessage> Messages=new ArrayList<MiniChatMessage>();
-        MiniChatMessage Message=new MiniChatMessage(MiniChatMessage.MessageType_From,"山重水复疑无路");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_To,"柳暗花明又一村");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_From,"青青子衿，悠悠我心");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_To,"但为君故，沉吟至今");
-        Messages.add(Message);
-
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_From,"这是你做的Android程序吗？");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_To,"是的，这是一个仿微信的聊天界面");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_From,"为什么下面的消息发送不了呢");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_To,"呵呵，我会告诉你那是直接拿图片做的么");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_From,"哦哦，呵呵，你又在偷懒了");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_To,"因为这一部分不是今天的重点啊");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_From,"好吧，可是怎么发图片啊");
-        Messages.add(Message);
-
-        Message=new MiniChatMessage(MiniChatMessage.MessageType_To,"很简单啊，你继续定义一种布局类型，然后再写一个布局就可以了");
-        Messages.add(Message);
+        myRecordDB = new recordDB(getBaseContext());
+        Cursor cursor = myRecordDB.getItems(MyCookieManager.getUserId(), receiveid);
+        int count = cursor.getCount();
+        if (count != 0 && cursor.moveToFirst()) {
+            int messageType = cursor.getInt(cursor.getColumnIndex("type"));
+            String messageContent = cursor.getString(cursor.getColumnIndex("content"));
+            MiniChatMessage Message = new MiniChatMessage(messageType, messageContent);
+            Messages.add(Message);
+        }
         return Messages;
     }
+
+    // TODO 发送消息到服务器，并添加到本地数据库，以及更新UI
 }
