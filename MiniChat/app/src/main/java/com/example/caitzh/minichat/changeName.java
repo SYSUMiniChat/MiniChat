@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.userDB;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -119,6 +121,9 @@ public class changeName extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 修改成功
+                        // 同时修改本地数据库
+                        userDB db = new userDB(getBaseContext());
+                        db.updateInfo(MyCookieManager.getUserId(), "nickname",name, date);
                         Intent intent = new Intent(changeName.this, personalInformation.class);
                         intent.putExtra("value", editText.getText().toString());  // 传递修改后的内容
                         intent.putExtra("index", 0);
