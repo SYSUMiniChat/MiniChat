@@ -29,6 +29,7 @@ public class recentListDB extends SQLiteOpenHelper {
                 +" (sender TEXT, receiver TEXT," +
                 " Primary key (sender, receiver))";
         db.execSQL(CREATE_TABLE);
+        Log.e("RecentDB", TABLE_NAME);
     }
 
     @Override

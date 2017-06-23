@@ -6,8 +6,8 @@
     <LinearLayout
         android:id="@+id/id_tab_chat"
         android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_weight="1">
         <ImageButton
@@ -15,7 +15,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/chat_icon"
-            android:background="#00000000"/>
+            android:background="#00000000"
+            android:clickable="false"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -25,8 +26,8 @@
     <LinearLayout
         android:id="@+id/id_tab_mail_list"
         android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_weight="1">
         <ImageButton
@@ -34,7 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/mail_list_icon"
-            android:background="#00000000"/>
+            android:background="#00000000"
+            android:clickable="false"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,8 +46,8 @@
     <LinearLayout
         android:id="@+id/id_tab_personal_information"
         android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_weight="1">
         <ImageButton
@@ -53,7 +55,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@mipmap/personal_information_icon"
-            android:background="#00000000"/>
+            android:background="#00000000"
+            android:clickable="false"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

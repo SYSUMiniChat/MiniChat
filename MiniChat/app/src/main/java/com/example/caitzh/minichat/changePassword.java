@@ -26,6 +26,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+
+import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
 public class changePassword extends AppCompatActivity {
 
@@ -124,23 +127,6 @@ public class changePassword extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    // 判断是否有可用网络
-    private boolean checkHasNet(Context context) {
-        // 使用 ConnectivityManager 获取手机所有连接管理对象
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getApplicationContext().getSystemService(context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            // 使用 manager 获取网络连接管理的NetworkInfo对象
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            if (networkInfo == null || !networkInfo.isAvailable()) {  // 是否为空或为非连接状态
-                return false;
-            } else {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private static final String url = "http://119.29.238.202:8000/resetPassword";
     private void sendRequestWithHttpConnection() {
         new Thread(new Runnable() {
@@ -161,7 +147,9 @@ public class changePassword extends AppCompatActivity {
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
                     String password_ = password.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    outputStream.writeBytes("id=" + id + "&password=" + password_);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    String date = simpleDateFormat.format(new java.util.Date());
+                    outputStream.writeBytes("id=" + id + "&password=" + password_ + "&timestamp=" + date);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
@@ -182,7 +170,7 @@ public class changePassword extends AppCompatActivity {
                         Intent intent = new Intent(changePassword.this, personalInformation.class);
                         intent.putExtra("value", password.getText().toString());  // 传递修改后的内容
                         intent.putExtra("index", 5);
-                        setResult(RESULT_FIRST_USER, intent);  // 返回code为修改密码对应的list下标
+                        setResult(RESULT_FIRST_USER, intent);
                         finish();  // 结束当前activity
                     }
                     Looper.prepare();
