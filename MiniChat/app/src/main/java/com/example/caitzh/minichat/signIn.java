@@ -197,6 +197,7 @@ public class signIn extends AppCompatActivity {
                     Log.i("message", message);
                     if (code.equals("0")) {  // 登录成功
                         MyCookieManager.getCookie(connection);  // 获取cookie
+                        MyCookieManager.setUserId(id);
                         finish();  // 结束当前activity
                         Intent intent = new Intent(signIn.this, personalInformation.class);  // 跳转到用户信息页面
                         startActivity(intent);
