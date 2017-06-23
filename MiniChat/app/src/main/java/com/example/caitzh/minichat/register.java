@@ -121,28 +121,10 @@ public class register extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "点击注册按钮", Toast.LENGTH_LONG).show();
                     String password_ = password.getText().toString();
                     String confirmPassword_ = confirmPassword.getText().toString();
-                    /**
-                     * 获取昵称和账号 begin
-                     */
-                    String s_nickname = nickname.getText().toString();
-                    String s_miniNumber = miniNumber.getText().toString();
-                    /**
-                     * end
-                     */
                     if (password_.equals(confirmPassword_)) {  // 密码前后一致
                         if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
 
                             sendRequestWithHttpConnection(url_register, "POST");  // 发送post请求
-                            /**
-                             * 测试用户数据库 by zhengsd
-                             * 开始 将信息插入本地数据库
-                             */
-                            userDB db = new userDB(getBaseContext());
-                            db.insert2Table(s_miniNumber,s_nickname, "testday");
-                            /**
-                             * end
-                             */
-
 
                         } else {
                             Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
@@ -211,16 +193,16 @@ public class register extends AppCompatActivity {
                     connection.setRequestMethod(method);
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
-
+                    String nickname_="", password_="", verifyCode_="", date="";
                     if (url.equals(url_register)) {
                         // 获取注册时输入内容等参数，并将其以流的形式写入connection中
-                        String nickname_ = nickname.getText().toString();
-                        String password_ = password.getText().toString();
-                        String verifyCode_ = verifyCode.getText().toString();
+                        nickname_ = nickname.getText().toString();
+                        password_ = password.getText().toString();
+                        verifyCode_ = verifyCode.getText().toString();
                         DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                         nickname_ = URLEncoder.encode(nickname_, "utf-8");
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                        String date = simpleDateFormat.format(new java.util.Date());
+                        date = simpleDateFormat.format(new java.util.Date());
                         outputStream.writeBytes("id=" + id + "&nickname=" + nickname_ + "&password=" + password_ + "&code=" + verifyCode_  + "&timestamp=" + date);
                     }
 
