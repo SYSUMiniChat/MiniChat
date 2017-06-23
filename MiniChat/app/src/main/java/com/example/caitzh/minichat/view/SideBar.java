@@ -56,7 +56,7 @@ public class SideBar extends View {
         super.onDraw(canvas);
         int height = getHeight();// 获取对应高度
         int width = getWidth();// 获取对应宽度
-        int singleHeight = height / letterList.size();// 获取每一个字母的高度
+        int singleHeight = height / (letterList.size()+1);// 获取每一个字母的高度
         for (int i = 0; i < letterList.size(); i++) {
             paint.setColor(Color.parseColor("#606060"));
             paint.setTypeface(Typeface.DEFAULT_BOLD);
