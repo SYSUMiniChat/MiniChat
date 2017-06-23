@@ -108,7 +108,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
         Log.e("Info", "进入setAdapter");
         getFriends();
         Log.e("Info", "取得好友列表成功");
-        /*
+
         try {
             Log.e("Info", "开始setAdapter");
             mDownLatch = new CountDownLatch(data.size());
@@ -125,7 +125,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
             adapter = new SortAdapter(this, SourceDateList);
             sortListView.setAdapter(adapter);
         }
-        */
+
         SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]));
         Collections.sort(SourceDateList, new PinyinComparator());
         adapter = new SortAdapter(this, SourceDateList);
@@ -226,6 +226,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
         return mSortList;
     }
     private static final String getFriendsUrl = "http://119.29.238.202:8000/getFriends";
+    private static final String queryInfo = "http://119.29.238.202:8000/query/";
     private ArrayList<String> getFriends() {
         String userId = MyCookieManager.getUserId();
         ArrayList<String> data = new ArrayList<String>();
@@ -252,8 +253,9 @@ public class friendsList extends Activity implements View.OnTouchListener,
                 HttpURLConnection connection = null;
                 try {
                     connection = (HttpURLConnection) ((new URL(getFriendsUrl).openConnection()));
-                    // 设置请求方式和响应时间
+                    // 设置cookie
                     MyCookieManager.setCookie(connection);
+                    // 设置请求方式和响应时间
                     connection.setRequestMethod("GET");
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
@@ -292,15 +294,12 @@ public class friendsList extends Activity implements View.OnTouchListener,
             public void run() {
                 HttpURLConnection connection = null;
                 try {
-                    connection = (HttpURLConnection) ((new URL(getFriendsUrl).openConnection()));
+                    connection = (HttpURLConnection) ((new URL(queryInfo+id).openConnection()));
                     // 设置请求方式和响应时间
                     connection.setRequestMethod("GET");
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
 
-                    // 写入查询id
-                    DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-                    dataOutputStream.writeBytes("id="+id);
                     // 取回的数据
                     InputStream inputStream = connection.getInputStream();
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
@@ -329,9 +328,11 @@ public class friendsList extends Activity implements View.OnTouchListener,
                     e.printStackTrace();
                 } finally {
                     if (connection != null) connection.disconnect();
+                    mDownLatch.countDown();
                 }
             }
         }).start();
+    }
     @Override
     public boolean onDown(MotionEvent e) {
         return false;
