@@ -74,4 +74,14 @@ public class recentListDB extends SQLiteOpenHelper {
         cursor.moveToFirst();
         return cursor;
     }
+
+    /**
+     * 删除记录，根据用户id和对面id删除
+     * @param sender
+     * @param receiver
+     */
+    public void deleteItem(String sender, String receiver) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NAME, "sender=? AND receiver=?", new String[] {sender, receiver});
+    }
 }
