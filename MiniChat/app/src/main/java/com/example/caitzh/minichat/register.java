@@ -201,7 +201,7 @@ public class register extends AppCompatActivity {
                         verifyCode_ = verifyCode.getText().toString();
                         DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                         nickname_ = URLEncoder.encode(nickname_, "utf-8");
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         date = simpleDateFormat.format(new java.util.Date());
                         outputStream.writeBytes("id=" + id + "&nickname=" + nickname_ + "&password=" + password_ + "&code=" + verifyCode_  + "&timestamp=" + date);
                     }
