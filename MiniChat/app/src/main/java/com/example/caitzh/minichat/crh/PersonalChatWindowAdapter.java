@@ -54,11 +54,6 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
         TextView Content;
         switch(mData.get(Index).getType())
         {
-            case MiniChatMessage.MessageType_Time:
-                mView= LayoutInflater.from(mContext).inflate(R.layout.activity_message_time, null);
-                Content=(TextView)mView.findViewById(R.id.Time);
-                Content.setText(mData.get(Index).getContent());
-                break;
             case MiniChatMessage.MessageType_From:
                 mView=LayoutInflater.from(mContext).inflate(R.layout.activity_send_message, null);
                 Content=(TextView)mView.findViewById(R.id.From_Content);

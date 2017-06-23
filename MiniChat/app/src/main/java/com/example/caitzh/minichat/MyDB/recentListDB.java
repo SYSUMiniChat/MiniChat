@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.MyDB;
 
 import android.content.ContentValues;
 import android.content.Context;

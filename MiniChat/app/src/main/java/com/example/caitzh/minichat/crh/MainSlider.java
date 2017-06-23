@@ -67,25 +67,6 @@ import java.util.Map;
  */
 // TODO:加入图片和tab名称
 public class MainSlider extends AppCompatActivity implements View.OnClickListener {
-    /*ViewPager pager = null;
-    ArrayList<View> viewContainter = new ArrayList<>();
-    ArrayList<String> titleContainer = new ArrayList<>();
-    ArrayList<Integer> iconContainer = new ArrayList<>();
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_slider);
-        pager = (ViewPager)this.findViewById(R.id.viewPager);
-        View chatWindowView = LayoutInflater.from(this).inflate(R.layout.activity_chat_window,null);
-        View personalInformationView = LayoutInflater.from(this).inflate
-                (R.layout.activity_personal_information, null);
-        viewContainter.add(chatWindowView);
-        viewContainter.add(personalInformationView);
-        titleContainer.add("聊天");
-        titleContainer.add("通讯录");
-        titleContainer.add("我");
-        pager.setAdapter(new ViewPagerAdapter(viewContainter, titleContainer, iconContainer, MainSlider.this));
-    }*/
     private ViewPager mViewPager;
     private List<View> mViews = new ArrayList<>();//保存微信，朋友，通讯录，设置4个界面的view
     //底部的四个tab按钮，微信，朋友，通讯录，设置

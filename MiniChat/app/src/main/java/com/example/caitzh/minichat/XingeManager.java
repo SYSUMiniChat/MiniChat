@@ -16,7 +16,7 @@ public class XingeManager {
     }
 
     //在用户登录后执行，account为用户id
-    public static void registerAccount(Context context, String account) {
+    public static void registerApplication(Context context, String account) {
         XGPushManager.registerPush(context, account);
     }
 
