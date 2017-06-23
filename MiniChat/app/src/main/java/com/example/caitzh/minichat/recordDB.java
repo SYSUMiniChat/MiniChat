@@ -75,4 +75,17 @@ public class recordDB extends SQLiteOpenHelper {
         cursor.moveToFirst();
         return cursor;
     }
+
+    /**
+     * 获取用户聊天记录的最后一条记录的信息
+     * @param sender
+     * @param receiver
+     * @return
+     */
+    public Cursor getLastItem(String sender, String receiver) {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, null, "sender=? AND receiver=?", new String[]{sender, receiver},null, null, null);
+        cursor.moveToLast();
+        return cursor;
+    }
 }
