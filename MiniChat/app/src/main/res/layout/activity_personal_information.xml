@@ -8,8 +8,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
+    android:id="@+id/personal_information_linear_layout"
     tools:context="com.example.caitzh.minichat.personalInformation">
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -43,7 +43,8 @@
     <ListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
     </ListView>
-
+    <include layout="@layout/activity_slider_bottom"/>
 </LinearLayout>

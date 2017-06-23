@@ -17,11 +17,14 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.SimpleAdapter;
@@ -45,8 +48,11 @@ import java.util.Map;
 
 import android.os.Handler;
 
+import com.example.caitzh.minichat.crh.chatWindow;
 
-public class personalInformation extends AppCompatActivity {
+
+public class personalInformation extends AppCompatActivity implements View.OnTouchListener,
+        GestureDetector.OnGestureListener{
 
     String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名", "修改密码", "退出登录"};
     String[] details;   // 存储个人信息页面每一栏的具体内容
@@ -57,6 +63,9 @@ public class personalInformation extends AppCompatActivity {
     SimpleAdapter simpleAdapter;
     List<Map<String, String>> list;
 
+    private LinearLayout linearLayout;
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +74,11 @@ public class personalInformation extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.listView);
         test_avatar = (TextView) findViewById(R.id.test_avatar);
         avatar = (ImageView) findViewById(R.id.avatar);
+
+        linearLayout = (LinearLayout)findViewById(R.id.personal_information_linear_layout);
+        linearLayout.setOnTouchListener(this);
+        linearLayout.setLongClickable(true);
+        gestureDetector = new GestureDetector((GestureDetector.OnGestureListener)this);
 
         Log.i("status", "登录后获取用户信息");
         if (checkHasNet(getApplicationContext())) {
@@ -439,6 +453,52 @@ public class personalInformation extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        final int FLING_MIN_DISTANCE=100;
+        final int FLING_MIN_VELOCITY=200;
+
+        Toast.makeText(getApplicationContext(), "滑动", Toast.LENGTH_SHORT).show();
+
+        //右
+        if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) < FLING_MIN_VELOCITY){
+            Intent intent = new Intent(personalInformation.this, friendsList.class);
+            startActivity(intent);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
+    }
 }
 
 

@@ -5,13 +5,18 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.caitzh.minichat.MyCookieManager;
 import com.example.caitzh.minichat.R;
+import com.example.caitzh.minichat.friendsList;
 import com.example.caitzh.minichat.recentListDB;
 import com.example.caitzh.minichat.recordDB;
 import com.example.caitzh.minichat.userDB;
@@ -23,16 +28,26 @@ import java.util.List;
  * 微信登陆后的第一个页面：聊天窗口
  */
 
-public class chatWindow extends AppCompatActivity{
+public class chatWindow extends AppCompatActivity implements View.OnTouchListener,
+        GestureDetector.OnGestureListener {
     private recordDB myRecordDB;
     private recentListDB myRecentListDB;
     private userDB myUserDB;
     private ListView chatWindowListView;
 
+    private LinearLayout linearLayout;
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_window);
+
+        linearLayout = (LinearLayout)findViewById(R.id.chat_window_linear_layout);
+        linearLayout.setOnTouchListener(this);
+        linearLayout.setLongClickable(true);
+        gestureDetector=new GestureDetector((GestureDetector.OnGestureListener)this);
+
         myRecordDB = new recordDB(chatWindow.this);
         myRecentListDB = new recentListDB(chatWindow.this);
         myUserDB = new userDB(chatWindow.this);
@@ -91,5 +106,51 @@ public class chatWindow extends AppCompatActivity{
             data.add(temp);
         }
         chatWindowListView.setAdapter(new ChatWindowAdapter(data, chatWindow.this));
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        final int FLING_MIN_DISTANCE=100;
+        final int FLING_MIN_VELOCITY=200;
+
+        Toast.makeText(getApplicationContext(), "滑动", Toast.LENGTH_SHORT).show();
+
+        //左
+        if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
+            Intent intent = new Intent(chatWindow.this,friendsList.class);
+            startActivity(intent);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
     }
 }

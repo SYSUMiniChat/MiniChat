@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorWhite"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/friends_list_linear_layout">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,7 +35,8 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <ListView
             android:id="@+id/lv_contact"
@@ -63,5 +65,5 @@
             android:layout_height="match_parent"
             android:layout_gravity="right|center" />
     </FrameLayout>
-
+    <include layout="@layout/activity_slider_bottom"/>
 </LinearLayout>

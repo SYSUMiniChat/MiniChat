@@ -1,16 +1,21 @@
 package com.example.caitzh.minichat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.crh.chatWindow;
 import com.example.caitzh.minichat.view.EditTextWithDel;
 import com.example.caitzh.minichat.view.PinyinComparator;
 import com.example.caitzh.minichat.view.PinyinUtils;
@@ -24,7 +29,8 @@ import java.util.List;
 /**
  * Created by littlestar on 2017/6/21.
  */
-public class friendsList extends Activity {
+public class friendsList extends Activity implements View.OnTouchListener,
+        GestureDetector.OnGestureListener {
     private ListView sortListView;
     private SideBar sideBar;
     private TextView dialog, mTvTitle;
@@ -32,10 +38,17 @@ public class friendsList extends Activity {
     private EditTextWithDel mEtSearchName;
     private List<SortModel> SourceDateList;
 
+    private LinearLayout linearLayout;
+    private GestureDetector gestureDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
+        linearLayout = (LinearLayout)findViewById(R.id.friends_list_linear_layout);
+        linearLayout.setOnTouchListener(this);
+        linearLayout.setLongClickable(true);
+        gestureDetector = new GestureDetector((GestureDetector.OnGestureListener)this);
         initViews();
     }
 
@@ -148,5 +161,57 @@ public class friendsList extends Activity {
         Collections.sort(indexString);
         sideBar.setIndexText(indexString);
         return mSortList;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        final int FLING_MIN_DISTANCE=100;
+        final int FLING_MIN_VELOCITY=200;
+
+        Toast.makeText(getApplicationContext(), "滑动", Toast.LENGTH_SHORT).show();
+
+        //左
+        if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
+            Intent intent = new Intent(friendsList.this,personalInformation.class);
+            startActivity(intent);
+        }
+
+        //右
+        if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) < FLING_MIN_VELOCITY){
+            Intent intent = new Intent(friendsList.this,chatWindow.class);
+            startActivity(intent);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        return gestureDetector.onTouchEvent(event);
     }
 }
