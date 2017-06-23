@@ -21,6 +21,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.userDB;
 import com.example.caitzh.minichat.crh.MainSlider;
 import com.example.caitzh.minichat.crh.chatWindow;
 
@@ -32,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -188,6 +190,18 @@ public class signIn extends AppCompatActivity {
                         MyCookieManager.getCookie(connection);  // 获取cookie
                         MyCookieManager.setUserId(id);
                         registerApplication(getApplicationContext(), id);
+                        // 登录成功，插入本地user数据库
+                        userDB db = new userDB(getBaseContext());
+                        JSONObject information = new JSONObject(message);
+                        // avatar待修改
+                        String avatars = information.getString("avatar");
+                        String city = information.getString("city");
+                        String nickname = information.getString("nickname");
+                        String sex = information.getString("sex");
+                        String signature = information.getString("signature");
+                        String date = information.getString("timestamp");
+                        db.insert2Table(id, nickname,sex,city, signature,avatars, date);
+                        // 缺少缓存头像到本地
                         finish();  // 结束当前activity
                         Intent intent = new Intent(signIn.this, friendsList.class);  // 跳转到用户信息页面
 

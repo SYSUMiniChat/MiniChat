@@ -44,6 +44,6 @@ public class friendsDB extends SQLiteOpenHelper {
             Log.e("Insert Friend Eroor", e.toString());
         }
         db.close();
-        return result == 1;
+        return result != -1;
     }
 }
