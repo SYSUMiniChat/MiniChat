@@ -21,6 +21,8 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.crh.MainSlider;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -186,7 +188,7 @@ public class signIn extends AppCompatActivity {
                         MyCookieManager.setUserId(id);
                         registerApplication(getApplicationContext(), id);
                         finish();  // 结束当前activity
-                        Intent intent = new Intent(signIn.this, personalInformation.class);  // 跳转到用户信息页面
+                        Intent intent = new Intent(signIn.this, MainSlider.class);  // 跳转到用户信息页面
                         startActivity(intent);
                     }
                     Looper.prepare();

@@ -21,29 +21,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/6/12 0012.
+ * 实现页面滑动
  */
 // TODO:加入图片和tab名称
 public class MainSlider extends AppCompatActivity implements View.OnClickListener {
-    /*ViewPager pager = null;
-    ArrayList<View> viewContainter = new ArrayList<>();
-    ArrayList<String> titleContainer = new ArrayList<>();
-    ArrayList<Integer> iconContainer = new ArrayList<>();
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_slider);
-        pager = (ViewPager)this.findViewById(R.id.viewPager);
-        View chatWindowView = LayoutInflater.from(this).inflate(R.layout.activity_chat_window,null);
-        View personalInformationView = LayoutInflater.from(this).inflate
-                (R.layout.activity_personal_information, null);
-        viewContainter.add(chatWindowView);
-        viewContainter.add(personalInformationView);
-        titleContainer.add("聊天");
-        titleContainer.add("通讯录");
-        titleContainer.add("我");
-        pager.setAdapter(new ViewPagerAdapter(viewContainter, titleContainer, iconContainer, MainSlider.this));
-    }*/
     private ViewPager mViewPager;
     private List<View> mViews = new ArrayList<>();//保存微信，朋友，通讯录，设置4个界面的view
     //底部的四个tab按钮，微信，朋友，通讯录，设置
@@ -155,24 +136,4 @@ public class MainSlider extends AppCompatActivity implements View.OnClickListene
         mAddressImg.setImageResource(R.drawable.tab_address_normal);
         mSettingImg.setImageResource(R.drawable.tab_settings_normal);*/
     }
-
-
-    /*@Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
 }
