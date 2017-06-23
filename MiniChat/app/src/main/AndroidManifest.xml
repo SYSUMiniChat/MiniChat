@@ -165,6 +165,7 @@
         <activity android:name=".crh.MainSlider"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:launchMode="singleInstance"/>
+        <activity android:name=".crh.PersonalChatWindow"/>
     </application>
 
 </manifest>
