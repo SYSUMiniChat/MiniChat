@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -358,12 +359,13 @@ public class personalInformation extends AppCompatActivity {
                     if (url.equals(url_verifyOldPw)) {
                         outputStream.writeBytes("password=" + value);
                     } else if (url.equals(url_updateUser)) {
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        String date = simpleDateFormat.format(new java.util.Date());
                         if (parameter.equals("sex")) {
                             String sex = URLEncoder.encode(value, "utf-8");
-                            Log.i("parameter: ", sex);
-                            outputStream.writeBytes("sex=" + sex);
+                            outputStream.writeBytes("sex=" + sex + "&timestamp=" + date);
                         } else if (parameter.equals("avatar")) {
-                            outputStream.writeBytes("avatar=" + value);
+                            outputStream.writeBytes("avatar=" + value + "&timestamp=" + date);
                         }
                     }
                     // 提交到的数据转化为字符串

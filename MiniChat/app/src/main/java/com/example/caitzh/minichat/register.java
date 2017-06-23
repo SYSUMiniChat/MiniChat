@@ -34,6 +34,7 @@ import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 
 public class register extends AppCompatActivity {
 
@@ -228,7 +229,9 @@ public class register extends AppCompatActivity {
                         String verifyCode_ = verifyCode.getText().toString();
                         DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                         nickname_ = URLEncoder.encode(nickname_, "utf-8");
-                        outputStream.writeBytes("id=" + id + "&nickname=" + nickname_ + "&password=" + password_ + "&code=" + verifyCode_);
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        String date = simpleDateFormat.format(new java.util.Date());
+                        outputStream.writeBytes("id=" + id + "&nickname=" + nickname_ + "&password=" + password_ + "&code=" + verifyCode_  + "&timestamp=" + date);
                     }
 
                     // 提交到的数据转化为字符串

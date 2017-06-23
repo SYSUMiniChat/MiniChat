@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 
 public class changePassword extends AppCompatActivity {
 
@@ -161,7 +162,9 @@ public class changePassword extends AppCompatActivity {
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
                     String password_ = password.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    outputStream.writeBytes("id=" + id + "&password=" + password_);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    String date = simpleDateFormat.format(new java.util.Date());
+                    outputStream.writeBytes("id=" + id + "&password=" + password_ + "&timestamp=" + date);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();

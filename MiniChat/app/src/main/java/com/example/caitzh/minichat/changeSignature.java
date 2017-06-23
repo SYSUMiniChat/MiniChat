@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 
 
 public class changeSignature extends AppCompatActivity {
@@ -111,7 +112,9 @@ public class changeSignature extends AppCompatActivity {
                     String signature = editText.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                     signature = URLEncoder.encode(signature, "utf-8");
-                    outputStream.writeBytes("signature=" + signature);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    String date = simpleDateFormat.format(new java.util.Date());
+                    outputStream.writeBytes("signature=" + signature + "&timestamp=" + date);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();

@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 
 public class changeAddress extends AppCompatActivity {
     EditText editText;
@@ -111,7 +112,9 @@ public class changeAddress extends AppCompatActivity {
                     String city = editText.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                     city = URLEncoder.encode(city, "utf-8");
-                    outputStream.writeBytes("city=" + city);
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    String date = simpleDateFormat.format(new java.util.Date());
+                    outputStream.writeBytes("city=" + city + "&timestamp=" + date);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
