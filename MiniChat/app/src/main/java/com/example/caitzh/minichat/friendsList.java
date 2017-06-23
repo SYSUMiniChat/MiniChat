@@ -21,10 +21,20 @@ import com.example.caitzh.minichat.view.PinyinUtils;
 import com.example.caitzh.minichat.view.SideBar;
 import com.example.caitzh.minichat.view.SortModel;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by littlestar on 2017/6/21.
@@ -36,12 +46,15 @@ public class friendsList extends Activity {
     private SortAdapter adapter;
     private EditTextWithDel mEtSearchName;
     private List<SortModel> SourceDateList;
-
+    private ArrayList<String> data = new ArrayList<String>();
+    private ArrayList<String> nicknames = new ArrayList<String>();
+    private static CountDownLatch mDownLatch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
-        addTestData();
+        //addTestData();
+
         initViews();
     }
 
@@ -57,7 +70,7 @@ public class friendsList extends Activity {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         for (int i = 0; i < 10; ++i, ++id) {
             date = simpleDateFormat.format(new java.util.Date());
-            db.insert2Table(String.valueOf(id), nickname+id, date);
+            //db.insert2Table(String.valueOf(id), nickname+id, date);
         }
     }
 
@@ -77,23 +90,32 @@ public class friendsList extends Activity {
      * 从数据库添加数据
      */
     private void setAdapter() {
-        userDB db = new userDB(getBaseContext());
-        int id = 0;
-        ArrayList<String> data = new ArrayList<String>();
-        for (int i = 0; i < 10; ++i, ++id) {
-            Cursor cursor = db.findOneByNumber(String.valueOf(id));
-            if (cursor.moveToFirst()) {
-                data.add(cursor.getString(cursor.getColumnIndex("nickname")));
-            } else {
-                Log.e("Read result is null", ""+i);
+        Log.e("Info", "进入setAdapter");
+        getFriends();
+        Log.e("Info", "取得好友列表成功");
+        /*
+        try {
+            Log.e("Info", "开始setAdapter");
+            mDownLatch = new CountDownLatch(data.size());
+            for (int i = 0; i < data.size(); ++i) {
+                getInfo(data.get(i));
             }
+            mDownLatch.await(); // 等待多线程结束
+            Log.e("Info", "多线程结束");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]));
+            Collections.sort(SourceDateList, new PinyinComparator());
+            adapter = new SortAdapter(this, SourceDateList);
+            sortListView.setAdapter(adapter);
         }
-        int size = data.size();
-        //SourceDateList = filledData(getResources().getStringArray(R.array.contacts));
-        SourceDateList = filledData((String[])data.toArray(new String[size]));
+        */
+        SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]));
         Collections.sort(SourceDateList, new PinyinComparator());
         adapter = new SortAdapter(this, SourceDateList);
         sortListView.setAdapter(adapter);
+        //SourceDateList = filledData(getResources().getStringArray(R.array.contacts));
     }
 
     private void initEvents() {
@@ -193,10 +215,107 @@ public class friendsList extends Activity {
         String userId = MyCookieManager.getUserId();
         ArrayList<String> data = new ArrayList<String>();
         if (Check.checkHasNet(getApplicationContext())) {
-            // 发送请求获得好友列表
+            try {
+                // 发送请求获得好友列表
+                mDownLatch = new CountDownLatch(1);
+                getFriendListFromServer();
+                mDownLatch.await();
+                Log.e("线程状态:", "结束");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
         }
         return data;
+    }
+
+    private void getFriendListFromServer() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                try {
+                    connection = (HttpURLConnection) ((new URL(getFriendsUrl).openConnection()));
+                    // 设置请求方式和响应时间
+                    MyCookieManager.setCookie(connection);
+                    connection.setRequestMethod("GET");
+                    connection.setReadTimeout(8000);
+                    connection.setConnectTimeout(8000);
+
+                    InputStream inputStream = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    // 从返回的json中提取信息
+                    JSONObject result = new JSONObject(response.toString());
+                    int code = result.getInt("code");
+                    Log.e("List Code:", String.valueOf(code));
+                    JSONArray resultList = result.getJSONArray("message");
+                    ArrayList<String> Flist = new ArrayList<String>();
+                    for (int i = 0; i < resultList.length(); ++i) {
+                        Flist.add(resultList.getString(i));
+                        Log.e("list:", resultList.getString(i));
+                    }
+                    data = Flist;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) connection.disconnect();
+                    mDownLatch.countDown();
+                }
+            }
+        }).start();
+    }
+    // 获取好友信息
+    private void getInfo(final String id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                try {
+                    connection = (HttpURLConnection) ((new URL(getFriendsUrl).openConnection()));
+                    // 设置请求方式和响应时间
+                    connection.setRequestMethod("GET");
+                    connection.setReadTimeout(8000);
+                    connection.setConnectTimeout(8000);
+
+                    // 写入查询id
+                    DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
+                    dataOutputStream.writeBytes("id="+id);
+                    // 取回的数据
+                    InputStream inputStream = connection.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    // 从返回的json中提取信息
+                    JSONObject result = new JSONObject(response.toString());
+                    String code = result.getString("code");
+                    String message = result.getString("message");
+                    if (code.equals("0")) {
+                        JSONObject information = new JSONObject(message);
+                        String avatar = information.getString("avatar");
+                        String city = information.getString("city");
+                        String id = information.getString("id");
+                        String nickname = information.getString("nickname");
+                        String sex = information.getString("sex");
+                        String signature = information.getString("signature");
+                        nicknames.add(nickname);
+                    } else {
+                        // 输出错误提示
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    if (connection != null) connection.disconnect();
+                }
+            }
+        }).start();
     }
 }

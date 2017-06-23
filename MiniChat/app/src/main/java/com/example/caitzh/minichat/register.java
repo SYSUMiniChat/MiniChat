@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.userDB;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
