@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.example.caitzh.minichat.MyCookieManager;
 import com.example.caitzh.minichat.R;
-import com.example.caitzh.minichat.recentListDB;
-import com.example.caitzh.minichat.recordDB;
-import com.example.caitzh.minichat.userDB;
+import com.example.caitzh.minichat.MyDB.recentListDB;
+import com.example.caitzh.minichat.MyDB.recordDB;
+import com.example.caitzh.minichat.MyDB.userDB;
 
 import java.util.LinkedList;
 import java.util.List;

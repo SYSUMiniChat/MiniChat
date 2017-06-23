@@ -1,6 +1,6 @@
 package com.example.caitzh.minichat.crh;
 
-import com.example.caitzh.minichat.userDB;
+import com.example.caitzh.minichat.MyDB.userDB;
 
 /**
  * 聊天窗口每个聊天的item

@@ -28,7 +28,9 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -252,8 +254,10 @@ public class personalInformation extends AppCompatActivity {
     private static final String url_getUserInfo = "http://119.29.238.202:8000/getUserInfo";
     private static final String url_updateUser = "http://119.29.238.202:8000/updateUser";
     private static final String url_verifyOldPw = "http://119.29.238.202:8000/verifyOldPassword";
+
     private static final int UPDATE_LISTVIEW = 0;
     private static final int UPDATE_SEX = 1;
+    private static final int GET_IMAGE_OK = 2;
 
     // 带有参数的请求
     private void sendRequestWithHttpConnection(final String url, final String method, final String parameter, final String value) {
@@ -281,7 +285,7 @@ public class personalInformation extends AppCompatActivity {
                         if (parameter.equals("sex")) {
                             String sex = URLEncoder.encode(value, "utf-8");
                             outputStream.writeBytes("sex=" + sex + "&timestamp=" + date);
-                        } else if (parameter.equals("avatar")) {
+                        } else if (parameter.equals("avatar")) {  // TODO 修改头像
                             outputStream.writeBytes("avatar=" + value + "&timestamp=" + date);
                         }
                     }
@@ -321,23 +325,24 @@ public class personalInformation extends AppCompatActivity {
                         } else if (url.equals(url_getUserInfo)) {  // 获取用户信息
                             Log.i("message: ", message);
                             JSONObject information = new JSONObject(message);
-                            String avatar = information.getString("avatar");
+                            String avatars = information.getString("avatar");
                             String city = information.getString("city");
                             String id = information.getString("id");
                             String nickname = information.getString("nickname");
                             String sex = information.getString("sex");
                             String signature = information.getString("signature");
                             details = new String[] {nickname, id, sex, city, signature, "", ""};
+                            getImage(avatars);  // 通过访问返回的图片路径去获取图片
                             // 利用message传递信息给handler
                             Message message_ = new Message();
                             message_.what = UPDATE_LISTVIEW;
-                            message_.obj = avatar;
                             handler.sendMessage(message_);
                         }
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
-                    Looper.prepare();
-                    Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
-                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {  // 关闭connection
@@ -347,7 +352,40 @@ public class personalInformation extends AppCompatActivity {
             }
         }).start();
     }
+    // 获取路径下的图片
+    private void getImage(final String path) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                    try {
+                        // 获取服务器图片
+                        URL url_getAvatar = new URL("http://119.29.238.202:8000" + path);
+                        HttpURLConnection conn = (HttpURLConnection) url_getAvatar.openConnection();
+                        conn.setRequestMethod("GET");
+                        conn.setConnectTimeout(8000);
+                        conn.setReadTimeout(8000);
+                        conn.connect();
+                        if (conn.getResponseCode() == 200) {
+                            //获取服务器响应头中的流
+                            InputStream is = conn.getInputStream();
+                            //读取流里的数据，构建成bitmap位图
+                            Bitmap bm = BitmapFactory.decodeStream(is);
+                            //发生更新UI的消息
+                            Message msg = handler.obtainMessage();
+                            msg.obj = bm;
+                            msg.what = GET_IMAGE_OK;
+                            handler.sendMessage(msg);
+                        } else {
+                            Log.i("获取服务器图片失败", "");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+            }
+        };
+        thread.start();
 
+    }
 
     // 利用Handler来更新UI
     private Handler handler = new Handler() {
@@ -362,7 +400,6 @@ public class personalInformation extends AppCompatActivity {
                         }
                         listView.setAdapter(simpleAdapter);
                         simpleAdapter.notifyDataSetChanged();  // 更新listView内容显示
-                        // TODO 头像设置
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -374,10 +411,19 @@ public class personalInformation extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    break;
+                case GET_IMAGE_OK:
+                    try {
+                        avatar.setImageBitmap((Bitmap) message.obj); // 头像设置
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
                 default: break;
             }
         }
     };
+
 }
 
 
