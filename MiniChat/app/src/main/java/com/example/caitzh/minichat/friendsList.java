@@ -56,6 +56,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
     private ArrayList<String> nicknames = new ArrayList<String>();
     private static CountDownLatch mDownLatch;
 
+
     private LinearLayout linearLayout;
     private GestureDetector gestureDetector;
 

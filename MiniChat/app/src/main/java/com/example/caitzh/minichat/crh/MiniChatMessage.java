@@ -6,10 +6,9 @@ package com.example.caitzh.minichat.crh;
  */
 
 public class MiniChatMessage {
-    // 时间类型用0，发送的消息为1，接受的消息为2
-    public static final int MessageType_Time=0;
-    public static final int MessageType_From=1;
-    public static final int MessageType_To=2;
+    // 发送的消息为0，接受的消息为1
+    public static final int MessageType_Send=0;
+    public static final int MessageType_Receive=1;
 
     public MiniChatMessage(int Type,String Content)
     {

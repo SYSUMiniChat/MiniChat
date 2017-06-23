@@ -12,7 +12,7 @@
         android:contentDescription="接受者头像"
         android:src="@mipmap/test_icon" />
     <TextView
-        android:id="@+id/From_Content"
+        android:id="@+id/Receive_Content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="3dp"

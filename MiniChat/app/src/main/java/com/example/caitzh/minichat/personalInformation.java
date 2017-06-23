@@ -47,6 +47,7 @@ import java.util.Map;
 
 import android.os.Handler;
 
+import com.example.caitzh.minichat.crh.chatWindow;
 import static com.example.caitzh.minichat.XingeManager.unregister;
 import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
