@@ -1,15 +1,11 @@
 package com.example.caitzh.minichat;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ProviderInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Looper;
 import android.os.Message;
@@ -46,6 +42,7 @@ import java.util.Map;
 
 import android.os.Handler;
 
+import static com.example.caitzh.minichat.XingeManager.unregister;
 import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
 
@@ -71,7 +68,7 @@ public class personalInformation extends AppCompatActivity {
 
         Log.i("status", "登录后获取用户信息");
         if (checkHasNet(getApplicationContext())) {
-            sendRequestWithHttpConnection(url_getUserInfo, "GET");
+            sendRequestWithHttpConnection(url_getUserInfo, "GET", "", "");
         } else {
             Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
         }
@@ -153,7 +150,7 @@ public class personalInformation extends AppCompatActivity {
                             if (!radioButton_man.isChecked()) newSex = "女";
                             Log.i("newSex:", newSex);
                             if (checkHasNet(getApplicationContext())) {
-                                sendRequestWithParameter(url_updateUser, "POST", "sex", newSex);
+                                sendRequestWithHttpConnection(url_updateUser, "POST", "sex", newSex);
                             } else {
                                 Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
                             }
@@ -191,7 +188,7 @@ public class personalInformation extends AppCompatActivity {
                                     EditText editText = (EditText) newView.findViewById(R.id.originPassword);
                                     String input = editText.getText().toString();
                                     if (checkHasNet(getApplicationContext())) {
-                                        sendRequestWithParameter(url_verifyOldPw, "POST", "password",input);
+                                        sendRequestWithHttpConnection(url_verifyOldPw, "POST", "password",input);
                                     } else {
                                         Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
                                     }
@@ -206,7 +203,7 @@ public class personalInformation extends AppCompatActivity {
                             .create().show();
                 } else if (position == 6) {  // 退出登录
                     if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
-                        sendRequestWithHttpConnection(url_logout, "GET");  // 发送Http请求
+                        sendRequestWithHttpConnection(url_logout, "GET", "", "");  // 发送Http请求
                     } else {
                         Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
                     }
@@ -258,74 +255,8 @@ public class personalInformation extends AppCompatActivity {
     private static final int UPDATE_LISTVIEW = 0;
     private static final int UPDATE_SEX = 1;
 
-    // 不带参数的请求
-    private void sendRequestWithHttpConnection(final String url, final String method) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                HttpURLConnection connection = null;
-                try {
-                    Log.i("key", "Begin the connection");
-                    // 获取一个HttpURLConnection实例化对象
-                    connection = (HttpURLConnection) ((new URL(url).openConnection()));
-                    // 需要登录的操作在连接之前设置好cookie
-                    MyCookieManager.setCookie(connection);
-                    // 设置请求方式和响应时间
-                    connection.setRequestMethod(method);
-                    connection.setReadTimeout(8000);
-                    connection.setConnectTimeout(8000);
-                    // 提交到的数据转化为字符串
-                    InputStream inputStream = connection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    // 从返回的JSON数据中提取关键信息
-                    JSONObject result = new JSONObject(response.toString());
-                    String code = result.getString("code");
-                    String message = result.getString("message");
-                    // test
-                    Log.i("code: ", code + " message: " + message);
-                    if (code.equals("0")) {
-                        if (url.equals(url_logout)) { // 退出成功
-                            finish();  // 结束当前activity
-                            Intent intent = new Intent(personalInformation.this, signIn.class); // 跳转到登录页面
-                            startActivity(intent);
-                        } else if (url.equals(url_getUserInfo)) {  // 获取用户信息
-                            Log.i("message: ", message);
-                            JSONObject information = new JSONObject(message);
-                            String avatar = information.getString("avatar");
-                            String city = information.getString("city");
-                            String id = information.getString("id");
-                            String nickname = information.getString("nickname");
-                            String sex = information.getString("sex");
-                            String signature = information.getString("signature");
-                            details = new String[] {nickname, id, sex, city, signature, "", ""};
-                            // 利用message传递信息给handler
-                            Message message_ = new Message();
-                            message_.what = UPDATE_LISTVIEW;
-                            message_.obj = avatar;
-                            handler.sendMessage(message_);
-                        }
-                    } else {
-                            Looper.prepare();
-                            Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
-                            Looper.loop();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {  // 关闭connection
-                    if (connection != null)
-                        connection.disconnect();
-                }
-            }
-        }).start();
-    }
-
     // 带有参数的请求
-    private void sendRequestWithParameter(final String url, final String method, final String parameter, final String value) {
+    private void sendRequestWithHttpConnection(final String url, final String method, final String parameter, final String value) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -340,12 +271,13 @@ public class personalInformation extends AppCompatActivity {
                     connection.setRequestMethod(method);
                     connection.setReadTimeout(8000);
                     connection.setConnectTimeout(8000);
-                    DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    if (url.equals(url_verifyOldPw)) {
+                    if (url.equals(url_verifyOldPw)) {  // 验证旧密码
+                        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                         outputStream.writeBytes("password=" + value);
-                    } else if (url.equals(url_updateUser)) {
+                    } else if (url.equals(url_updateUser)) {  // 更新用户信息
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         String date = simpleDateFormat.format(new java.util.Date());
+                        DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                         if (parameter.equals("sex")) {
                             String sex = URLEncoder.encode(value, "utf-8");
                             outputStream.writeBytes("sex=" + sex + "&timestamp=" + date);
@@ -381,6 +313,26 @@ public class personalInformation extends AppCompatActivity {
                                 message_.what = UPDATE_SEX;
                                 handler.sendMessage(message_);
                             }
+                        } else if (url.equals(url_logout)) { // 退出成功
+                            unregister(getApplicationContext());
+                            finish();  // 结束当前activity
+                            Intent intent = new Intent(personalInformation.this, signIn.class); // 跳转到登录页面
+                            startActivity(intent);
+                        } else if (url.equals(url_getUserInfo)) {  // 获取用户信息
+                            Log.i("message: ", message);
+                            JSONObject information = new JSONObject(message);
+                            String avatar = information.getString("avatar");
+                            String city = information.getString("city");
+                            String id = information.getString("id");
+                            String nickname = information.getString("nickname");
+                            String sex = information.getString("sex");
+                            String signature = information.getString("signature");
+                            details = new String[] {nickname, id, sex, city, signature, "", ""};
+                            // 利用message传递信息给handler
+                            Message message_ = new Message();
+                            message_.what = UPDATE_LISTVIEW;
+                            message_.obj = avatar;
+                            handler.sendMessage(message_);
                         }
                     }
                     Looper.prepare();

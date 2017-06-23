@@ -170,7 +170,7 @@ public class changePassword extends AppCompatActivity {
                         Intent intent = new Intent(changePassword.this, personalInformation.class);
                         intent.putExtra("value", password.getText().toString());  // 传递修改后的内容
                         intent.putExtra("index", 5);
-                        setResult(RESULT_FIRST_USER, intent);  // 返回code为修改密码对应的list下标
+                        setResult(RESULT_FIRST_USER, intent);
                         finish();  // 结束当前activity
                     }
                     Looper.prepare();

@@ -120,7 +120,7 @@ public class changeAddress extends AppCompatActivity {
                         Intent intent = new Intent(changeAddress.this, personalInformation.class);
                         intent.putExtra("value", editText.getText().toString());  // 传递修改后的内容
                         intent.putExtra("index", 3);
-                        setResult(RESULT_FIRST_USER, intent);   // 返回码为修改城市对应的list下标
+                        setResult(RESULT_FIRST_USER, intent);
                         finish();  // 结束当前activity
                     }
                     Looper.prepare();

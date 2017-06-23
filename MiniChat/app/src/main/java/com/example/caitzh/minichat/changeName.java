@@ -122,7 +122,7 @@ public class changeName extends AppCompatActivity {
                         Intent intent = new Intent(changeName.this, personalInformation.class);
                         intent.putExtra("value", editText.getText().toString());  // 传递修改后的内容
                         intent.putExtra("index", 0);
-                        setResult(RESULT_FIRST_USER, intent);  // 返回code为修改名字对应的list下标
+                        setResult(RESULT_FIRST_USER, intent);
                         finish();  // 结束当前activity
                     }
                     Looper.prepare();

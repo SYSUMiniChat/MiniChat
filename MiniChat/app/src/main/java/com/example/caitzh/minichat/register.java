@@ -38,6 +38,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 
+import static com.example.caitzh.minichat.XingeManager.registerApplication;
 import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
 public class register extends AppCompatActivity {
@@ -60,6 +61,8 @@ public class register extends AppCompatActivity {
         password_visible = (ImageView) findViewById(R.id.passwordVisible);
         confirm_visible = (ImageView) findViewById(R.id.confirmPasswordVisible);
         verifyCode = (EditText) findViewById(R.id.verificationCode);
+
+        registerApplication(getApplicationContext());
 
         try {
             // 点击密码可见按钮，切换输入框密码是否可见

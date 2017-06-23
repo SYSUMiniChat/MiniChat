@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.caitzh.minichat.XingeManager.registerApplication;
 import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 
 public class signIn extends AppCompatActivity {
@@ -183,6 +184,7 @@ public class signIn extends AppCompatActivity {
                     if (code.equals("0")) {  // 登录成功
                         MyCookieManager.getCookie(connection);  // 获取cookie
                         MyCookieManager.setUserId(id);
+                        registerApplication(getApplicationContext(), id);
                         finish();  // 结束当前activity
                         Intent intent = new Intent(signIn.this, personalInformation.class);  // 跳转到用户信息页面
                         startActivity(intent);
