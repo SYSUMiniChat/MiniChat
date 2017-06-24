@@ -260,6 +260,8 @@ public class friendsList extends Activity implements View.OnTouchListener,
                 if (!indexString.contains(sortString)) {
                     indexString.add(sortString);
                 }
+            } else {
+                sortModel.setSortLetters("#");
             }
             mSortList.add(sortModel);
         }
