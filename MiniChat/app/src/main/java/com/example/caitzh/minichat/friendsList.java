@@ -60,13 +60,33 @@ public class friendsList extends Activity implements View.OnTouchListener,
     private LinearLayout linearLayout;
     private GestureDetector gestureDetector;
 
+    // 底部的按钮切换
+    private LinearLayout chatWindowLinearLayout;
+    private LinearLayout personalInformationLinearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
         //addTestData();
-
         addTestData();
+        chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
+        personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
+        chatWindowLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(friendsList.this,chatWindow.class);
+                startActivity(intent);
+            }
+        });
+        personalInformationLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(friendsList.this, personalInformation.class);
+                startActivity(intent);
+            }
+        });
+
         linearLayout = (LinearLayout)findViewById(R.id.friends_list_linear_layout);
         linearLayout.setOnTouchListener(this);
         linearLayout.setLongClickable(true);
@@ -96,6 +116,8 @@ public class friendsList extends Activity implements View.OnTouchListener,
         dialog = (TextView) findViewById(R.id.dialog);
         mTvTitle = (TextView) findViewById(R.id.tv_title);
         sortListView = (ListView) findViewById(R.id.lv_contact);
+        sortListView.setOnTouchListener(this);
+        sortListView.setLongClickable(true);
         initDatas();
         initEvents();
         setAdapter();
@@ -364,7 +386,6 @@ public class friendsList extends Activity implements View.OnTouchListener,
         final int FLING_MIN_DISTANCE=100;
         final int FLING_MIN_VELOCITY=200;
 
-        Toast.makeText(getApplicationContext(), "滑动", Toast.LENGTH_SHORT).show();
 
         //左
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
@@ -373,7 +394,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
         }
 
         //右
-        if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) < FLING_MIN_VELOCITY){
+        if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(friendsList.this,chatWindow.class);
             startActivity(intent);
         }

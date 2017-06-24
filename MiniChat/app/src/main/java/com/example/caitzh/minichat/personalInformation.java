@@ -69,10 +69,31 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
     private LinearLayout linearLayout;
     private GestureDetector gestureDetector;
 
+    // 底部的按钮切换
+    private LinearLayout chatWindowLinearLayout;
+    private LinearLayout friendsListLinearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_information);
+
+        chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
+        friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
+        chatWindowLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(personalInformation.this, chatWindow.class);
+                startActivity(intent);
+            }
+        });
+        friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(personalInformation.this,friendsList.class);
+                startActivity(intent);
+            }
+        });
 
         listView = (ListView) findViewById(R.id.listView);
         test_avatar = (TextView) findViewById(R.id.test_avatar);
@@ -81,6 +102,8 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         linearLayout = (LinearLayout)findViewById(R.id.personal_information_linear_layout);
         linearLayout.setOnTouchListener(this);
         linearLayout.setLongClickable(true);
+        listView.setOnTouchListener(this);
+        listView.setLongClickable(true);
         gestureDetector = new GestureDetector((GestureDetector.OnGestureListener)this);
 
         Log.i("status", "登录后获取用户信息");
@@ -468,10 +491,10 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         final int FLING_MIN_DISTANCE=100;
         final int FLING_MIN_VELOCITY=200;
 
-        Toast.makeText(getApplicationContext(), "滑动", Toast.LENGTH_SHORT).show();
-
+        Log.e("水平距离", Float.toString((e1.getX() - e2.getX())));
+        Log.e("水平速度", Float.toString(Math.abs(velocityX)));
         //右
-        if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) < FLING_MIN_VELOCITY){
+        if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(personalInformation.this, friendsList.class);
             startActivity(intent);
         }

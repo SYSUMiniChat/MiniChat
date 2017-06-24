@@ -90,7 +90,6 @@ public class PersonalChatWindow extends AppCompatActivity {
         listView.setSelection(mData.size()-1);
     }
 
-    // TODO 从数据库读入聊天记录
     private List<MiniChatMessage> LoadData() {
         List<MiniChatMessage> Messages=new ArrayList<MiniChatMessage>();
         myRecordDB = new recordDB(getBaseContext());

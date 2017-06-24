@@ -21,7 +21,7 @@ import com.example.caitzh.minichat.friendsList;
 import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.recordDB;
 import com.example.caitzh.minichat.MyDB.userDB;
-import com.example.caitzh.minichat.friendsList;
+import com.example.caitzh.minichat.personalInformation;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -41,11 +41,31 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     private GestureDetector gestureDetector;
     // data用于保存所有最近聊天记录数据
     private List<ChatWindowItemInformation> data = new LinkedList<>();
+    // 底部的按钮切换
+    private LinearLayout friendsListLinearLayout;
+    private LinearLayout personalInformationLinearLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_window);
+
+        friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
+        personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
+        friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(chatWindow.this,friendsList.class);
+                startActivity(intent);
+            }
+        });
+        personalInformationLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(chatWindow.this, personalInformation.class);
+                startActivity(intent);
+            }
+        });
 
         linearLayout = (LinearLayout)findViewById(R.id.chat_window_linear_layout);
         linearLayout.setOnTouchListener(this);
@@ -56,7 +76,10 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         myRecentListDB = new recentListDB(chatWindow.this);
         myUserDB = new userDB(chatWindow.this);
         chatWindowListView = (ListView)findViewById(R.id.chat_window_list_view);
+        chatWindowListView.setOnTouchListener(this);
+        chatWindowListView.setLongClickable(true);
         setChatWindowAdapter();
+
         chatWindowListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -118,7 +141,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         });
         chatWindowListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 android.app.AlertDialog.Builder alertdialogbuilder =
                         new android.app.AlertDialog.Builder(chatWindow.this);
                 alertdialogbuilder.setTitle("删除聊天记录");
@@ -129,10 +152,13 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 alertdialogbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        myRecentListDB.deleteItem(MyCookieManager.getUserId(), data.get(position).getUserID());
+                        myRecordDB.deleteItems(MyCookieManager.getUserId(), data.get(position).getUserID());
                     }
                 });
                 android.app.AlertDialog alertDialog = alertdialogbuilder.create();
                 alertDialog.show();
+                setChatWindowAdapter();
                 return true;
             }
         });
@@ -168,7 +194,6 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         final int FLING_MIN_DISTANCE=100;
         final int FLING_MIN_VELOCITY=200;
 
-        Toast.makeText(getApplicationContext(), "滑动", Toast.LENGTH_SHORT).show();
 
         //左
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
