@@ -56,6 +56,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
     private List<SortModel> SourceDateList;
     private ArrayList<String> data = new ArrayList<String>();
     private ArrayList<String> nicknames = new ArrayList<String>();
+    private ArrayList<String> ids = new ArrayList<String>();
     private static CountDownLatch mDownLatch;
 
 
@@ -147,13 +148,15 @@ public class friendsList extends Activity implements View.OnTouchListener,
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]));
+            SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]),
+                    (String[])ids.toArray(new String[nicknames.size()]));
             Collections.sort(SourceDateList, new PinyinComparator());
             adapter = new SortAdapter(this, SourceDateList);
             sortListView.setAdapter(adapter);
         }
 
-        SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]));
+        SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]),
+                (String[])ids.toArray(new String[nicknames.size()]));
         Collections.sort(SourceDateList, new PinyinComparator());
         adapter = new SortAdapter(this, SourceDateList);
         sortListView.setAdapter(adapter);
@@ -179,9 +182,9 @@ public class friendsList extends Activity implements View.OnTouchListener,
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                /*
+
                 if (Check.checkHasNet(getApplicationContext())) {
-                    String Id = ((SortModel) adapter.getItem(position)).getName();
+                    String Id = ((SortModel) adapter.getItem(position)).getId();
                     Bundle bundle = new Bundle();
                     bundle.putString("receiveid", Id);
                     Intent intent1 = new Intent(friendsList.this, PersonalChatWindow.class);
@@ -193,9 +196,9 @@ public class friendsList extends Activity implements View.OnTouchListener,
                 } else {
                     Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
                 }
-                */
-                 mTvTitle.setText(((SortModel) adapter.getItem(position)).getName());
-                 Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
+
+                // mTvTitle.setText(((SortModel) adapter.getItem(position)).getName());
+                 //Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -246,13 +249,14 @@ public class friendsList extends Activity implements View.OnTouchListener,
         adapter.updateListView(mSortList);
     }
 
-    private List<SortModel> filledData(String[] date) {
+    private List<SortModel> filledData(String[] date, String[] id) {
         List<SortModel> mSortList = new ArrayList<>();
         ArrayList<String> indexString = new ArrayList<>();
 
         for (int i = 0; i < date.length; i++) {
             SortModel sortModel = new SortModel();
             sortModel.setName(date[i]);
+            sortModel.setId(id[i]);
             String pinyin = PinyinUtils.getPingYin(date[i]);
             String sortString = pinyin.substring(0, 1).toUpperCase();
             if (sortString.matches("[A-Z]")) {
@@ -365,7 +369,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
                         String sex = information.getString("sex");
                         String signature = information.getString("signature");
                         nicknames.add(nickname);
-                        //nicknames.add(id);
+                        ids.add(id);
                     } else {
                         // 输出错误提示
                     }
