@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,6 +17,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.recentListDB;
+import com.example.caitzh.minichat.crh.PersonalChatWindow;
 import com.example.caitzh.minichat.middlewares.Check;
 
 import org.json.JSONObject;
@@ -55,8 +58,8 @@ public class AddFriendActivity extends AppCompatActivity {
 
         // 获取传递过来的id
         Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        String id = bundle.getString("id");
+        final Bundle bundle = intent.getExtras();
+        final String id = bundle.getString("id");
 
         try {
             if (Check.checkHasNet(getBaseContext())) {
@@ -87,6 +90,29 @@ public class AddFriendActivity extends AppCompatActivity {
             the_avatar.setImageBitmap(bm);
             button.setText(tips);
         }
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Check.checkHasNet(getApplicationContext())) {
+                    if (button.getText().toString().equals("发送消息")) {
+                        // 跳转到聊天界面
+                        Bundle bundle = new Bundle();
+                        bundle.putString("receiveid", id);
+                        Intent intent1 = new Intent(AddFriendActivity.this, PersonalChatWindow.class);
+                        intent1.putExtras(bundle);
+                        recentListDB db = new recentListDB(getBaseContext());
+                        db.insertOne(MyCookieManager.getUserId(), id);
+                        finish();
+                        startActivity(intent1);
+                    } else {
+                        // 发送请求
+                    }
+                } else {
+                    Toast.makeText(AddFriendActivity.this, "当前无可用网络" , Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
     private static final String queryInfo = "http://119.29.238.202:8000/query/";
     private static final String queryIsFriend = "http://119.29.238.202:8000/isFriend";
@@ -168,9 +194,10 @@ public class AddFriendActivity extends AppCompatActivity {
                     String message = result.getString("message");
                     // code == 0时 已经是好友
                     if (code.equals("0")) {
-                        tips = "发送消息";
+                        if (message.equals("yes")) tips = "发送消息";
+                        else tips = "添加到好友列表";
                     } else {
-                        tips = "添加到好友列表";
+                        tips = "您未登录";
                     }
                 } catch (Exception e) {
                     Log.e("Error", "idFriend");
