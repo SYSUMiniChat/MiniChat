@@ -177,7 +177,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                mTvTitle.setText(((SortModel) adapter.getItem(position - 1)).getName());
+                mTvTitle.setText(((SortModel) adapter.getItem(position)).getName());
                 Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -247,7 +247,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
             mSortList.add(sortModel);
         }
         Collections.sort(indexString);
-        sideBar.setIndexText(indexString);
+        // sideBar.setIndexText(indexString);
         return mSortList;
     }
     private static final String getFriendsUrl = "http://119.29.238.202:8000/getFriends";

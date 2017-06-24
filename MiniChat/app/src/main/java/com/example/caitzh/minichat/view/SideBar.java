@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -57,6 +58,7 @@ public class SideBar extends View {
         int height = getHeight();// 获取对应高度
         int width = getWidth();// 获取对应宽度
         int singleHeight = height / (letterList.size()+1);// 获取每一个字母的高度
+        Log.e("letterList size = :", String.valueOf(letterList.size()));
         for (int i = 0; i < letterList.size(); i++) {
             paint.setColor(Color.parseColor("#606060"));
             paint.setTypeface(Typeface.DEFAULT_BOLD);
@@ -115,6 +117,7 @@ public class SideBar extends View {
     public void setIndexText(ArrayList<String> indexStrings) {
         this.letterList = indexStrings;
         invalidate();
+
     }
 
     /**

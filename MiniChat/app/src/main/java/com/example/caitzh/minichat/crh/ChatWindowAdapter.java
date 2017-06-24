@@ -1,6 +1,7 @@
 package com.example.caitzh.minichat.crh;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.example.caitzh.minichat.ImageUtil;
 import com.example.caitzh.minichat.R;
 
 import java.util.List;
