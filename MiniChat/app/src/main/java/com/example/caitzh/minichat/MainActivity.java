@@ -142,6 +142,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        Button searchUser = (Button) findViewById(R.id.searchUserButton);
+            searchUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, SearchUser.class);
+                    startActivity(intent);
+                }
+            });
     }
 
 

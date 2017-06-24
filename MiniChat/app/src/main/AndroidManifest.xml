@@ -170,6 +170,10 @@
             android:launchMode="singleInstance"/>
         <activity android:name=".crh.PersonalChatWindow"
             android:launchMode="singleInstance"/>
+        <activity android:name=".AddFriendActivity"
+            android:label="用户信息"/>
+        <activity android:name=".SearchUser"
+            android:label="查找用户"/>
     </application>
 
 </manifest>
