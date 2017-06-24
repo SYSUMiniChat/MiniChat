@@ -87,6 +87,7 @@ public class userDB extends SQLiteOpenHelper {
      * @return 根据账号返回对应信息
      */
     public Cursor findOneByNumber(String id) {
+        if (id == null) Log.e("Query in userDB", "id is null");
         SQLiteDatabase db= getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, "ID=?", new String[]{id}, null, null, null);
         cursor.moveToFirst();

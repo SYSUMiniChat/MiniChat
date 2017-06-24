@@ -44,8 +44,11 @@ public class AddFriendActivity extends AppCompatActivity {
 
     private ListView listView;
     private Button button;
+    private Button refuse, agree;
     private ImageView the_avatar;
     private String localTimeStamp;
+    private LinearLayout twoButon;
+    private int type; // type = 1时为添加请求 type=0时为其他
     List<Map<String, String>> list;
     SimpleAdapter simpleAdapter;
     String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名"};
@@ -59,11 +62,15 @@ public class AddFriendActivity extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.addFriendListView);
         button = (Button) findViewById(R.id.add_friend_add_button);
         the_avatar = (ImageView) findViewById(R.id.add_friend_avatar);
+        refuse = (Button) findViewById(R.id.addRefuse);
+        agree = (Button) findViewById(R.id.addAgree);
+        twoButon = (LinearLayout) findViewById(R.id.addTwoButton);
 
         // 获取传递过来的id
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String id = bundle.getString("id");
+        type = bundle.getInt("type");
         // 先获取本地数据
         userDB userDB = new userDB(getApplicationContext());
         Cursor localUser = userDB.findOneByNumber(id);
@@ -78,6 +85,7 @@ public class AddFriendActivity extends AppCompatActivity {
                 city = localUser.getString(localUser.getColumnIndex("city"));
                 signature = localUser.getString(localUser.getColumnIndex("signature"));
                 details = new String[] {nickname, id, sex, city, signature};
+                Log.e("Local avatar path is ", avatar);
                 bm = ImageUtil.openImage(avatar);
             }
         }
@@ -85,14 +93,24 @@ public class AddFriendActivity extends AppCompatActivity {
         try {
             if (Check.checkHasNet(getBaseContext())) {
                 if (isupdate == false) {
-                    mDownLatch = new CountDownLatch(1);
+                    if (type == 0) {
+                        mDownLatch = new CountDownLatch(1);
+                        isFriend(id);
+                    }
+                    else mDownLatch = new CountDownLatch(0);
                     Log.e("GET Info from:", "localDB");
                 } else {
-                    mDownLatch = new CountDownLatch(3);
+                    if (type == 0) {
+                        mDownLatch = new CountDownLatch(3);
+                        getInfo(id);
+                        isFriend(id);
+                    } else {
+                        mDownLatch = new CountDownLatch(2);
+                        getInfo(id);
+                    }
                     Log.e("GET Info from:", "Server");
-                    getInfo(id);
+
                 }
-                isFriend(id);
                 mDownLatch.await();
                 // 写入ListView的信息
                 list = new ArrayList<>();
@@ -116,6 +134,13 @@ public class AddFriendActivity extends AppCompatActivity {
             listView.setAdapter(simpleAdapter);
             the_avatar.setImageBitmap(bm);
             button.setText(tips);
+            if (type == 0) {
+                // 隐藏拒绝同意
+                twoButon.setVisibility(View.GONE);
+            } else {
+                // 隐藏发送消息
+                button.setVisibility(View.GONE);
+            }
         }
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -134,10 +159,27 @@ public class AddFriendActivity extends AppCompatActivity {
                         startActivity(intent1);
                     } else {
                         // 发送请求
+                        Toast.makeText(AddFriendActivity.this, "添加请求已发送" , Toast.LENGTH_LONG).show();
+
                     }
                 } else {
                     Toast.makeText(AddFriendActivity.this, "当前无可用网络" , Toast.LENGTH_LONG).show();
                 }
+            }
+        });
+
+        refuse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(AddFriendActivity.this, "点击了拒绝" , Toast.LENGTH_LONG).show();
+
+            }
+        });
+
+        agree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(AddFriendActivity.this, "点击了同意" , Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -186,7 +228,13 @@ public class AddFriendActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
                     if (connection != null) connection.disconnect();
-                    bm = ImageUtil.getImage(avatar);
+                    try {
+                        bm = ImageUtil.getImage(avatar);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        mDownLatch.countDown();
+                    }
                     userDB db = new userDB(getApplicationContext());
                     // 删除后重新插入
                     db.deleteUser(id);
