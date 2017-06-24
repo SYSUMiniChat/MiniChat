@@ -155,6 +155,7 @@ public class MessageReceiver extends XGPushBaseReceiver {
             bundle.putInt("type", 1);
             intent.putExtras(bundle);
             context.startActivity(intent);
+
         } else if (type == 2) {
 
         } else {
