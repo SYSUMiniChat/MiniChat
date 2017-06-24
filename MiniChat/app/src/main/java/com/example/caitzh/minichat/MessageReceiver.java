@@ -149,7 +149,12 @@ public class MessageReceiver extends XGPushBaseReceiver {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } else if (type == 1) {
-
+            Intent intent = new Intent(context, AddFriendActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("id", sender);
+            bundle.putInt("type", 1);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
         } else if (type == 2) {
 
         } else {
