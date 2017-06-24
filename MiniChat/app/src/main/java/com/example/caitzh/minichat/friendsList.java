@@ -186,11 +186,9 @@ public class friendsList extends Activity implements View.OnTouchListener,
                 if (Check.checkHasNet(getApplicationContext())) {
                     String Id = ((SortModel) adapter.getItem(position)).getId();
                     Bundle bundle = new Bundle();
-                    bundle.putString("receiveid", Id);
-                    Intent intent1 = new Intent(friendsList.this, PersonalChatWindow.class);
+                    bundle.putString("id", Id);
+                    Intent intent1 = new Intent(friendsList.this, AddFriendActivity.class);
                     intent1.putExtras(bundle);
-                    recentListDB db = new recentListDB(getBaseContext());
-                    db.insertOne(MyCookieManager.getUserId(), Id);
                     finish();
                     startActivity(intent1);
                 } else {
