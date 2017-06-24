@@ -206,7 +206,7 @@ public class signIn extends AppCompatActivity {
 
                         getImage(avatars);  // 通过访问返回的图片路径去获取图片，缓存头像到本地
                         String localUrl = ImageUtil.dir + avatars.substring(avatars.lastIndexOf('/'));
-                        if (db.findOneByNumber(id) == null)
+                        if (!db.findOneByNumber(id).moveToFirst())
                             db.insert2Table(id, nickname,sex,city, signature, localUrl, date);
                         else {
                             db.updateInfo(id, "nickname", nickname, date);

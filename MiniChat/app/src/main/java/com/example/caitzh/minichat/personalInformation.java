@@ -124,7 +124,8 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void run() {
                 String id = MyCookieManager.getUserId();
                 Cursor cursor = db.findOneByNumber(id);
-                if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    updateUIFromDB(cursor);
                     String timestamp = cursor.getString(cursor.getColumnIndex("finalDate"));
                     if (hasUpdate(MyCookieManager.getUserId(), timestamp)) {
                         if (checkHasNet(getApplicationContext())) {
@@ -133,21 +134,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                             Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        String nickname = cursor.getString(cursor.getColumnIndex("nickname"));
-                        String sex = cursor.getString(cursor.getColumnIndex("sex"));
-                        String city = cursor.getString(cursor.getColumnIndex("city"));
-                        String signature = cursor.getString(cursor.getColumnIndex("signature"));
-                        String path = cursor.getString(cursor.getColumnIndex("avatar"));
-                        details = new String[] {nickname, id, sex, city, signature, "", ""};
-                        Message message_ = new Message();
-                        message_.what = UPDATE_LISTVIEW;
-                        handler.sendMessage(message_);
-
-                        Message msg = new Message();
-                        msg.what = GET_IMAGE_OK;
-                        msg.obj = ImageUtil.openImage(path);
-                        handler.sendMessage(msg);
-
+                        updateUIFromDB(cursor);
                     }
                 }
             }
@@ -637,6 +624,24 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                 }
             }
         }).start();
+    }
+
+    private void updateUIFromDB(Cursor cursor) {
+        String id = MyCookieManager.getUserId();
+        String nickname = cursor.getString(cursor.getColumnIndex("nickname"));
+        String sex = cursor.getString(cursor.getColumnIndex("sex"));
+        String city = cursor.getString(cursor.getColumnIndex("city"));
+        String signature = cursor.getString(cursor.getColumnIndex("signature"));
+        String path = cursor.getString(cursor.getColumnIndex("avatar"));
+        details = new String[] {nickname, id, sex, city, signature, "", ""};
+        Message message_ = new Message();
+        message_.what = UPDATE_LISTVIEW;
+        handler.sendMessage(message_);
+
+        Message msg = new Message();
+        msg.what = GET_IMAGE_OK;
+        msg.obj = ImageUtil.openImage(path);
+        handler.sendMessage(msg);
     }
 }
 
