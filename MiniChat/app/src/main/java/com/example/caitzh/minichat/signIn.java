@@ -212,10 +212,11 @@ public class signIn extends AppCompatActivity {
                         Intent intent = new Intent(signIn.this, chatWindow.class);  // 跳转到用户信息页面
 
                         startActivity(intent);
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(signIn.this, message, Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
-                    Looper.prepare();
-                    Toast.makeText(signIn.this, message, Toast.LENGTH_LONG).show();
-                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {  // 关闭connection

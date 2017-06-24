@@ -27,7 +27,7 @@ public class ImageUtil {
         }
         try {
             FileOutputStream out = new FileOutputStream(dir + "/" + name);
-            bitmap.compress(Bitmap.CompressFormat.PNG,100, out);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
         } catch (Exception e) {
             e.printStackTrace();
         }
