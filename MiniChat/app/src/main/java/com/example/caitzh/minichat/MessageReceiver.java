@@ -141,6 +141,7 @@ public class MessageReceiver extends XGPushBaseReceiver {
             myRecordDB = new recordDB(context);
             myRecentListDB.insertOne(MyCookieManager.getUserId(), sender);
             myRecordDB.insertOne(1, MyCookieManager.getUserId(), sender, message.getContent(), time);
+            // 收到消息应该判断当前的activity并作出相应操作而不是直接跳转
             Intent intent = new Intent(context, PersonalChatWindow.class);
             Bundle bundle = new Bundle();
             bundle.putString("receiveid", sender);

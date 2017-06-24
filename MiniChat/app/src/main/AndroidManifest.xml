@@ -143,7 +143,7 @@
 
         <activity
             android:name=".personalInformation"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:label="个人信息" />
         <activity
             android:name=".changeName"
@@ -168,14 +168,17 @@
         <activity
             android:name=".friendsList"
             android:label="好友列表"
-            android:launchMode="singleInstance"/>
+            android:launchMode="singleTask"/>
 
         <activity android:name=".crh.chatWindow"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:launchMode="singleTask"/>
         <activity android:name=".crh.MainSlider"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:launchMode="singleInstance"/>
         <activity android:name=".crh.PersonalChatWindow"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:launchMode="singleTask"/>
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity android:name=".AddFriendActivity"
