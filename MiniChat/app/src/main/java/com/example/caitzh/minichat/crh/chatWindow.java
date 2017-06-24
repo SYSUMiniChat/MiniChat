@@ -57,6 +57,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             public void onClick(View v) {
                 Intent intent = new Intent(chatWindow.this,friendsList.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
         personalInformationLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +65,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             public void onClick(View v) {
                 Intent intent = new Intent(chatWindow.this, personalInformation.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
 
@@ -199,6 +201,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(chatWindow.this,friendsList.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
 
         return false;

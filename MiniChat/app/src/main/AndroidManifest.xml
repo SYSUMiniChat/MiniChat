@@ -163,13 +163,12 @@
             android:launchMode="singleInstance"/>
 
         <activity android:name=".crh.chatWindow"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:launchMode="singleInstance"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity android:name=".crh.MainSlider"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:launchMode="singleInstance"/>
         <activity android:name=".crh.PersonalChatWindow"
-            android:launchMode="singleInstance"/>
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
     </application>
 
 </manifest>

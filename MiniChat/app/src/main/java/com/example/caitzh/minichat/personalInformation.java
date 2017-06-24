@@ -85,6 +85,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void onClick(View v) {
                 Intent intent = new Intent(personalInformation.this, chatWindow.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
         friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +93,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void onClick(View v) {
                 Intent intent = new Intent(personalInformation.this,friendsList.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
 
@@ -497,6 +499,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(personalInformation.this, friendsList.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
 
         return false;
