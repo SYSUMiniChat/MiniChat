@@ -1,6 +1,7 @@
 package com.example.caitzh.minichat;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.example.caitzh.minichat.MyDB.recentListDB;
+import com.example.caitzh.minichat.MyDB.userDB;
 import com.example.caitzh.minichat.crh.PersonalChatWindow;
 import com.example.caitzh.minichat.middlewares.Check;
 
@@ -43,11 +45,13 @@ public class AddFriendActivity extends AppCompatActivity {
     private ListView listView;
     private Button button;
     private ImageView the_avatar;
+    private String localTimeStamp;
     List<Map<String, String>> list;
     SimpleAdapter simpleAdapter;
     String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名"};
     String[] details;   // 存储个人信息页面每一栏的具体内容
 
+    private static boolean isupdate = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +64,34 @@ public class AddFriendActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String id = bundle.getString("id");
-
+        // 先获取本地数据
+        userDB userDB = new userDB(getApplicationContext());
+        Cursor localUser = userDB.findOneByNumber(id);
+        isupdate = true;
+        if (localUser.moveToFirst()) {
+            localTimeStamp = localUser.getString(localUser.getColumnIndex("finalDate"));
+            if (!Check.hasUpdate(id, localTimeStamp)) {
+                isupdate = false;
+                avatar = localUser.getString(localUser.getColumnIndex("avatar"));
+                nickname = localUser.getString(localUser.getColumnIndex("nickname"));
+                sex = localUser.getString(localUser.getColumnIndex("sex"));
+                city = localUser.getString(localUser.getColumnIndex("city"));
+                signature = localUser.getString(localUser.getColumnIndex("signature"));
+                details = new String[] {nickname, id, sex, city, signature};
+                bm = ImageUtil.openImage(avatar);
+            }
+        }
+        // 从服务器获取数据
         try {
             if (Check.checkHasNet(getBaseContext())) {
-                mDownLatch = new CountDownLatch(3);
-                getInfo(id);
+                if (isupdate == false) {
+                    mDownLatch = new CountDownLatch(1);
+                    Log.e("GET Info from:", "localDB");
+                } else {
+                    mDownLatch = new CountDownLatch(3);
+                    Log.e("GET Info from:", "Server");
+                    getInfo(id);
+                }
                 isFriend(id);
                 mDownLatch.await();
                 // 写入ListView的信息
@@ -144,6 +171,7 @@ public class AddFriendActivity extends AppCompatActivity {
                     String message = result.getString("message");
                     if (code.equals("0")) {
                         JSONObject information = new JSONObject(message);
+                        localTimeStamp = information.getString("timestamp");
                         avatar = information.getString("avatar");
                         city = information.getString("city");
                         nickname = information.getString("nickname");
@@ -158,8 +186,12 @@ public class AddFriendActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
                     if (connection != null) connection.disconnect();
+                    bm = ImageUtil.getImage(avatar);
+                    userDB db = new userDB(getApplicationContext());
+                    // 删除后重新插入
+                    db.deleteUser(id);
+                    db.insert2Table(id, nickname, sex, city,signature,avatar,localTimeStamp);
                     mDownLatch.countDown();
-                    getImage(avatar);
                 }
             }
         }).start();
@@ -211,39 +243,5 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     private static Bitmap bm;
-    // 获取路径下的图片
-    private void getImage(final String path) {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                HttpURLConnection conn = null;
-                try {
-                    // 获取服务器图片
-                    URL url_getAvatar = new URL("http://119.29.238.202:8000" + path);
-                    conn = (HttpURLConnection) url_getAvatar.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.setConnectTimeout(8000);
-                    conn.setReadTimeout(8000);
-                    conn.connect();
-                    if (conn.getResponseCode() == 200) {
-                        //获取服务器响应头中的流
-                        InputStream is = conn.getInputStream();
-                        //读取流里的数据，构建成bitmap位图
-                        bm = BitmapFactory.decodeStream(is);
 
-                    } else {
-                        Log.i("获取服务器图片失败", "");
-                    }
-                } catch (Exception e) {
-                    Log.e("Error", "getImage");
-                    e.printStackTrace();
-                } finally {
-                    if (conn != null) conn.disconnect();
-                    mDownLatch.countDown();
-                }
-            }
-        };
-        thread.start();
-
-    }
 }

@@ -115,5 +115,12 @@ public class userDB extends SQLiteOpenHelper {
         }
     }
 
-
+    /**
+     * 删除用户
+     * @param id
+     */
+    public void deleteUser(String id) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_NAME, "ID=?", new String[]{id});
+    }
 }
