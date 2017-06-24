@@ -33,6 +33,10 @@ public class recordDB extends SQLiteOpenHelper {
         if(!db.isReadOnly()) { // Enable foreign key constraints
             db.execSQL("PRAGMA foreign_keys=ON;");
         }
+        String CREATE_TABLE = "CREATE TABLE if not exists "
+                + TABLE_NAME
+                + " (ID INTEGER PRIMARY KEY autoincrement, type INTEGER, sender TEXT, receiver TEXT, content TEXT, time DATETIME)";
+        db.execSQL(CREATE_TABLE);
     }
 
     @Override

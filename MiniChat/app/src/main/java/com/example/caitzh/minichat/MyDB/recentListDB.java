@@ -34,6 +34,11 @@ public class recentListDB extends SQLiteOpenHelper {
 
     @Override
     public void onOpen(SQLiteDatabase db) {
+        String CREATE_TABLE = "CREATE TABLE if not exists "
+                +TABLE_NAME
+                +" (sender TEXT, receiver TEXT," +
+                " Primary key (sender, receiver))";
+        db.execSQL(CREATE_TABLE);
         super.onOpen(db);
     }
 
