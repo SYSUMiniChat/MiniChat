@@ -3,6 +3,19 @@ package com.example.caitzh.minichat.middlewares;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.Externalizable;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by littlestar on 2017/6/23.
@@ -22,5 +35,42 @@ public class Check {
             }
         }
         return false;
+    }
+
+    public static boolean hasUpdate(String id, final String localTimeStamp) {
+        final String url_getTimeStamp = "http://119.29.238.202:8000/getTimestamp/" + id;
+        boolean hasUpdate = false;
+        HttpURLConnection connection = null;
+        try {
+            Log.i("key", "Begin the connection");
+            // 获取一个HttpURLConnection实例化对象
+            connection = (HttpURLConnection) ((new URL(url_getTimeStamp).openConnection()));
+            // 设置请求方式和响应时间
+            connection.setRequestMethod("GET");
+            connection.setReadTimeout(8000);
+            connection.setConnectTimeout(8000);
+
+            // 提交到的数据转化为字符串
+            InputStream inputStream = connection.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            // 从返回的JSON数据中提取关键信息
+            JSONObject result = new JSONObject(response.toString());
+            String code = result.getString("code");
+            String message = result.getString("message");
+            // test
+            Log.i("code:", code);
+            Log.i("message", message);
+            if (code == "0" && message.compareTo(localTimeStamp) > 0) {
+                hasUpdate = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return hasUpdate;
     }
 }

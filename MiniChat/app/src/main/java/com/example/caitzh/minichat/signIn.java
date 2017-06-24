@@ -206,7 +206,15 @@ public class signIn extends AppCompatActivity {
 
                         getImage(avatars);  // 通过访问返回的图片路径去获取图片，缓存头像到本地
                         String localUrl = ImageUtil.dir + avatars.substring(avatars.lastIndexOf('/'));
-                        db.insert2Table(id, nickname,sex,city, signature, localUrl, date);
+                        if (db.findOneByNumber(id) == null)
+                            db.insert2Table(id, nickname,sex,city, signature, localUrl, date);
+                        else {
+                            db.updateInfo(id, "nickname", nickname, date);
+                            db.updateInfo(id, "sex", sex, date);
+                            db.updateInfo(id, "city", city, date);
+                            db.updateInfo(id, "signature", signature, date);
+                            db.updateInfo(id, "avatar", localUrl, date);
+                        }
 
                         finish();  // 结束当前activity
                         Intent intent = new Intent(signIn.this, chatWindow.class);  // 跳转到用户信息页面

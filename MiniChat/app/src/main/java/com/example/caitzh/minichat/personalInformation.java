@@ -53,16 +53,18 @@ import java.util.UUID;
 
 import android.os.Handler;
 
+import com.example.caitzh.minichat.MyDB.userDB;
 import com.example.caitzh.minichat.crh.chatWindow;
 import static com.example.caitzh.minichat.XingeManager.unregister;
 import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
+import static com.example.caitzh.minichat.middlewares.Check.hasUpdate;
 
 import com.example.caitzh.minichat.crh.chatWindow;
 
 
 public class personalInformation extends AppCompatActivity implements View.OnTouchListener,
         GestureDetector.OnGestureListener{
-
+    private userDB db = new userDB(personalInformation.this);
     String[] names = new String[] {"昵称","Mini号","性别","地区","Mini签名", "修改密码", "退出登录"};
     String[] details;   // 存储个人信息页面每一栏的具体内容
 
@@ -115,11 +117,43 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         gestureDetector = new GestureDetector((GestureDetector.OnGestureListener)this);
 
         Log.i("status", "登录后获取用户信息");
-        if (checkHasNet(getApplicationContext())) {
-            sendRequestWithHttpConnection(url_getUserInfo, "GET", "", "");
-        } else {
-            Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
-        }
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String id = MyCookieManager.getUserId();
+                Cursor cursor = db.findOneByNumber(id);
+                if (cursor != null) {
+                    String timestamp = cursor.getString(cursor.getColumnIndex("finalDate"));
+                    if (hasUpdate(MyCookieManager.getUserId(), timestamp)) {
+                        if (checkHasNet(getApplicationContext())) {
+                            sendRequestWithHttpConnection(url_getUserInfo, "GET", "", "");
+                        } else {
+                            Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        String nickname = cursor.getString(cursor.getColumnIndex("nickname"));
+                        String sex = cursor.getString(cursor.getColumnIndex("sex"));
+                        String city = cursor.getString(cursor.getColumnIndex("city"));
+                        String signature = cursor.getString(cursor.getColumnIndex("signature"));
+                        String path = cursor.getString(cursor.getColumnIndex("avatar"));
+                        details = new String[] {nickname, id, sex, city, signature, "", ""};
+                        Message message_ = new Message();
+                        message_.what = UPDATE_LISTVIEW;
+                        handler.sendMessage(message_);
+
+                        Message msg = new Message();
+                        msg.what = GET_IMAGE_OK;
+                        msg.obj = ImageUtil.openImage(path);
+                        handler.sendMessage(msg);
+
+                    }
+                }
+            }
+        }).start();
+
+
 
         // 点击头像这一栏 选择本地相册图片 暂未实现拍摄功能
         test_avatar.setOnClickListener(new View.OnClickListener() {
