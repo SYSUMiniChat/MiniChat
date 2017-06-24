@@ -152,7 +152,7 @@ public class AddFriendActivity extends AppCompatActivity {
                     connection.setConnectTimeout(8000);
 
                     DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
-                    dataOutputStream.writeBytes("id="+id);
+                    dataOutputStream.writeBytes("friend="+id);
 
                     // 取回的数据
                     InputStream inputStream = connection.getInputStream();
