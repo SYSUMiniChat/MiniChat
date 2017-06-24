@@ -276,8 +276,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
 
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 uploadFile(bitmap, ImageName);
-                ImageView imageView = (ImageView) findViewById(R.id.avatar);
-                imageView.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
                 Log.e("Exception", e.getMessage(), e);
             }
@@ -493,15 +491,16 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        final int FLING_MIN_DISTANCE=100;
+        final int FLING_MIN_DISTANCE=200;
         final int FLING_MIN_VELOCITY=200;
 
-        Log.e("水平距离", Float.toString((e1.getX() - e2.getX())));
-        Log.e("水平速度", Float.toString(Math.abs(velocityX)));
+        Log.e("水平距离3", Float.toString((e1.getX() - e2.getX())));
+        Log.e("水平速度3", Float.toString(Math.abs(velocityX)));
         //右
-        if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
+        if(e1.getX() - e2.getX() < - FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(personalInformation.this, friendsList.class);
             startActivity(intent);
+            finish();
             overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
 
@@ -522,7 +521,12 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         // 显示进度框
         // showProgressDialog();
         Bitmap compress = Bitmap.createScaledBitmap(bitmap, 256, 256, true);
-        ImageUtil.saveImage(name, compress);
+        String imageType = name.substring(name.lastIndexOf('.'));
+        final String saveName = MyCookieManager.getUserId() + imageType;
+        Log.v("TEST", saveName);
+        ImageUtil.saveImage(saveName, compress);
+        ImageView imageView = (ImageView) findViewById(R.id.avatar);
+        imageView.setImageBitmap(compress);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -563,7 +567,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                     sb.append("Content-Type: image/pjpeg; charset="+CHARSET+LINE_END);
                     sb.append(LINE_END);
                     dos.write(sb.toString().getBytes());
-                    File file = new File(ImageUtil.dir + "/" + name);
+                    File file = new File(ImageUtil.dir + "/" + saveName);
                     InputStream is = new FileInputStream(file);
                     byte[] bytes = new byte[1024];
                     int len = 0;

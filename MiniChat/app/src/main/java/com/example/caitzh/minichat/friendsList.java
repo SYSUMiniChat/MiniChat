@@ -403,21 +403,25 @@ public class friendsList extends Activity implements View.OnTouchListener,
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        final int FLING_MIN_DISTANCE=100;
+        final int FLING_MIN_DISTANCE=200;
         final int FLING_MIN_VELOCITY=200;
 
+        Log.e("水平距离2", Float.toString((e1.getX() - e2.getX())));
+        Log.e("水平速度2", Float.toString(Math.abs(velocityX)));
 
         //左
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(friendsList.this,personalInformation.class);
             startActivity(intent);
+            finish();
             overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
 
         //右
-        if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
+        if(e1.getX() - e2.getX() < -FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(friendsList.this,chatWindow.class);
             startActivity(intent);
+            finish();
             overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
 
