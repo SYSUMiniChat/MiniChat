@@ -205,7 +205,7 @@ public class signIn extends AppCompatActivity {
                         String date = information.getString("timestamp");
 
                         getImage(avatars);  // 通过访问返回的图片路径去获取图片，缓存头像到本地
-                        String localUrl = ImageUtil.dir + "/" + avatars.substring(avatars.lastIndexOf('/')+1);
+                        String localUrl = ImageUtil.dir + avatars.substring(avatars.lastIndexOf('/'));
                         db.insert2Table(id, nickname,sex,city, signature, localUrl, date);
 
                         finish();  // 结束当前activity

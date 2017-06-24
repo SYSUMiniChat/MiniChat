@@ -276,8 +276,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
 
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 uploadFile(bitmap, ImageName);
-                ImageView imageView = (ImageView) findViewById(R.id.avatar);
-                imageView.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
                 Log.e("Exception", e.getMessage(), e);
             }
@@ -522,7 +520,12 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         // 显示进度框
         // showProgressDialog();
         Bitmap compress = Bitmap.createScaledBitmap(bitmap, 256, 256, true);
-        ImageUtil.saveImage(name, compress);
+        String imageType = name.substring(name.lastIndexOf('.'));
+        final String saveName = MyCookieManager.getUserId() + imageType;
+        Log.v("TEST", saveName);
+        ImageUtil.saveImage(saveName, compress);
+        ImageView imageView = (ImageView) findViewById(R.id.avatar);
+        imageView.setImageBitmap(compress);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -563,7 +566,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                     sb.append("Content-Type: image/pjpeg; charset="+CHARSET+LINE_END);
                     sb.append(LINE_END);
                     dos.write(sb.toString().getBytes());
-                    File file = new File(ImageUtil.dir + "/" + name);
+                    File file = new File(ImageUtil.dir + "/" + saveName);
                     InputStream is = new FileInputStream(file);
                     byte[] bytes = new byte[1024];
                     int len = 0;
