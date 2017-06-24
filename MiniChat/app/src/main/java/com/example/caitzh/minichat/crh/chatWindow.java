@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -193,14 +194,17 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        final int FLING_MIN_DISTANCE=100;
+        final int FLING_MIN_DISTANCE=200;
         final int FLING_MIN_VELOCITY=200;
 
 
+        Log.e("水平距离1", Float.toString((e1.getX() - e2.getX())));
+        Log.e("水平速度1", Float.toString(Math.abs(velocityX)));
         //左
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(chatWindow.this,friendsList.class);
             startActivity(intent);
+            finish();
             overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
 
