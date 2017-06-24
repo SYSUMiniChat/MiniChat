@@ -397,30 +397,19 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         Thread thread = new Thread() {
             @Override
             public void run() {
-                    try {
-                        // 获取服务器图片
-                        URL url_getAvatar = new URL("http://119.29.238.202:8000" + path);
-                        HttpURLConnection conn = (HttpURLConnection) url_getAvatar.openConnection();
-                        conn.setRequestMethod("GET");
-                        conn.setConnectTimeout(8000);
-                        conn.setReadTimeout(8000);
-                        conn.connect();
-                        if (conn.getResponseCode() == 200) {
-                            //获取服务器响应头中的流
-                            InputStream is = conn.getInputStream();
-                            //读取流里的数据，构建成bitmap位图
-                            Bitmap bm = BitmapFactory.decodeStream(is);
-                            //发生更新UI的消息
-                            Message msg = handler.obtainMessage();
-                            msg.obj = bm;
-                            msg.what = GET_IMAGE_OK;
-                            handler.sendMessage(msg);
-                        } else {
-                            Log.i("获取服务器图片失败", "");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                Bitmap bm = ImageUtil.getImage(path);
+                if (bm != null) {
+
+                    // 保存头像到本地
+                    int start = path.lastIndexOf('/');
+                    ImageUtil.saveImage(path.substring(start+1), bm);
+
+                    //发生更新UI的消息
+                    Message msg = handler.obtainMessage();
+                    msg.obj = bm;
+                    msg.what = GET_IMAGE_OK;
+                    handler.sendMessage(msg);
+                }
             }
         };
         thread.start();
