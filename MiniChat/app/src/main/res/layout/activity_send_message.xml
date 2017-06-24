@@ -19,6 +19,8 @@
         android:layout_margin="3dp"
         android:layout_toStartOf="@+id/Header"
         android:text="接收到的消息"
+        android:paddingEnd="5dp"
+        android:paddingTop="15dp"
         android:textIsSelectable="false"
         android:gravity="center" />
 </RelativeLayout>

@@ -2,8 +2,11 @@ package com.example.caitzh.minichat.crh;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -12,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
 import com.example.caitzh.minichat.MyCookieManager;
@@ -51,6 +55,8 @@ public class PersonalChatWindow extends AppCompatActivity {
     private String messageContent;
     private recordDB myRecordDB;
 
+    private static final int UPDATE_LIST_VIEW = 1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +73,10 @@ public class PersonalChatWindow extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                messageContent = button.getText().toString();
+                messageContent = editText.getText().toString();
                 if (!messageContent.equals("")) {
                     if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
+                        editText.setText("");
                         sendRequestWithHttpConnection();  // 发送Http请求
                     } else {
                         Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
@@ -86,7 +93,7 @@ public class PersonalChatWindow extends AppCompatActivity {
         mData = LoadData();
         personalChatWindowAdapter = new PersonalChatWindowAdapter(getBaseContext(), mData);
         listView.setAdapter(personalChatWindowAdapter);
-        listView.setSelection(mData.size()-1);
+        listView.setSelection(mData.size() - 1);
     }
 
     private List<MiniChatMessage> LoadData() {
@@ -95,10 +102,13 @@ public class PersonalChatWindow extends AppCompatActivity {
         Cursor cursor = myRecordDB.getItems(MyCookieManager.getUserId(), receiveid);
         int count = cursor.getCount();
         if (count != 0 && cursor.moveToFirst()) {
-            int messageType = cursor.getInt(cursor.getColumnIndex("type"));
-            String messageContent = cursor.getString(cursor.getColumnIndex("content"));
-            MiniChatMessage Message = new MiniChatMessage(messageType, messageContent);
-            Messages.add(Message);
+            for (int i = 0; i < count; i++) {
+                int messageType = cursor.getInt(cursor.getColumnIndex("type"));
+                String messageContent = cursor.getString(cursor.getColumnIndex("content"));
+                MiniChatMessage Message = new MiniChatMessage(messageType, messageContent);
+                Messages.add(Message);
+                cursor.moveToNext();
+            }
         }
         return Messages;
     }
@@ -141,9 +151,12 @@ public class PersonalChatWindow extends AppCompatActivity {
                     if (code.equals("0")) {  // 发送成功
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String date = simpleDateFormat.format(new java.util.Date());
+                        Log.e("接收方的id", receiveid);
                         myRecordDB.insertOne(0, MyCookieManager.getUserId(),
                                 receiveid, messageContent, date);
-                        setAdapter();
+                        Message message_ = new Message();
+                        message_.what = UPDATE_LIST_VIEW;
+                        handler.sendMessage(message_);
                     }
                     Looper.prepare();
                     Looper.loop();
@@ -156,4 +169,20 @@ public class PersonalChatWindow extends AppCompatActivity {
             }
         }).start();
     }
+    // 利用Handler来更新UI
+    private Handler handler = new Handler() {
+        public void handleMessage(Message message) {
+            switch (message.what) {
+                case UPDATE_LIST_VIEW:
+                    try {
+                        Log.e("setAdapter", "测试");
+                        setAdapter();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default: break;
+            }
+        }
+    };
 }
