@@ -70,7 +70,7 @@ public class AddFriendActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final Bundle bundle = intent.getExtras();
         final String id = bundle.getString("id");
-        type = bundle.getInt("type");
+        type = bundle.getInt("type"); // type = 1时为添加请求 type=0时为其他
         // 先获取本地数据
         userDB userDB = new userDB(getApplicationContext());
         Cursor localUser = userDB.findOneByNumber(id);
@@ -159,8 +159,12 @@ public class AddFriendActivity extends AppCompatActivity {
                         startActivity(intent1);
                     } else {
                         // 发送请求
-                        Toast.makeText(AddFriendActivity.this, "添加请求已发送" , Toast.LENGTH_LONG).show();
-
+                        if (Check.checkHasNet(getApplicationContext())) {
+                            Toast.makeText(AddFriendActivity.this, "正在发送请求", Toast.LENGTH_LONG).show();
+                            sendRequire(id);
+                        } else {
+                            Toast.makeText(AddFriendActivity.this, "当前无可用网络", Toast.LENGTH_LONG).show();
+                        }
                     }
                 } else {
                     Toast.makeText(AddFriendActivity.this, "当前无可用网络" , Toast.LENGTH_LONG).show();
@@ -172,7 +176,7 @@ public class AddFriendActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(AddFriendActivity.this, "点击了拒绝" , Toast.LENGTH_LONG).show();
-
+                sendRefuse(id);
             }
         });
 
@@ -180,6 +184,7 @@ public class AddFriendActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Toast.makeText(AddFriendActivity.this, "点击了同意" , Toast.LENGTH_LONG).show();
+                sendAgree(id);
             }
         });
     }
@@ -291,5 +296,30 @@ public class AddFriendActivity extends AppCompatActivity {
     }
 
     private static Bitmap bm;
+
+    private void sendRequire(final String id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AccessServerUtil.sendMessage(AccessServerUtil.ADD_TYPE, id, "");
+            }
+        }).start();
+    }
+    private void sendAgree(final String id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AccessServerUtil.sendMessage(AccessServerUtil.ANSWER_TYPE, id, "yes");
+            }
+        }).start();
+    }
+    private void sendRefuse(final String id) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AccessServerUtil.sendMessage(AccessServerUtil.ANSWER_TYPE, id, "no");
+            }
+        }).start();
+    }
 
 }
