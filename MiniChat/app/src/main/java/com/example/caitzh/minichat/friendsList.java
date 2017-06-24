@@ -77,6 +77,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
             public void onClick(View v) {
                 Intent intent = new Intent(friendsList.this,chatWindow.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
         personalInformationLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +85,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
             public void onClick(View v) {
                 Intent intent = new Intent(friendsList.this, personalInformation.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
 
@@ -391,12 +393,14 @@ public class friendsList extends Activity implements View.OnTouchListener,
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(friendsList.this,personalInformation.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
 
         //右
         if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(friendsList.this,chatWindow.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
 
         return false;

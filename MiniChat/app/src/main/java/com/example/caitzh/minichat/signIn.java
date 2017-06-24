@@ -2,10 +2,12 @@ package com.example.caitzh.minichat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -201,16 +203,20 @@ public class signIn extends AppCompatActivity {
                         String sex = information.getString("sex");
                         String signature = information.getString("signature");
                         String date = information.getString("timestamp");
-                        db.insert2Table(id, nickname,sex,city, signature,avatars, date);
-                        // 缺少缓存头像到本地
+
+                        getImage(avatars);  // 通过访问返回的图片路径去获取图片，缓存头像到本地
+                        String localUrl = ImageUtil.dir + "/" + avatars.substring(avatars.lastIndexOf('/')+1);
+                        db.insert2Table(id, nickname,sex,city, signature, localUrl, date);
+
                         finish();  // 结束当前activity
                         Intent intent = new Intent(signIn.this, chatWindow.class);  // 跳转到用户信息页面
 
                         startActivity(intent);
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(signIn.this, message, Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
-                    Looper.prepare();
-                    Toast.makeText(signIn.this, message, Toast.LENGTH_LONG).show();
-                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {  // 关闭connection
@@ -219,5 +225,20 @@ public class signIn extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    // 获取路径下的图片
+    private void getImage(final String path) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Bitmap bm = ImageUtil.getImage(path);
+                // 保存头像到本地
+                int start = path.lastIndexOf('/');
+                ImageUtil.saveImage(path.substring(start+1), bm);
+            }
+        };
+        thread.start();
+
     }
 }

@@ -3,12 +3,15 @@ package com.example.caitzh.minichat;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,6 +35,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -42,8 +46,10 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import android.os.Handler;
 
@@ -85,6 +91,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void onClick(View v) {
                 Intent intent = new Intent(personalInformation.this, chatWindow.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
         friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +99,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void onClick(View v) {
                 Intent intent = new Intent(personalInformation.this,friendsList.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
 
@@ -257,9 +265,17 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {  // 刷新头像
             Uri uri = data.getData();
+//            Log.v("TEST", uri.getPath());
             ContentResolver cr = this.getContentResolver();
             try {
+                Cursor c = cr.query(uri, null, null, null, null);
+                //这是获取的图片保存在sdcard中的位置
+                c.moveToFirst();
+                String ImageName = c.getString(c.getColumnIndex("_display_name"));
+                Log.v("TEST", ImageName);
+
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                uploadFile(bitmap, ImageName);
                 ImageView imageView = (ImageView) findViewById(R.id.avatar);
                 imageView.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
@@ -395,30 +411,19 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         Thread thread = new Thread() {
             @Override
             public void run() {
-                    try {
-                        // 获取服务器图片
-                        URL url_getAvatar = new URL("http://119.29.238.202:8000" + path);
-                        HttpURLConnection conn = (HttpURLConnection) url_getAvatar.openConnection();
-                        conn.setRequestMethod("GET");
-                        conn.setConnectTimeout(8000);
-                        conn.setReadTimeout(8000);
-                        conn.connect();
-                        if (conn.getResponseCode() == 200) {
-                            //获取服务器响应头中的流
-                            InputStream is = conn.getInputStream();
-                            //读取流里的数据，构建成bitmap位图
-                            Bitmap bm = BitmapFactory.decodeStream(is);
-                            //发生更新UI的消息
-                            Message msg = handler.obtainMessage();
-                            msg.obj = bm;
-                            msg.what = GET_IMAGE_OK;
-                            handler.sendMessage(msg);
-                        } else {
-                            Log.i("获取服务器图片失败", "");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                Bitmap bm = ImageUtil.getImage(path);
+                if (bm != null) {
+
+                    // 保存头像到本地
+                    int start = path.lastIndexOf('/');
+                    ImageUtil.saveImage(path.substring(start+1), bm);
+
+                    //发生更新UI的消息
+                    Message msg = handler.obtainMessage();
+                    msg.obj = bm;
+                    msg.what = GET_IMAGE_OK;
+                    handler.sendMessage(msg);
+                }
             }
         };
         thread.start();
@@ -497,6 +502,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         if(e1.getX() - e2.getX() < FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(personalInformation.this, friendsList.class);
             startActivity(intent);
+            overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
 
         return false;
@@ -505,6 +511,94 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return gestureDetector.onTouchEvent(event);
+    }
+
+
+    private void uploadFile(Bitmap bitmap, final String name) {
+        final String CHARSET = "utf-8";
+        final String BOUNDARY =  UUID.randomUUID().toString();  //边界标识   随机生成
+        final String PREFIX = "--" , LINE_END = "\r\n";
+        final String CONTENT_TYPE = "multipart/form-data";   //内容类型
+        // 显示进度框
+        // showProgressDialog();
+        Bitmap compress = Bitmap.createScaledBitmap(bitmap, 256, 256, true);
+        ImageUtil.saveImage(name, compress);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(url_updateUser);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    MyCookieManager.setCookie(conn);
+                    conn.setReadTimeout(8000);
+                    conn.setConnectTimeout(8000);
+                    conn.setDoInput(true);  //允许输入流
+                    conn.setDoOutput(true); //允许输出流
+                    conn.setUseCaches(false);  //不允许使用缓存
+                    conn.setRequestMethod("POST");  //请求方式
+                    conn.setRequestProperty("Charset", CHARSET);  //设置编码
+                    conn.setRequestProperty("connection", "keep-alive");
+                    conn.setRequestProperty("Content-Type", CONTENT_TYPE + "; boundary=" + BOUNDARY);
+
+                    /**
+                     * 当文件不为空，把文件包装并且上传
+                     */
+                    DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
+                    StringBuffer sb = new StringBuffer();
+
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    String date = simpleDateFormat.format(new java.util.Date());
+                    sb.append(PREFIX).append(BOUNDARY).append(LINE_END);
+                    sb.append("Content-Disposition: form-data; name=\"").append("timestamp").append("\"").append(LINE_END).append(LINE_END);
+                    sb.append(date).append(LINE_END);
+                    dos.write(sb.toString().getBytes());
+                    /**
+                     * 这里重点注意：
+                     * name里面的值为服务器端需要key   只有这个key 才可以得到对应的文件
+                     * filename是文件的名字，包含后缀名的   比如:abc.png
+                     */
+                    sb = new StringBuffer();
+                    sb.append(PREFIX).append(BOUNDARY).append(LINE_END);
+                    sb.append("Content-Disposition: form-data; name=\"avatar\";filename=\""+name+"\""+LINE_END);
+                    sb.append("Content-Type: image/pjpeg; charset="+CHARSET+LINE_END);
+                    sb.append(LINE_END);
+                    dos.write(sb.toString().getBytes());
+                    File file = new File(ImageUtil.dir + "/" + name);
+                    InputStream is = new FileInputStream(file);
+                    byte[] bytes = new byte[1024];
+                    int len = 0;
+                    while((len = is.read(bytes)) != -1){
+                        dos.write(bytes, 0, len);
+                    }
+                    is.close();
+                    dos.write(LINE_END.getBytes());
+                    byte[] end_data = (PREFIX+BOUNDARY+PREFIX+LINE_END).getBytes();
+                    dos.write(end_data);
+
+                    dos.flush();
+
+                    // 提交到的数据转化为字符串
+                    InputStream inputStream = conn.getInputStream();
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    // 从返回的JSON数据中提取关键信息
+                    JSONObject result = new JSONObject(response.toString());
+                    String code = result.getString("code");
+                    String message = result.getString("message");
+                    Log.i("code:", code + " message: " + message);
+                    Looper.prepare();
+                    Toast.makeText(personalInformation.this, message, Toast.LENGTH_LONG).show();
+                    Looper.loop();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
 
