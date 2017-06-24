@@ -17,7 +17,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.userDB;
+import com.example.caitzh.minichat.crh.PersonalChatWindow;
 import com.example.caitzh.minichat.middlewares.Check;
 import com.example.caitzh.minichat.crh.chatWindow;
 import com.example.caitzh.minichat.view.EditTextWithDel;
@@ -177,8 +179,23 @@ public class friendsList extends Activity implements View.OnTouchListener,
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                mTvTitle.setText(((SortModel) adapter.getItem(position)).getName());
-                Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
+                /*
+                if (Check.checkHasNet(getApplicationContext())) {
+                    String Id = ((SortModel) adapter.getItem(position)).getName();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("receiveid", Id);
+                    Intent intent1 = new Intent(friendsList.this, PersonalChatWindow.class);
+                    intent1.putExtras(bundle);
+                    recentListDB db = new recentListDB(getBaseContext());
+                    db.insertOne(MyCookieManager.getUserId(), Id);
+                    finish();
+                    startActivity(intent1);
+                } else {
+                    Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
+                }
+                */
+                 mTvTitle.setText(((SortModel) adapter.getItem(position)).getName());
+                 Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -346,6 +363,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
                         String sex = information.getString("sex");
                         String signature = information.getString("signature");
                         nicknames.add(nickname);
+                        //nicknames.add(id);
                     } else {
                         // 输出错误提示
                     }

@@ -50,7 +50,6 @@ public class PersonalChatWindow extends AppCompatActivity {
     private String receiveid;
     private String messageContent;
     private recordDB myRecordDB;
-    private recentListDB myRecentListDB;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +113,7 @@ public class PersonalChatWindow extends AppCompatActivity {
                     Log.i("key", "Begin the connection");
                     // 获取一个HttpURLConnection实例化对象
                     connection = (HttpURLConnection)((new URL(url).openConnection()));
+                    MyCookieManager.setCookie(connection);
                     // 设置请求方式和响应时间
                     connection.setRequestMethod("POST");
                     connection.setReadTimeout(8000);
@@ -139,8 +139,6 @@ public class PersonalChatWindow extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 发送成功
-                        myRecentListDB = new recentListDB(getApplicationContext());
-                        myRecentListDB.insertOne(MyCookieManager.getUserId(), receiveid);
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String date = simpleDateFormat.format(new java.util.Date());
                         myRecordDB.insertOne(0, MyCookieManager.getUserId(),

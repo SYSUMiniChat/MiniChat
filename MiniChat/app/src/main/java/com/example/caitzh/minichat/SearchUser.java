@@ -115,8 +115,6 @@ public class SearchUser extends AppCompatActivity {
                     JSONObject result = new JSONObject(response.toString());
                     String code = result.getString("code");
                     String message = result.getString("message");
-                    Log.e("code = ", code);
-                    Log.e("message is:", message);
                     if (code.equals("0")) {
                         Log.e("jinru","code=0");
                         exist = true;
