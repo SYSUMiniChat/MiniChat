@@ -42,12 +42,43 @@
     <ListView
         android:id="@+id/addFriendListView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content">
     </ListView>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGray"
+        android:layout_marginTop="7dp"/>
     <Button
         android:id="@+id/add_friend_add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        style="@style/myButton"
         android:text="添加为好友"/>
+    <LinearLayout
+        android:id="@+id/addTwoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/addRefuse"
+            style="@style/myButton"
+            android:text="拒绝" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/addAgree"
+            style="@style/myButton"
+            android:text="同意" />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"/>
+    </LinearLayout>
 </LinearLayout>

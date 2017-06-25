@@ -14,6 +14,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.userDB;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -121,6 +123,8 @@ public class changeAddress extends AppCompatActivity {
                         intent.putExtra("value", editText.getText().toString());  // 传递修改后的内容
                         intent.putExtra("index", 3);
                         setResult(RESULT_FIRST_USER, intent);
+                        userDB db = new userDB(getBaseContext());
+                        db.updateInfo(MyCookieManager.getUserId(), "city",city, date);
                         finish();  // 结束当前activity
                     }
                     Looper.prepare();

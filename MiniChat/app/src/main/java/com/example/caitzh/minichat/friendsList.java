@@ -187,6 +187,7 @@ public class friendsList extends Activity implements View.OnTouchListener,
                     String Id = ((SortModel) adapter.getItem(position)).getId();
                     Bundle bundle = new Bundle();
                     bundle.putString("id", Id);
+                    bundle.putInt("type", 0);
                     Intent intent1 = new Intent(friendsList.this, AddFriendActivity.class);
                     intent1.putExtras(bundle);
                     finish();
