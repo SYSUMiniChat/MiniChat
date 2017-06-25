@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caitzh.minichat.MyDB.userDB;
@@ -33,6 +34,8 @@ import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 public class changeName extends AppCompatActivity {
     EditText editText;
     Button btn_save;
+    String parameter, detail;
+    TextView goodName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,13 +43,24 @@ public class changeName extends AppCompatActivity {
 
         editText = (EditText)findViewById(R.id.edit_change_name);
         btn_save = (Button) findViewById(R.id.save_name);
+        goodName = (TextView) findViewById(R.id.goodName);
 
         Bundle bundle = this.getIntent().getExtras();
         if (bundle != null) {
-            editText.setText(bundle.getString("name"));  // 默认内容为个人信息
+            parameter = bundle.getString("parameter");  // 获取的参数有：昵称、地址、签名
+            detail = bundle.getString("detail");        // 传递的文字内容
+            editText.setText(detail);  // 默认内容为个人信息
         }
         editText.setSelection(editText.length());  // 设置光标在最后
 
+        // 修改ActionBar标题和文本内容
+        if (parameter.equals("address")) {
+            setTitle("更改地区");
+            goodName.setText("地址可以让你的朋友更容易找到你。");
+        } else if (parameter.equals("signature")) {
+            setTitle("Mini签名");
+            goodName.setText("好签名可以让你的朋友更容易记住你。");
+        }
 
         // 点击保存按钮
         btn_save.setOnClickListener(new View.OnClickListener() {
@@ -98,12 +112,19 @@ public class changeName extends AppCompatActivity {
                     connection.setConnectTimeout(8000);
 
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
-                    String name = editText.getText().toString();
+                    String input = editText.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    name = URLEncoder.encode(name, "utf-8");
+                    input = URLEncoder.encode(input, "utf-8");
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                     String date = simpleDateFormat.format(new java.util.Date());
-                    outputStream.writeBytes("nickname=" + name + "&timestamp=" + date);
+                    switch (parameter) {
+                        case "name":
+                            outputStream.writeBytes("nickname=" + input + "&timestamp=" + date); break;
+                        case "address":
+                            outputStream.writeBytes("city=" + input + "&timestamp=" + date); break;
+                        case "signature":
+                            outputStream.writeBytes("signature=" + input + "&timestamp=" + date); break;
+                    }
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
@@ -121,13 +142,24 @@ public class changeName extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 修改成功
-                        // 同时修改本地数据库
-                        userDB db = new userDB(getBaseContext());
-                        db.updateInfo(MyCookieManager.getUserId(), "nickname",editText.getText().toString(), date);
-                        Log.e("ChangeName to", name);
                         Intent intent = new Intent(changeName.this, personalInformation.class);
                         intent.putExtra("value", editText.getText().toString());  // 传递修改后的内容
-                        intent.putExtra("index", 0);
+                        // 同时修改本地数据库
+                        userDB db = new userDB(getBaseContext());
+                        switch (parameter) {
+                            case "name":
+                                db.updateInfo(MyCookieManager.getUserId(), "nickname", editText.getText().toString(), date);
+                                intent.putExtra("index", 0);
+                                break;
+                            case "address":
+                                db.updateInfo(MyCookieManager.getUserId(), "city", editText.getText().toString(), date);
+                                intent.putExtra("index", 3);
+                                break;
+                            case "signature":
+                                db.updateInfo(MyCookieManager.getUserId(), "signature", editText.getText().toString(), date);
+                                intent.putExtra("index", 4);
+                                break;
+                        }
                         setResult(RESULT_FIRST_USER, intent);
                         finish();  // 结束当前activity
                     }

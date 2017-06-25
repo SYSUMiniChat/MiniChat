@@ -140,7 +140,7 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         mEtSearchName = (EditTextWithDel) findViewById(R.id.et_search);
         sideBar = (SideBar) findViewById(R.id.sidrbar);
         dialog = (TextView) findViewById(R.id.dialog);
-        mTvTitle = (TextView) findViewById(R.id.tv_title);
+//        mTvTitle = (TextView) findViewById(R.id.tv_title);
         sortListView = (ListView) findViewById(R.id.lv_contact);
         sortListView.setOnTouchListener(this);
         sortListView.setLongClickable(true);

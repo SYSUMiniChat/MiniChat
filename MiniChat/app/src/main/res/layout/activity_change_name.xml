@@ -10,44 +10,6 @@
     tools:context="com.example.caitzh.minichat.changeName"
     android:orientation="vertical">
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_margin="15dp">-->
-
-        <!--<ImageView-->
-            <!--android:id="@+id/backToInformation"-->
-            <!--android:layout_width="25dp"-->
-            <!--android:layout_height="25dp"-->
-            <!--android:src="@mipmap/new_arrow"-->
-            <!--android:layout_gravity="center_vertical"/>-->
-        <!--<TextView-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1.0"-->
-            <!--android:text="更改昵称"-->
-            <!--android:textSize="20sp"-->
-            <!--android:layout_gravity="center_vertical"-->
-            <!--android:textColor="@color/colorBlack"-->
-            <!--android:layout_marginLeft="20dp"/>-->
-
-        <!--<Button-->
-            <!--android:id="@+id/save_name"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="30dp"-->
-            <!--android:text="保存"-->
-            <!--android:textSize="15sp"-->
-            <!--android:textColor="@color/colorWhite"-->
-            <!--android:background="@color/colorGreen"-->
-            <!--android:layout_gravity="center_vertical" />-->
-
-    <!--</LinearLayout>-->
-
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:background="@color/colorGray" />-->
 
     <EditText
         android:id="@+id/edit_change_name"
@@ -58,6 +20,7 @@
         android:maxLength="10"/>
 
     <TextView
+        android:id="@+id/goodName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="好名字可以让你的朋友更容易记住你。"

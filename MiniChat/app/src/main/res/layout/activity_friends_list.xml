@@ -28,23 +28,10 @@
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="48dp">
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:text="@string/app_name"
-            android:layout_centerInParent="true"
-            android:textSize="16dp"
-            android:textColor="@color/colorBlue"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
 
     <com.example.caitzh.minichat.view.EditTextWithDel
         android:id="@+id/et_search"
-        android:hint="搜索118位联系人"
+        android:hint="   搜索联系人"
         android:singleLine="true"
         android:paddingLeft="16dp"
         android:textSize="14dp"

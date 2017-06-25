@@ -116,9 +116,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         listView.setLongClickable(true);
         gestureDetector = new GestureDetector((GestureDetector.OnGestureListener)this);
 
-        Log.i("status", "登录后获取用户信息");
-
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -141,9 +138,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             }
         }).start();
 
-
-
-        // 点击头像这一栏 选择本地相册图片 暂未实现拍摄功能
+        // 点击头像这一栏 选择本地相册图片
         test_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -158,7 +153,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 方法一：自定义对话框，显示头像大图
+                // 自定义对话框，显示头像大图
                 LayoutInflater inflater = LayoutInflater.from(personalInformation.this);
                 View toshow_view = inflater.inflate(R.layout.show_avatar, null);
                 AlertDialog.Builder builder = new AlertDialog.Builder(personalInformation.this);
@@ -166,18 +161,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                 ImageView toshow_avatar = (ImageView) toshow_view.findViewById(R.id.show_avatar);
                 toshow_avatar.setImageBitmap(bitmap);
                 builder.setView(toshow_view).create().show();
-                // 方法二：跳转到新的页面
-//                Intent intent = new Intent(personalInformation.this, show_avatar.class);
-//                Bundle bundle1 = new Bundle();
-//                bundle1.putParcelable("bitmap", bitmap);
-//                intent.putExtras(bundle1)
-//                intent.putExtra("bitmap", bitmap);
-
-//                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
-//                byte[] bitmapByte = outputStream.toByteArray();
-//                intent.putExtra("bitmap", bitmapByte);
-//                startActivity(intent);
             }
         });
 
@@ -186,13 +169,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 Log.i("position:", position+"");
                 if (position == 0) { // 点击"昵称"，跳转到更改名字页面
-                    Intent intent = new Intent(personalInformation.this, changeName.class);
-                    // 获取当前页面的昵称，并通过Bundle传递参数
-                    String cur_name = list.get(position).get("detail");
-                    Bundle bundle = new Bundle();
-                    bundle.putString("name", cur_name);
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, 2);
+                    gotoChangeInfo("name", position);
                 } else if (position == 1) { // 点击"mini号"，提示一旦注册后不可修改
                     Toast.makeText(personalInformation.this, "Mini号不可修改喔~", Toast.LENGTH_LONG).show();
                 } else if (position == 2) { // 点击"性别"，弹出可供选择的对话框
@@ -232,19 +209,21 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                         }
                     }).create().show();
                 } else if (position == 3) { // 修改地区
-                    Intent intent = new Intent(personalInformation.this, changeAddress.class);
-                    String cur_address = list.get(position).get("detail");
-                    Bundle bundle = new Bundle();
-                    bundle.putString("address", cur_address);
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, 2);
+                    gotoChangeInfo("address", position);
+//                    Intent intent = new Intent(personalInformation.this, changeAddress.class);
+//                    String cur_address = list.get(position).get("detail");
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("address", cur_address);
+//                    intent.putExtras(bundle);
+//                    startActivityForResult(intent, 2);
                 } else if (position == 4) { // 修改Mini签名
-                    Intent intent = new Intent(personalInformation.this, changeSignature.class);
-                    String cur_signature = list.get(position).get("detail");
-                    Bundle bundle = new Bundle();
-                    bundle.putString("signature", cur_signature);
-                    intent.putExtras(bundle);
-                    startActivityForResult(intent, 2);
+                    gotoChangeInfo("signature", position);
+//                    Intent intent = new Intent(personalInformation.this, changeSignature.class);
+//                    String cur_signature = list.get(position).get("detail");
+//                    Bundle bundle = new Bundle();
+//                    bundle.putString("signature", cur_signature);
+//                    intent.putExtras(bundle);
+//                    startActivityForResult(intent, 2);
                 } else if (position == 5) {  // 修改密码
                     // 先弹出对话框，输入原密码
                     LayoutInflater inflater = LayoutInflater.from(personalInformation.this);
@@ -297,6 +276,17 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         });
     }
 
+    private void gotoChangeInfo(String parameter, int position) {
+        Intent intent =  new Intent(personalInformation.this, changeName.class);
+        // 获取当前页面的内容，并通过Bundle传递参数
+        String detail = list.get(position).get("detail");
+        Bundle bundle = new Bundle();
+        bundle.putString("parameter", parameter);
+        bundle.putString("detail", detail);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 2);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -309,7 +299,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                 c.moveToFirst();
                 String ImageName = c.getString(c.getColumnIndex("_display_name"));
                 Log.v("TEST", ImageName);
-
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 uploadFile(bitmap, ImageName);
             } catch (FileNotFoundException e) {
@@ -318,7 +307,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         } else if (requestCode == 2) {  // 刷新其他用户信息
             if (data != null) {
                 String value = data.getStringExtra("value");
-                Log.e("TEST", "update " + value);
                 int index = data.getIntExtra("index", 0);  // 这个0只是默认值
                 if (index != 5) {  // 不要把密码显示在用户信息页面
                     list.get(index).put("detail", value);
@@ -326,17 +314,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                     simpleAdapter.notifyDataSetChanged();
                 }
             }
-        }
-    }
-
-    // 更新字符串数组的内容
-    private void updateListView(String[] names, String[] details) {
-        list = new ArrayList<>();
-        for (int i = 0; i < 7; ++i) {
-            Map<String, String> listItem = new HashMap<>();
-            listItem.put("name", names[i]);
-            listItem.put("detail", details[i]);
-            list.add(listItem);
         }
     }
 
@@ -397,7 +374,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                             startActivityForResult(intent, 2);
                         } else if (url.equals(url_updateUser)) {  //  更改用户信息
                             if (parameter.equals("sex")) {
-                                Log.i("更改性别:", value);
                                 // 更换性别后更新页面UI
                                 list.get(2).put("detail", value);
                                 // 获取当前修改时间
@@ -453,11 +429,9 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void run() {
                 Bitmap bm = ImageUtil.getImage(path);
                 if (bm != null) {
-
                     // 保存头像到本地
                     int start = path.lastIndexOf('/');
                     ImageUtil.saveImage(path.substring(start+1), bm);
-
                     //发生更新UI的消息
                     Message msg = handler.obtainMessage();
                     msg.obj = bm;
@@ -467,37 +441,40 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             }
         };
         thread.start();
-
     }
 
     // 利用Handler来更新UI
     private Handler handler = new Handler() {
         public void handleMessage(Message message) {
             switch (message.what) {
-                case UPDATE_LISTVIEW:
+                case UPDATE_LISTVIEW:   // 更新listView内容显示
                     try {
-                        updateListView(names, details);
-                        if (simpleAdapter == null) {
-                            simpleAdapter = new SimpleAdapter(getApplicationContext(), list, R.layout.personal_information_item,
-                                    new String[] {"name", "detail"}, new int[] {R.id.name, R.id.detail});
+                        list = new ArrayList<>();
+                        for (int i = 0; i < 7; ++i) {   // 更新字符串数组的内容
+                            Map<String, String> listItem = new HashMap<>();
+                            listItem.put("name", names[i]);
+                            listItem.put("detail", details[i]);
+                            list.add(listItem);
                         }
+                        simpleAdapter = new SimpleAdapter(getApplicationContext(), list, R.layout.personal_information_item,
+                                    new String[] {"name", "detail"}, new int[] {R.id.name, R.id.detail});
                         listView.setAdapter(simpleAdapter);
-                        simpleAdapter.notifyDataSetChanged();  // 更新listView内容显示
+                        simpleAdapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
-                case UPDATE_SEX:
+                case UPDATE_SEX:  // 更改性别后刷新listView
                     try {
                         listView.setAdapter(simpleAdapter);
-                        simpleAdapter.notifyDataSetChanged();  // 更新listView内容显示
+                        simpleAdapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     break;
-                case GET_IMAGE_OK:
+                case GET_IMAGE_OK:  // 设置头像
                     try {
-                        avatar.setImageBitmap((Bitmap) message.obj); // 头像设置
+                        avatar.setImageBitmap((Bitmap) message.obj);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
