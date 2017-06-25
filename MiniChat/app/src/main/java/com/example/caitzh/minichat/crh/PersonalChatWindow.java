@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -153,6 +154,7 @@ public class PersonalChatWindow extends AppCompatActivity {
 
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+                    messageContent = URLEncoder.encode(messageContent, "utf-8");
                     outputStream.writeBytes("receiver=" + receiveid + "&message=" + messageContent);
 
                     // 提交到的数据转化为字符串
