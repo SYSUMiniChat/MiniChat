@@ -114,13 +114,13 @@ public class PersonalChatWindow extends AppCompatActivity {
 
     private void setAdapter() {
         mData = LoadData();
-        personalChatWindowAdapter = new PersonalChatWindowAdapter(getBaseContext(), mData);
+        personalChatWindowAdapter = new PersonalChatWindowAdapter(getBaseContext(), mData, receiveid);
         listView.setAdapter(personalChatWindowAdapter);
         listView.setSelection(mData.size() - 1);
     }
 
     private List<MiniChatMessage> LoadData() {
-        List<MiniChatMessage> Messages=new ArrayList<MiniChatMessage>();
+        List<MiniChatMessage> Messages=new ArrayList<>();
         myRecordDB = new recordDB(getBaseContext());
         Cursor cursor = myRecordDB.getItems(MyCookieManager.getUserId(), receiveid);
         int count = cursor.getCount();

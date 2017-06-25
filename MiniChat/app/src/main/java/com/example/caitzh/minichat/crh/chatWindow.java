@@ -53,7 +53,6 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_window);
-
         // Log.e("当前Activity是", getRunningActivityName());
         myRecordDB = new recordDB(chatWindow.this);
         myRecentListDB = new recentListDB(chatWindow.this);
@@ -68,7 +67,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         setChatWindowAdapter();
     }
 
-    private void setChatWindowAdapter() {
+    public void setChatWindowAdapter() {
         String senderID = MyCookieManager.getUserId() ;
         Cursor recendCursor = myRecentListDB.getItems(senderID);
         int resultCounts = recendCursor.getCount();
@@ -86,6 +85,11 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             Cursor lastItemCursor = myRecordDB.getLastItem(senderID, recentListIDs[i]);
             String recendChatInformation = "";
             String recendChatTime = "";
+            String path = "";
+            Cursor cursor = myUserDB.findOneByNumber(recentListIDs[i]);
+            if (cursor.moveToFirst()) {
+                path = cursor.getString(cursor.getColumnIndex("avatar"));
+            }
             resultCounts = lastItemCursor.getCount();
             if (resultCounts != 0 && lastItemCursor.moveToLast()) {
                 recendChatInformation = lastItemCursor.getString(lastItemCursor.getColumnIndex("content"));
@@ -96,7 +100,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             String recendChatNickName = "";
             recendChatNickName = DataManager.getLatestData(getApplicationContext(),recentListIDs[i]).getNickname();
             ChatWindowItemInformation temp = new ChatWindowItemInformation(recentListIDs[i],
-                    recendChatNickName, recendChatInformation, recendChatTime);
+                    recendChatNickName, recendChatInformation, recendChatTime, path);
             data.add(temp);
         }
         chatWindowListView.setAdapter(new ChatWindowAdapter(data, chatWindow.this));
@@ -228,11 +232,5 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             setChatWindowAdapter();
         }
     }
-    private String getRunningActivityName() {
 
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        String runningActivity = activityManager.getRunningTasks(1).get(0).topActivity
-                .getClassName();
-        return runningActivity;
-    }
 }
