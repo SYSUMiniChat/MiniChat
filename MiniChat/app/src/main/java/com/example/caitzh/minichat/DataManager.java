@@ -30,50 +30,54 @@ public class DataManager {
                 return user;
             }
         }
-        try {
-            HttpURLConnection connection = null;
-            connection = (HttpURLConnection) ((new URL(queryInfo+id_).openConnection()));
-            // 设置请求方式和响应时间
-            connection.setRequestMethod("GET");
-            connection.setReadTimeout(8000);
-            connection.setConnectTimeout(8000);
+        if (Check.checkHasNet(context)) {
+            try {
+                HttpURLConnection connection = null;
+                connection = (HttpURLConnection) ((new URL(queryInfo+id_).openConnection()));
+                // 设置请求方式和响应时间
+                connection.setRequestMethod("GET");
+                connection.setReadTimeout(8000);
+                connection.setConnectTimeout(8000);
 
-            // 取回的数据
-            InputStream inputStream = connection.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-            // 从返回的json中提取信息
-            JSONObject result = new JSONObject(response.toString());
-            String code = result.getString("code");
-            String message = result.getString("message");
-            if (code.equals("0")) {
-                JSONObject information = new JSONObject(message);
-                user = new User();
-                user.setId(id_);
-                user.setFinalDate(information.getString("timestamp"));
-                user.setAvatar(information.getString("avatar"));
-                user.setCity(information.getString("city"));
-                user.setNickname(information.getString("nickname"));
-                user.setSex(information.getString("sex"));
-                user.setSignature(information.getString("signature"));
-                if (isexist) {
-                    // 更新
-                    db.updateUser(user);
-                } else {
-                    // 插入
-                    db.insertUser(user);
+                // 取回的数据
+                InputStream inputStream = connection.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
-            } else {
-                // 输出错误提示
+                // 从返回的json中提取信息
+                JSONObject result = new JSONObject(response.toString());
+                String code = result.getString("code");
+                String message = result.getString("message");
+                if (code.equals("0")) {
+                    JSONObject information = new JSONObject(message);
+                    user = new User();
+                    user.setId(id_);
+                    user.setFinalDate(information.getString("timestamp"));
+                    user.setAvatar(information.getString("avatar"));
+                    user.setCity(information.getString("city"));
+                    user.setNickname(information.getString("nickname"));
+                    user.setSex(information.getString("sex"));
+                    user.setSignature(information.getString("signature"));
+                    if (isexist) {
+                        // 更新
+                        db.updateUser(user);
+                    } else {
+                        // 插入
+                        db.insertUser(user);
+                    }
+                } else {
+                    // 输出错误提示
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                return user;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            return user;
+        } else {
+            return null;
         }
     }
 }
