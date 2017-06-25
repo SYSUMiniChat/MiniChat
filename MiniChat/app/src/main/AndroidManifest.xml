@@ -171,7 +171,6 @@
             android:launchMode="singleTask"/>
 
         <activity android:name=".crh.chatWindow"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:launchMode="singleTask"/>
         <activity android:name=".crh.MainSlider"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"

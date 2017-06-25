@@ -1,5 +1,7 @@
 package com.example.caitzh.minichat.crh;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -51,6 +53,8 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_window);
 
+        Log.e("当前Activity是", getRunningActivityName());
+
         friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
         personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
         friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -90,8 +94,8 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 Bundle bundle = new Bundle();
                 TextView userid = (TextView)view.findViewById(R.id.chat_window_listview_userid);
                 TextView username = (TextView)view.findViewById(R.id.chat_window_listview_username);
-                bundle.putString("userID", userid.getText().toString());
-                bundle.putString("username", username.getText().toString());
+                bundle.putString("receiveid", userid.getText().toString());
+                bundle.putString("receivenickname", username.getText().toString());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -110,6 +114,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 recendCursor.moveToNext();
             }
         }
+        data.clear();
         for (int i = 0; i < recentListIDs.length; i++) {
             // 获取最后一条聊天信息和相应聊天时间
             Cursor lastItemCursor = myRecordDB.getLastItem(senderID, recentListIDs[i]);
@@ -138,6 +143,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 Intent intent = new Intent(chatWindow.this, PersonalChatWindow.class);
                 Bundle bundle = new Bundle();
                 bundle.putString("receiveid", data.get(position).getUserID());
+                Log.e("跳转的用户id", data.get(position).getUserID());
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 1);
             }
@@ -155,6 +161,8 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 alertdialogbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Log.e("从数据库删除的当前用户的id", MyCookieManager.getUserId());
+                        Log.e("从数据库删除的最近联系人的id", data.get(position).getUserID());
                         myRecentListDB.deleteItem(MyCookieManager.getUserId(), data.get(position).getUserID());
                         myRecordDB.deleteItems(MyCookieManager.getUserId(), data.get(position).getUserID());
                     }
@@ -167,6 +175,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         });
     }
 
+    // 以下为页面触碰以及点击接口所需实现的方法
     @Override
     public boolean onDown(MotionEvent e) {
         return false;
@@ -222,5 +231,12 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         if (requestCode == 1) {
             setChatWindowAdapter();
         }
+    }
+    private String getRunningActivityName() {
+
+        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        String runningActivity = activityManager.getRunningTasks(1).get(0).topActivity
+                .getClassName();
+        return runningActivity;
     }
 }

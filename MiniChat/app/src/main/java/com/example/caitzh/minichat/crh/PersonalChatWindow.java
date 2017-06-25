@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caitzh.minichat.MyCookieManager;
@@ -54,6 +55,7 @@ public class PersonalChatWindow extends AppCompatActivity {
     private String receiveid;
     private String messageContent;
     private recordDB myRecordDB;
+    private TextView receivenickname;
 
     private static final int UPDATE_LIST_VIEW = 1;
 
@@ -63,6 +65,8 @@ public class PersonalChatWindow extends AppCompatActivity {
         setContentView(R.layout.activity_personal_chat_window);
         Bundle bundle = this.getIntent().getExtras();
         receiveid = bundle.getString("receiveid");
+        receivenickname = (TextView)findViewById(R.id.PersonalChatWindowNameText);
+        receivenickname.setText(bundle.getString("receivenickname"));
         initViews();
     }
 
@@ -77,6 +81,7 @@ public class PersonalChatWindow extends AppCompatActivity {
                 if (!messageContent.equals("")) {
                     if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
                         editText.setText("");
+                        addTODB();
                         sendRequestWithHttpConnection();  // 发送Http请求
                     } else {
                         Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
@@ -149,11 +154,8 @@ public class PersonalChatWindow extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 发送成功
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        String date = simpleDateFormat.format(new java.util.Date());
+
                         Log.e("接收方的id", receiveid);
-                        myRecordDB.insertOne(0, MyCookieManager.getUserId(),
-                                receiveid, messageContent, date);
                         Message message_ = new Message();
                         message_.what = UPDATE_LIST_VIEW;
                         handler.sendMessage(message_);
@@ -185,4 +187,10 @@ public class PersonalChatWindow extends AppCompatActivity {
             }
         }
     };
+    private void addTODB() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = simpleDateFormat.format(new java.util.Date());
+        myRecordDB.insertOne(0, MyCookieManager.getUserId(),
+                receiveid, messageContent, date);
+    }
 }
