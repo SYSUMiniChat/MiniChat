@@ -149,12 +149,6 @@
             android:name=".changeName"
             android:label="更改昵称" />
         <activity
-            android:name=".changeSignature"
-            android:label="Mini签名" />
-        <activity
-            android:name=".changeAddress"
-            android:label="更改地区" />
-        <activity
             android:name=".changePassword"
             android:label="设置密码" />
         <activity
@@ -173,9 +167,6 @@
 
         <activity android:name=".crh.chatWindow"
             android:launchMode="singleTask"/>
-        <activity android:name=".crh.MainSlider"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:launchMode="singleInstance"/>
         <activity android:name=".crh.PersonalChatWindow"
             android:launchMode="singleTask"/>
 

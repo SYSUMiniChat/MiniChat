@@ -210,20 +210,8 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                     }).create().show();
                 } else if (position == 3) { // 修改地区
                     gotoChangeInfo("address", position);
-//                    Intent intent = new Intent(personalInformation.this, changeAddress.class);
-//                    String cur_address = list.get(position).get("detail");
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("address", cur_address);
-//                    intent.putExtras(bundle);
-//                    startActivityForResult(intent, 2);
                 } else if (position == 4) { // 修改Mini签名
                     gotoChangeInfo("signature", position);
-//                    Intent intent = new Intent(personalInformation.this, changeSignature.class);
-//                    String cur_signature = list.get(position).get("detail");
-//                    Bundle bundle = new Bundle();
-//                    bundle.putString("signature", cur_signature);
-//                    intent.putExtras(bundle);
-//                    startActivityForResult(intent, 2);
                 } else if (position == 5) {  // 修改密码
                     // 先弹出对话框，输入原密码
                     LayoutInflater inflater = LayoutInflater.from(personalInformation.this);

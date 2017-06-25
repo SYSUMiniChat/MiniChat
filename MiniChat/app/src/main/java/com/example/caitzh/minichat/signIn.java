@@ -1,13 +1,7 @@
 package com.example.caitzh.minichat;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Looper;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
@@ -18,14 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.caitzh.minichat.MyDB.userDB;
-import com.example.caitzh.minichat.crh.MainSlider;
-import com.example.caitzh.minichat.crh.PersonalChatWindow;
 import com.example.caitzh.minichat.crh.chatWindow;
 
 import org.json.JSONObject;
@@ -36,11 +25,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.example.caitzh.minichat.XingeManager.registerApplication;
 import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
