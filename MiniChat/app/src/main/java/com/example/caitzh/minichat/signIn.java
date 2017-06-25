@@ -193,29 +193,6 @@ public class signIn extends AppCompatActivity {
                         MyCookieManager.getCookie(connection);  // 获取cookie
                         MyCookieManager.setUserId(id);
                         registerApplication(getApplicationContext(), id);
-                        // 登录成功，插入本地user数据库
-                        userDB db = new userDB(getBaseContext());
-                        JSONObject information = new JSONObject(message);
-                        // avatar待修改
-                        String avatars = information.getString("avatar");
-                        String city = information.getString("city");
-                        String nickname = information.getString("nickname");
-                        String sex = information.getString("sex");
-                        String signature = information.getString("signature");
-                        String date = information.getString("timestamp");
-
-                        getImage(avatars);  // 通过访问返回的图片路径去获取图片，缓存头像到本地
-                        String localUrl = ImageUtil.dir + avatars.substring(avatars.lastIndexOf('/'));
-                        if (!db.findOneByNumber(id).moveToFirst())
-                            db.insert2Table(id, nickname,sex,city, signature, localUrl, date);
-                        else {
-                            db.updateInfo(id, "nickname", nickname, date);
-                            db.updateInfo(id, "sex", sex, date);
-                            db.updateInfo(id, "city", city, date);
-                            db.updateInfo(id, "signature", signature, date);
-                            db.updateInfo(id, "avatar", localUrl, date);
-                        }
-
                         finish();  // 结束当前activity
                         Intent intent = new Intent(signIn.this, chatWindow.class);  // 跳转到用户信息页面
 
@@ -233,20 +210,5 @@ public class signIn extends AppCompatActivity {
                 }
             }
         }).start();
-    }
-
-    // 获取路径下的图片
-    private void getImage(final String path) {
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                Bitmap bm = ImageUtil.getImage(path);
-                // 保存头像到本地
-                int start = path.lastIndexOf('/');
-                ImageUtil.saveImage(path.substring(start+1), bm);
-            }
-        };
-        thread.start();
-
     }
 }

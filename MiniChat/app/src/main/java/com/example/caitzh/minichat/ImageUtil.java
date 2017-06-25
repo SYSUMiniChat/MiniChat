@@ -48,7 +48,7 @@ public class ImageUtil {
                 InputStream is = conn.getInputStream();
                 //读取流里的数据，构建成bitmap位图
                 Bitmap bm = BitmapFactory.decodeStream(is);
-
+                saveImage(path.substring(path.lastIndexOf('/')+1),bm);
                 return bm;
 
             } else {
@@ -61,14 +61,16 @@ public class ImageUtil {
     }
 
     public static Bitmap openImage(String path) {
+        String localPath = dir+path.substring(path.lastIndexOf('/'));
         try {
-            FileInputStream stream = new FileInputStream(path);
+            FileInputStream stream = new FileInputStream(localPath);
             Bitmap bitmap = BitmapFactory.decodeStream(stream);
             return bitmap;
         } catch (Exception e) {
             e.printStackTrace();
+            Bitmap bm = getImage(path);
+            return bm;
         }
-        return null;
     }
 
 }
