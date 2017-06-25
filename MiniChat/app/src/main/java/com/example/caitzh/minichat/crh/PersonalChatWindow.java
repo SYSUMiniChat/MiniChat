@@ -66,10 +66,8 @@ public class PersonalChatWindow extends AppCompatActivity {
         setContentView(R.layout.activity_personal_chat_window);
         Bundle bundle = this.getIntent().getExtras();
         receiveid = bundle.getString("receiveid");
-        receivenickname = (TextView)findViewById(R.id.PersonalChatWindowNameText);
-        receivenickname.setText(bundle.getString("receivenickname"));
+        setTitle(bundle.getString("receivenickname"));
         initViews();
-        setTitle("联系人对象名称");  // TODO 修改为对应的联系人名字
         // 给AppCompatActivity的标题栏上加上返回按钮
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         if(actionBar != null){
