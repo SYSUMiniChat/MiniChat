@@ -166,6 +166,7 @@
         <activity android:name=".forgetPassword"
             android:label="忘记密码"/>
         <activity
+            android:theme="@style/AppTheme.NoActionBar"
             android:name=".friendsList"
             android:label="好友列表"
             android:launchMode="singleTask"/>

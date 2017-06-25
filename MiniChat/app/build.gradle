@@ -30,4 +30,5 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile files('libs/Xg_sdk_v3.1_20170417_0946.jar')
     compile files('libs/pinyin4j-2.5.0.jar')
+    compile 'com.android.support:design:24.2.1'
 }

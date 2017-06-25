@@ -4,11 +4,16 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -46,7 +51,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * Created by littlestar on 2017/6/21.
  */
-public class friendsList extends Activity implements View.OnTouchListener,
+public class friendsList extends AppCompatActivity implements View.OnTouchListener,
         GestureDetector.OnGestureListener {
     private ListView sortListView;
     private SideBar sideBar;
@@ -68,9 +73,12 @@ public class friendsList extends Activity implements View.OnTouchListener,
     private LinearLayout personalInformationLinearLayout;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         //addTestData();
         addTestData();
         chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
@@ -113,6 +121,19 @@ public class friendsList extends Activity implements View.OnTouchListener,
             date = simpleDateFormat.format(new java.util.Date());
             //db.insert2Table(String.valueOf(id), nickname+id, date);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent = new Intent(friendsList.this, SearchUser.class);
+        startActivity(intent);
+        return super.onOptionsItemSelected(item);
     }
 
     private void initViews() {

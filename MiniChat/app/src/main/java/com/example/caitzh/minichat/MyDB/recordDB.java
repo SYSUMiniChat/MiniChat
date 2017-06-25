@@ -92,6 +92,7 @@ public class recordDB extends SQLiteOpenHelper {
         SQLiteDatabase db = getWritableDatabase();
         Cursor cursor = db.query(TABLE_NAME, null, "sender=? AND receiver=?", new String[]{sender, receiver},null, null, null);
         cursor.moveToLast();
+
         return cursor;
     }
 

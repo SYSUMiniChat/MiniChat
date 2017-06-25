@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.littlestar.testlabel.MainActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@mipmap/add2"
+        android:orderInCategory="100"
+        android:title="添加好友"
+        app:showAsAction="always" />
+</menu>
