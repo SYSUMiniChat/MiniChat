@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.example.caitzh.minichat.User;
+
 /**
  * Created by littlestar on 2017/6/18.
  */
@@ -81,6 +83,25 @@ public class userDB extends SQLiteOpenHelper {
         return result != -1;
     }
 
+    public void insertUser(User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("ID", user.getId());
+        cv.put("nickname", user.getNickname());
+        cv.put("sex", user.getSex());
+        cv.put("city", user.getCity());
+        cv.put("signature", user.getSignature());
+        cv.put("avatar", user.getAvatar());
+        cv.put("finalDate", user.getFinalDate());
+        long result = 0;
+        try {
+            result = db.insert(TABLE_NAME, null, cv);
+        } catch (Exception e) {
+            Log.e("error", e.toString());
+        }
+        db.close();
+    }
+
     /**
      * 查找函数
      * @param id
@@ -92,6 +113,25 @@ public class userDB extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_NAME, null, "ID=?", new String[]{id}, null, null, null);
         cursor.moveToFirst();
         return cursor;
+    }
+    public User findUserById(String id_) {
+        if (id_ == null) Log.e("Query in userDb", "id is null");
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, null, "ID=?", new String[]{id_}, null, null, null);
+        if (cursor.moveToFirst()) {
+            String id, nickname, sex, city, signature, avatar, finalDate;
+            id = cursor.getString(0);
+            nickname = cursor.getString(1);
+            sex = cursor.getString(2);
+            city = cursor.getString(3);
+            signature = cursor.getString(4);
+            avatar = cursor.getString(5);
+            finalDate = cursor.getString(6);
+            User user = new User(id, nickname, sex, city, signature, avatar, finalDate);
+            return user;
+        } else {
+            return null;
+        }
     }
 
     /**
