@@ -134,6 +134,18 @@ public class userDB extends SQLiteOpenHelper {
         }
     }
 
+    public void updateUser(User user) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("nickname", user.getNickname());
+        cv.put("sex", user.getSex());
+        cv.put("city", user.getCity());
+        cv.put("signature", user.getSignature());
+        cv.put("finalDate", user.getFinalDate());
+        cv.put("avatar", user.getAvatar());
+        db.update(TABLE_NAME, cv, "ID=?", new String[] {user.getId()});
+    }
+
     /**
      * 更新昵称 下同
      * @param id

@@ -20,7 +20,6 @@ import java.net.URL;
 public class DataManager {
     private static final String queryInfo = "http://119.29.238.202:8000/query/";
     public static User getLatestData(Context context, String id_) {
-        boolean isupdate = true;
         boolean isexist = false;
         userDB db = new userDB(context);
         User user = db.findUserById(id_);
@@ -28,7 +27,6 @@ public class DataManager {
             isexist = true;
             String timeStamp = user.getFinalDate();
             if (!Check.hasUpdate(id_, timeStamp)) {
-                isupdate = false;
                 return user;
             }
         }
@@ -64,8 +62,10 @@ public class DataManager {
                 user.setSignature(information.getString("signature"));
                 if (isexist) {
                     // 更新
+                    db.updateUser(user);
                 } else {
                     // 插入
+                    db.insertUser(user);
                 }
             } else {
                 // 输出错误提示
