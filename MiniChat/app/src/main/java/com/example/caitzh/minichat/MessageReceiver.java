@@ -1,12 +1,19 @@
 package com.example.caitzh.minichat;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.example.caitzh.minichat.MyDB.recentListDB;
@@ -22,6 +29,10 @@ import com.tencent.android.tpush.data.RegisterEntity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
+
+import static android.app.Activity.RESULT_FIRST_USER;
 
 /**
  * Created by Administrator on 2017/5/16.
@@ -141,12 +152,12 @@ public class MessageReceiver extends XGPushBaseReceiver {
             myRecordDB = new recordDB(context);
             myRecentListDB.insertOne(MyCookieManager.getUserId(), sender);
             myRecordDB.insertOne(1, MyCookieManager.getUserId(), sender, message.getContent(), time);
+            Log.e("聊天窗口是否在前台", context.getClass().getName());
             // 收到消息应该判断当前的activity并作出相应操作而不是直接跳转
             Intent intent = new Intent(context, PersonalChatWindow.class);
             Bundle bundle = new Bundle();
             bundle.putString("receiveid", sender);
             intent.putExtras(bundle);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         } else if (type == 1) {
             Intent intent = new Intent(context, AddFriendActivity.class);
@@ -155,11 +166,63 @@ public class MessageReceiver extends XGPushBaseReceiver {
             bundle.putInt("type", 1);
             intent.putExtras(bundle);
             context.startActivity(intent);
-
         } else if (type == 2) {
 
         } else {
 
         }
     }
+    public static boolean isForeground(Context context, String className) {
+        if (context == null || TextUtils.isEmpty(className))
+            return false;
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
+        if (list != null && list.size() > 0) {
+            ComponentName cpn = list.get(0).topActivity;
+            if (className.equals(cpn.getClassName()))
+                return true;
+        }
+        return false;
+    }
+
+    private static final int GET_IMAGE_OK = 0;
+    // 获取路径下的图片
+    private void getImage(final String path) {
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                Bitmap bm = ImageUtil.getImage(path);
+                if (bm != null) {
+
+                    // 保存头像到本地
+                    int start = path.lastIndexOf('/');
+                    ImageUtil.saveImage(path.substring(start+1), bm);
+
+                    //发生更新UI的消息
+                    Message msg = handler.obtainMessage();
+                    msg.obj = bm;
+                    msg.what = GET_IMAGE_OK;
+                    handler.sendMessage(msg);
+                }
+            }
+        };
+        thread.start();
+
+    }
+
+    // 利用Handler来更新UI
+    private Handler handler = new Handler() {
+        public void handleMessage(Message message) {
+            switch (message.what) {
+                case GET_IMAGE_OK:
+                    try {
+                        //avatar.setImageBitmap((Bitmap) message.obj); // 头像设置
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default: break;
+            }
+        }
+    };
 }

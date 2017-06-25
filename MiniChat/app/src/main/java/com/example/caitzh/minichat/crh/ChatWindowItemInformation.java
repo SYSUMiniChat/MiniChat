@@ -7,18 +7,25 @@ import com.example.caitzh.minichat.MyDB.userDB;
  */
 
 public class ChatWindowItemInformation {
-    // TODO:图片形式，以及time的类型是否需要修改
+    private String path;
     private String username;
     private String information;
     private String time;
     private String userID;
 
-    protected ChatWindowItemInformation(String inputUserID, String inputUsername, String inputInformation, String inputTime) {
+    protected ChatWindowItemInformation(String inputUserID, String inputUsername,
+                                        String inputInformation, String inputTime, String inputPath) {
         this.userID = inputUserID;
         this.username = inputUsername;
         this.information = inputInformation;
         this.time = inputTime;
+        this.path = inputPath;
     }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
     public void setUserID(String userID) {
         this.userID = userID;
     }
@@ -30,5 +37,9 @@ public class ChatWindowItemInformation {
     public String getTime() {return this.time;}
     public String getUserID() {
         return userID;
+    }
+
+    public String getPath() {
+        return path;
     }
 }
