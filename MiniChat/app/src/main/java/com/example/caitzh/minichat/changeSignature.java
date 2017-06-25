@@ -124,7 +124,7 @@ public class changeSignature extends AppCompatActivity {
                         intent.putExtra("index", 4);
                         setResult(RESULT_FIRST_USER, intent);
                         userDB db = new userDB(getBaseContext());
-                        db.updateInfo(MyCookieManager.getUserId(), "signature",signature, date);
+                        db.updateInfo(MyCookieManager.getUserId(), "signature", editText.getText().toString(), date);
                         finish();  // 结束当前activity
                     }
                     Looper.prepare();

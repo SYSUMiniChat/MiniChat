@@ -124,18 +124,19 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void run() {
                 String id = MyCookieManager.getUserId();
                 Cursor cursor = db.findOneByNumber(id);
+                String timestamp = null;
                 if (cursor.moveToFirst()) {
                     updateUIFromDB(cursor);
-                    String timestamp = cursor.getString(cursor.getColumnIndex("finalDate"));
-                    if (hasUpdate(MyCookieManager.getUserId(), timestamp)) {
-                        if (checkHasNet(getApplicationContext())) {
-                            sendRequestWithHttpConnection(url_getUserInfo, "GET", "", "");
-                        } else {
-                            Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                        updateUIFromDB(cursor);
+                    timestamp = cursor.getString(cursor.getColumnIndex("finalDate"));
+                }
+                if (checkHasNet(getApplicationContext())) {
+                    if (timestamp == null || hasUpdate(MyCookieManager.getUserId(), timestamp)) {
+                        sendRequestWithHttpConnection(url_getUserInfo, "GET", "", "");
                     }
+                } else {
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 }
             }
         }).start();
@@ -303,10 +304,11 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         } else if (requestCode == 2) {  // 刷新其他用户信息
             if (data != null) {
                 String value = data.getStringExtra("value");
-                Log.e("更新了数据", value);
+                Log.e("TEST", "update " + value);
                 int index = data.getIntExtra("index", 0);  // 这个0只是默认值
                 if (index != 5) {  // 不要把密码显示在用户信息页面
                     list.get(index).put("detail", value);
+                    listView.setAdapter(simpleAdapter);
                     simpleAdapter.notifyDataSetChanged();
                 }
             }
@@ -359,8 +361,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                         if (parameter.equals("sex")) {
                             String sex = URLEncoder.encode(value, "utf-8");
                             outputStream.writeBytes("sex=" + sex + "&timestamp=" + date);
-                        } else if (parameter.equals("avatar")) {  // TODO 修改头像
-                            outputStream.writeBytes("avatar=" + value + "&timestamp=" + date);
                         }
                     }
                     // 提交到的数据转化为字符串
@@ -386,6 +386,12 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                                 Log.i("更改性别:", value);
                                 // 更换性别后更新页面UI
                                 list.get(2).put("detail", value);
+                                // 获取当前修改时间
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                String date = simpleDateFormat.format(new java.util.Date());
+                                // 同时更新本地数据
+                                userDB db = new userDB(getBaseContext());
+                                db.updateInfo(MyCookieManager.getUserId(), "sex", value, date);
                                 // 利用message传递信息给handler
                                 Message message_ = new Message();
                                 message_.what = UPDATE_SEX;
