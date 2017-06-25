@@ -151,6 +151,7 @@ public class AddFriendActivity extends AppCompatActivity {
                         // 跳转到聊天界面
                         Bundle bundle = new Bundle();
                         bundle.putString("receiveid", id);
+                        bundle.putString("receivenickname", nickname);
                         Intent intent1 = new Intent(AddFriendActivity.this, PersonalChatWindow.class);
                         intent1.putExtras(bundle);
                         recentListDB db = new recentListDB(getBaseContext());
