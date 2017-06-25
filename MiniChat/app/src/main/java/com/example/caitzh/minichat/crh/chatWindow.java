@@ -94,8 +94,8 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 Bundle bundle = new Bundle();
                 TextView userid = (TextView)view.findViewById(R.id.chat_window_listview_userid);
                 TextView username = (TextView)view.findViewById(R.id.chat_window_listview_username);
-                bundle.putString("userID", userid.getText().toString());
-                bundle.putString("username", username.getText().toString());
+                bundle.putString("receiveid", userid.getText().toString());
+                bundle.putString("receivenickname", username.getText().toString());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

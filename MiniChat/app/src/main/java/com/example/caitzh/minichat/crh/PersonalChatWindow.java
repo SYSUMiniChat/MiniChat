@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caitzh.minichat.MyCookieManager;
@@ -55,7 +56,7 @@ public class PersonalChatWindow extends AppCompatActivity {
     private String receiveid;
     private String messageContent;
     private recordDB myRecordDB;
-    private recentListDB myRecentListDB;
+    private TextView receivenickname;
 
     private static final int UPDATE_LIST_VIEW = 1;
 
@@ -65,6 +66,8 @@ public class PersonalChatWindow extends AppCompatActivity {
         setContentView(R.layout.activity_personal_chat_window);
         Bundle bundle = this.getIntent().getExtras();
         receiveid = bundle.getString("receiveid");
+        receivenickname = (TextView)findViewById(R.id.PersonalChatWindowNameText);
+        receivenickname.setText(bundle.getString("receivenickname"));
         initViews();
         setTitle("联系人对象名称");  // TODO 修改为对应的联系人名字
         // 给AppCompatActivity的标题栏上加上返回按钮
@@ -204,11 +207,9 @@ public class PersonalChatWindow extends AppCompatActivity {
         }
     };
     private void addTODB() {
-        myRecentListDB = new recentListDB(getApplicationContext());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String date = simpleDateFormat.format(new java.util.Date());
         myRecordDB.insertOne(0, MyCookieManager.getUserId(),
                 receiveid, messageContent, date);
-        myRecentListDB.insertOne(MyCookieManager.getUserId(), receiveid);
     }
 }
