@@ -272,11 +272,26 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                             })
                             .create().show();
                 } else if (position == 6) {  // 退出登录
-                    if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
-                        sendRequestWithHttpConnection(url_logout, "GET", "", "");  // 发送Http请求
-                    } else {
-                        Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
-                    }
+                    // 退出登录之前询问是否确定退出
+                    AlertDialog.Builder builder = new AlertDialog.Builder(personalInformation.this);
+                    builder.setMessage("确定退出当前账号?")
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
+                                        sendRequestWithHttpConnection(url_logout, "GET", "", "");  // 发送Http请求
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(getApplicationContext(), "您取消了退出登录", Toast.LENGTH_LONG).show();
+                                }
+                            })
+                            .create().show();
                 }
             }
         });
@@ -287,7 +302,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {  // 刷新头像
             Uri uri = data.getData();
-//            Log.v("TEST", uri.getPath());
             ContentResolver cr = this.getContentResolver();
             try {
                 Cursor c = cr.query(uri, null, null, null, null);
