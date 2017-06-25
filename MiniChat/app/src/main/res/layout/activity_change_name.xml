@@ -17,7 +17,8 @@
         android:layout_height="wrap_content"
         android:textSize="17sp"
         android:textColor="@color/colorBlack"
-        android:maxLength="10"/>
+        android:maxLength="16"
+        android:maxLines="1"/>
 
     <TextView
         android:id="@+id/goodName"

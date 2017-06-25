@@ -21,7 +21,8 @@
         <EditText
             android:id="@+id/miniNumber"
             style="@style/myEditText"
-            android:hint="手机号码或者邮箱" />
+            android:hint="手机号码或者邮箱"
+            android:maxLines="1"/>
     </LinearLayout>
 
     <View
@@ -41,7 +42,8 @@
             android:hint="请填写密码,最长16位"
             style="@style/myEditText"
             android:inputType="textPassword"
-            android:maxLength="16"/>
+            android:maxLength="16"
+            android:maxLines="1"/>
         <ImageView
             android:id="@+id/visible"
             android:layout_width="22dp"
