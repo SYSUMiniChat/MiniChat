@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.DataManager;
 import com.example.caitzh.minichat.MyCookieManager;
 import com.example.caitzh.minichat.R;
 import com.example.caitzh.minichat.friendsList;
@@ -53,53 +54,18 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_window);
 
-        Log.e("当前Activity是", getRunningActivityName());
-
-        friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
-        personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
-        friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(chatWindow.this,friendsList.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
-            }
-        });
-        personalInformationLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(chatWindow.this, personalInformation.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
-            }
-        });
-
-        linearLayout = (LinearLayout)findViewById(R.id.chat_window_linear_layout);
-        linearLayout.setOnTouchListener(this);
-        linearLayout.setLongClickable(true);
-        gestureDetector=new GestureDetector((GestureDetector.OnGestureListener)this);
-
+        // Log.e("当前Activity是", getRunningActivityName());
         myRecordDB = new recordDB(chatWindow.this);
         myRecentListDB = new recentListDB(chatWindow.this);
         myUserDB = new userDB(chatWindow.this);
-        chatWindowListView = (ListView)findViewById(R.id.chat_window_list_view);
-        chatWindowListView.setOnTouchListener(this);
-        chatWindowListView.setLongClickable(true);
+        setView();
         setChatWindowAdapter();
+    }
 
-        chatWindowListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(chatWindow.this, PersonalChatWindow.class);
-                Bundle bundle = new Bundle();
-                TextView userid = (TextView)view.findViewById(R.id.chat_window_listview_userid);
-                TextView username = (TextView)view.findViewById(R.id.chat_window_listview_username);
-                bundle.putString("receiveid", userid.getText().toString());
-                bundle.putString("receivenickname", username.getText().toString());
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setChatWindowAdapter();
     }
 
     private void setChatWindowAdapter() {
@@ -121,33 +87,50 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             String recendChatInformation = "";
             String recendChatTime = "";
             resultCounts = lastItemCursor.getCount();
-            if (resultCounts != 0 && lastItemCursor.moveToFirst()) {
+            if (resultCounts != 0 && lastItemCursor.moveToLast()) {
                 recendChatInformation = lastItemCursor.getString(lastItemCursor.getColumnIndex("content"));
                 recendChatTime = lastItemCursor.getString(lastItemCursor.getColumnIndex("time"));
+                Log.e("最后一条聊天消息内容", recendChatInformation);
             }
             // 获取用户名
             String recendChatNickName = "";
-            Cursor userCursor = myUserDB.findOneByNumber(recentListIDs[i]);
-            resultCounts = userCursor.getCount();
-            if (resultCounts != 0 && userCursor.moveToFirst()) {
-                recendChatNickName = userCursor.getString(userCursor.getColumnIndex("nickname"));
-            }
-            ChatWindowItemInformation temp = new ChatWindowItemInformation(senderID,
+            recendChatNickName = DataManager.getLatestData(getApplicationContext(),recentListIDs[i]).getNickname();
+            ChatWindowItemInformation temp = new ChatWindowItemInformation(recentListIDs[i],
                     recendChatNickName, recendChatInformation, recendChatTime);
             data.add(temp);
         }
         chatWindowListView.setAdapter(new ChatWindowAdapter(data, chatWindow.this));
-        chatWindowListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    }
+
+    private void setView() {
+        // 设置触摸的布局
+        chatWindowListView = (ListView)findViewById(R.id.chat_window_list_view);
+        friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
+        personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
+        linearLayout = (LinearLayout)findViewById(R.id.chat_window_linear_layout);
+        linearLayout.setOnTouchListener(this);
+        linearLayout.setLongClickable(true);
+        gestureDetector=new GestureDetector((GestureDetector.OnGestureListener)this);
+        chatWindowListView.setOnTouchListener(this);
+        chatWindowListView.setLongClickable(true);
+        friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(chatWindow.this, PersonalChatWindow.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("receiveid", data.get(position).getUserID());
-                Log.e("跳转的用户id", data.get(position).getUserID());
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 1);
+            public void onClick(View v) {
+                Intent intent = new Intent(chatWindow.this,friendsList.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
+        personalInformationLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(chatWindow.this, personalInformation.class);
+                startActivity(intent);
+                overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
+            }
+        });
+
+        // 设置listview与相应的监听器
         chatWindowListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
@@ -171,6 +154,19 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 alertDialog.show();
                 setChatWindowAdapter();
                 return true;
+            }
+        });
+        chatWindowListView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(chatWindow.this, PersonalChatWindow.class);
+                Bundle bundle = new Bundle();
+                TextView userid = (TextView)view.findViewById(R.id.chat_window_listview_userid);
+                TextView username = (TextView)view.findViewById(R.id.chat_window_listview_username);
+                bundle.putString("receiveid", userid.getText().toString());
+                bundle.putString("receivenickname", username.getText().toString());
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }
