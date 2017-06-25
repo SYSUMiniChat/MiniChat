@@ -386,6 +386,12 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                                 Log.i("更改性别:", value);
                                 // 更换性别后更新页面UI
                                 list.get(2).put("detail", value);
+                                // 获取当前修改时间
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                String date = simpleDateFormat.format(new java.util.Date());
+                                // 同时更新本地数据
+                                userDB db = new userDB(getBaseContext());
+                                db.updateInfo(MyCookieManager.getUserId(), "sex", value, date);
                                 // 利用message传递信息给handler
                                 Message message_ = new Message();
                                 message_.what = UPDATE_SEX;
