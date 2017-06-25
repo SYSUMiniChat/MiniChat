@@ -124,18 +124,19 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             public void run() {
                 String id = MyCookieManager.getUserId();
                 Cursor cursor = db.findOneByNumber(id);
+                String timestamp = null;
                 if (cursor.moveToFirst()) {
                     updateUIFromDB(cursor);
-                    String timestamp = cursor.getString(cursor.getColumnIndex("finalDate"));
-                    if (hasUpdate(MyCookieManager.getUserId(), timestamp)) {
-                        if (checkHasNet(getApplicationContext())) {
-                            sendRequestWithHttpConnection(url_getUserInfo, "GET", "", "");
-                        } else {
-                            Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
-                        }
-                    } else {
-                        updateUIFromDB(cursor);
+                    timestamp = cursor.getString(cursor.getColumnIndex("finalDate"));
+                }
+                if (checkHasNet(getApplicationContext())) {
+                    if (timestamp == null || hasUpdate(MyCookieManager.getUserId(), timestamp)) {
+                        sendRequestWithHttpConnection(url_getUserInfo, "GET", "", "");
                     }
+                } else {
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), "没有可用网络", Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 }
             }
         }).start();
@@ -271,11 +272,26 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                             })
                             .create().show();
                 } else if (position == 6) {  // 退出登录
-                    if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
-                        sendRequestWithHttpConnection(url_logout, "GET", "", "");  // 发送Http请求
-                    } else {
-                        Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
-                    }
+                    // 退出登录之前询问是否确定退出
+                    AlertDialog.Builder builder = new AlertDialog.Builder(personalInformation.this);
+                    builder.setMessage("确定退出当前账号?")
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
+                                        sendRequestWithHttpConnection(url_logout, "GET", "", "");  // 发送Http请求
+                                    } else {
+                                        Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Toast.makeText(getApplicationContext(), "您取消了退出登录", Toast.LENGTH_LONG).show();
+                                }
+                            })
+                            .create().show();
                 }
             }
         });
@@ -286,7 +302,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {  // 刷新头像
             Uri uri = data.getData();
-//            Log.v("TEST", uri.getPath());
             ContentResolver cr = this.getContentResolver();
             try {
                 Cursor c = cr.query(uri, null, null, null, null);
@@ -303,9 +318,11 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         } else if (requestCode == 2) {  // 刷新其他用户信息
             if (data != null) {
                 String value = data.getStringExtra("value");
+                Log.e("TEST", "update " + value);
                 int index = data.getIntExtra("index", 0);  // 这个0只是默认值
                 if (index != 5) {  // 不要把密码显示在用户信息页面
                     list.get(index).put("detail", value);
+                    listView.setAdapter(simpleAdapter);
                     simpleAdapter.notifyDataSetChanged();
                 }
             }
@@ -358,8 +375,6 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                         if (parameter.equals("sex")) {
                             String sex = URLEncoder.encode(value, "utf-8");
                             outputStream.writeBytes("sex=" + sex + "&timestamp=" + date);
-                        } else if (parameter.equals("avatar")) {  // TODO 修改头像
-                            outputStream.writeBytes("avatar=" + value + "&timestamp=" + date);
                         }
                     }
                     // 提交到的数据转化为字符串
@@ -385,6 +400,12 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                                 Log.i("更改性别:", value);
                                 // 更换性别后更新页面UI
                                 list.get(2).put("detail", value);
+                                // 获取当前修改时间
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                                String date = simpleDateFormat.format(new java.util.Date());
+                                // 同时更新本地数据
+                                userDB db = new userDB(getBaseContext());
+                                db.updateInfo(MyCookieManager.getUserId(), "sex", value, date);
                                 // 利用message传递信息给handler
                                 Message message_ = new Message();
                                 message_.what = UPDATE_SEX;

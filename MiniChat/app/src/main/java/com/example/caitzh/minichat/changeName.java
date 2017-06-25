@@ -123,7 +123,8 @@ public class changeName extends AppCompatActivity {
                     if (code.equals("0")) {  // 修改成功
                         // 同时修改本地数据库
                         userDB db = new userDB(getBaseContext());
-                        db.updateInfo(MyCookieManager.getUserId(), "nickname",name, date);
+                        db.updateInfo(MyCookieManager.getUserId(), "nickname",editText.getText().toString(), date);
+                        Log.e("ChangeName to", name);
                         Intent intent = new Intent(changeName.this, personalInformation.class);
                         intent.putExtra("value", editText.getText().toString());  // 传递修改后的内容
                         intent.putExtra("index", 0);

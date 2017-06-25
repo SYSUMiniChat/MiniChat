@@ -123,8 +123,9 @@ public class changeAddress extends AppCompatActivity {
                         intent.putExtra("value", editText.getText().toString());  // 传递修改后的内容
                         intent.putExtra("index", 3);
                         setResult(RESULT_FIRST_USER, intent);
+                        // 同时修改本地数据库
                         userDB db = new userDB(getBaseContext());
-                        db.updateInfo(MyCookieManager.getUserId(), "city",city, date);
+                        db.updateInfo(MyCookieManager.getUserId(), "city", editText.getText().toString(), date);
                         finish();  // 结束当前activity
                     }
                     Looper.prepare();
