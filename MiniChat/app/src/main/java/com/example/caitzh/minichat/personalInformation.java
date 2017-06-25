@@ -533,7 +533,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        final int FLING_MIN_DISTANCE=200;
+        final int FLING_MIN_DISTANCE=180;
         final int FLING_MIN_VELOCITY=200;
 
         Log.e("水平距离3", Float.toString((e1.getX() - e2.getX())));
