@@ -303,6 +303,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         } else if (requestCode == 2) {  // 刷新其他用户信息
             if (data != null) {
                 String value = data.getStringExtra("value");
+                Log.e("更新了数据", value);
                 int index = data.getIntExtra("index", 0);  // 这个0只是默认值
                 if (index != 5) {  // 不要把密码显示在用户信息页面
                     list.get(index).put("detail", value);
