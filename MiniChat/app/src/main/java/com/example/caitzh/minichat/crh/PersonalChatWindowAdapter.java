@@ -77,7 +77,7 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
     {
         TextView Content;
         myUserDB = new userDB(mContext);
-        switch(mData.get(Index).getType())
+        switch(mData.get(Index).getType())  // 判断是发送还是接收
         {
             case MiniChatMessage.MessageType_Send:
                 mView=LayoutInflater.from(mContext).inflate(R.layout.activity_send_message, null);
