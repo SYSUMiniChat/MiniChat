@@ -132,6 +132,9 @@ public class ChatWindowAdapter extends BaseAdapter{
     };
 
     private String timeFormat(String time) {
+        if (time.equals("")) {
+            return "";
+        }
         String returnTime = "";
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date curDate =  new Date(System.currentTimeMillis());

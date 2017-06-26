@@ -173,7 +173,7 @@ public class PersonalChatWindow extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 发送成功
-                        addTODB();
+                        addTODBAndDataList();
                         Log.e("接收方的id", receiveid);
                         Message message_ = new Message();
                         message_.what = UPDATE_LIST_VIEW;
@@ -199,7 +199,7 @@ public class PersonalChatWindow extends AppCompatActivity {
                 case UPDATE_LIST_VIEW:
                     try {
                         Log.e("setAdapter", "测试");
-                        setAdapter();
+                        personalChatWindowAdapter.notifyDataSetChanged();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -208,9 +208,10 @@ public class PersonalChatWindow extends AppCompatActivity {
             }
         }
     };
-    private void addTODB() {
+    private void addTODBAndDataList() {
         String date = DataManager.getCurrentDate();
         myRecordDB.insertOne(0, MyCookieManager.getUserId(),
                 receiveid, messageContent, date);
+        mData.add(new MiniChatMessage(0, messageContent));
     }
 }

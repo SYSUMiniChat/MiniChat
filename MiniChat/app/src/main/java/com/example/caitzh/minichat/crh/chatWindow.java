@@ -47,6 +47,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     // 底部的按钮切换
     private LinearLayout friendsListLinearLayout;
     private LinearLayout personalInformationLinearLayout;
+    private ChatWindowAdapter chatWindowAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,9 +96,10 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             recendChatNickName = DataManager.getLatestData(getApplicationContext(),recentListIDs[i]).getNickname();
             ChatWindowItemInformation temp = new ChatWindowItemInformation(recentListIDs[i],
                     recendChatNickName, recendChatInformation, recendChatTime);
-            data.add(temp);
+            data.add(0, temp);
         }
-        chatWindowListView.setAdapter(new ChatWindowAdapter(data, chatWindow.this));
+        chatWindowAdapter = new ChatWindowAdapter(data, chatWindow.this);
+        chatWindowListView.setAdapter(chatWindowAdapter);
     }
 
     private void setView() {
@@ -142,10 +144,13 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 alertdialogbuilder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        Log.e("从数据库删除的当前用户在list里的位置", Integer.toString(position));
                         Log.e("从数据库删除的当前用户的id", MyCookieManager.getUserId());
                         Log.e("从数据库删除的最近联系人的id", data.get(position).getUserID());
                         myRecentListDB.deleteItem(MyCookieManager.getUserId(), data.get(position).getUserID());
                         myRecordDB.deleteItems(MyCookieManager.getUserId(), data.get(position).getUserID());
+                        data.remove(position);
+                        chatWindowAdapter.notifyDataSetChanged();
                         /**
                          * todo 
                          */
@@ -203,9 +208,6 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         final int FLING_MIN_DISTANCE=180;
         final int FLING_MIN_VELOCITY=200;
 
-
-        Log.e("水平距离1", Float.toString((e1.getX() - e2.getX())));
-        Log.e("水平速度1", Float.toString(Math.abs(velocityX)));
         //左
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(chatWindow.this,friendsList.class);
