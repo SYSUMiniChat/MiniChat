@@ -133,11 +133,11 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
         }).start();
     }
 
-    private void updateAvaterFromDB(Cursor cursor, int tyoe) {
+    private void updateAvaterFromDB(Cursor cursor, int type) {
         String path = cursor.getString(cursor.getColumnIndex("avatar"));
         Message msg = new Message();
         msg.what = GET_IMAGE_OK;
-        if (tyoe == SENDRR) {
+        if (type == SENDRR) {
             msg.obj = senderBitmap = ImageUtil.openImage(path);
         } else {
             msg.obj = receiverBitmap = ImageUtil.openImage(path);
@@ -211,11 +211,6 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
             public void run() {
                 Bitmap bm = ImageUtil.getImage(path);
                 if (bm != null) {
-
-                    // 保存头像到本地
-                    int start = path.lastIndexOf('/');
-                    ImageUtil.saveImage(path.substring(start+1), bm);
-
                     //发生更新UI的消息
                     Message msg = handler.obtainMessage();
                     msg.obj = bm;

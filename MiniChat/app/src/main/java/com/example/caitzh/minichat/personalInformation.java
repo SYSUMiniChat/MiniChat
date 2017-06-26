@@ -334,8 +334,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                         DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                         outputStream.writeBytes("password=" + value);
                     } else if (url.equals(url_updateUser)) {  // 更新用户信息
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                        String date = simpleDateFormat.format(new java.util.Date());
+                        String date = DataManager.getCurrentDate();
                         DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                         if (parameter.equals("sex")) {
                             String sex = URLEncoder.encode(value, "utf-8");
@@ -365,8 +364,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                                 // 更换性别后更新页面UI
                                 list.get(2).put("detail", value);
                                 // 获取当前修改时间
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                                String date = simpleDateFormat.format(new java.util.Date());
+                                String date = DataManager.getCurrentDate();
                                 // 同时更新本地数据
                                 userDB db = new userDB(getBaseContext());
                                 db.updateInfo(MyCookieManager.getUserId(), "sex", value, date);
@@ -556,9 +554,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                      */
                     DataOutputStream dos = new DataOutputStream(conn.getOutputStream());
                     StringBuffer sb = new StringBuffer();
-
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    String date = simpleDateFormat.format(new java.util.Date());
+                    String date = DataManager.getCurrentDate();
                     sb.append(PREFIX).append(BOUNDARY).append(LINE_END);
                     sb.append("Content-Disposition: form-data; name=\"").append("timestamp").append("\"").append(LINE_END).append(LINE_END);
                     sb.append(date).append(LINE_END);

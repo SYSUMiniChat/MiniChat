@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by littlestar on 2017/6/25.
@@ -68,9 +69,12 @@ public class DataManager {
                         // 插入
                         db.insertUser(user);
                     }
+                    ImageUtil.getImage(user.getAvatar());
                 } else {
                     // 输出错误提示
                 }
+                connection.disconnect();
+                // 获取头像并保存
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {
@@ -79,5 +83,9 @@ public class DataManager {
         } else {
             return null;
         }
+    }
+    public static String getCurrentDate() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(new java.util.Date());
     }
 }

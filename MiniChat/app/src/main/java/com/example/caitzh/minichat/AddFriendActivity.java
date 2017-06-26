@@ -1,10 +1,13 @@
 package com.example.caitzh.minichat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -71,78 +74,15 @@ public class AddFriendActivity extends AppCompatActivity {
         final Bundle bundle = intent.getExtras();
         final String id = bundle.getString("id");
         type = bundle.getInt("type"); // type = 1时为添加请求 type=0时为其他
-        // 先获取本地数据
-        userDB userDB = new userDB(getApplicationContext());
-        Cursor localUser = userDB.findOneByNumber(id);
-        isupdate = true;
-        if (localUser.moveToFirst()) {
-            localTimeStamp = localUser.getString(localUser.getColumnIndex("finalDate"));
-            if (!Check.hasUpdate(id, localTimeStamp)) {
-                isupdate = false;
-                avatar = localUser.getString(localUser.getColumnIndex("avatar"));
-                nickname = localUser.getString(localUser.getColumnIndex("nickname"));
-                sex = localUser.getString(localUser.getColumnIndex("sex"));
-                city = localUser.getString(localUser.getColumnIndex("city"));
-                signature = localUser.getString(localUser.getColumnIndex("signature"));
-                details = new String[] {nickname, id, sex, city, signature};
-                Log.e("Local avatar path is ", avatar);
-                bm = ImageUtil.openImage(avatar);
-            }
+        // 设置哪个按钮不可见
+        if (type == 0) {
+            twoButon.setVisibility(View.GONE);
+            isFriend(id);
+        } else {
+            button.setVisibility(View.GONE);
         }
-        // 从服务器获取数据
-        try {
-            if (Check.checkHasNet(getBaseContext())) {
-                if (isupdate == false) {
-                    if (type == 0) {
-                        mDownLatch = new CountDownLatch(1);
-                        isFriend(id);
-                    }
-                    else mDownLatch = new CountDownLatch(0);
-                    Log.e("GET Info from:", "localDB");
-                } else {
-                    if (type == 0) {
-                        mDownLatch = new CountDownLatch(3);
-                        getInfo(id);
-                        isFriend(id);
-                    } else {
-                        mDownLatch = new CountDownLatch(2);
-                        getInfo(id);
-                    }
-                    Log.e("GET Info from:", "Server");
-
-                }
-                mDownLatch.await();
-                // 写入ListView的信息
-                list = new ArrayList<>();
-                for (int i = 0; i < 5; ++i) {
-                    Map<String, String> listItem = new HashMap<>();
-                    listItem.put("name", names[i]);
-                    listItem.put("detail", details[i]);
-                    list.add(listItem);
-                }
-            } else {
-                Toast.makeText(AddFriendActivity.this, "当前无可用网络" , Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            button.setText(tips);
-            simpleAdapter = new SimpleAdapter(getApplicationContext(), list, R.layout.personal_information_item,
-                    new String[] {"name", "detail"}, new int[] {R.id.name, R.id.detail});
-            if (listView == null) Log.e("listView is", " null");
-            if (simpleAdapter == null) Log.e("simpleAdapter is", "null");
-            listView.setAdapter(simpleAdapter);
-            the_avatar.setImageBitmap(bm);
-            button.setText(tips);
-            if (type == 0) {
-                // 隐藏拒绝同意
-                twoButon.setVisibility(View.GONE);
-            } else {
-                // 隐藏发送消息
-                button.setVisibility(View.GONE);
-            }
-        }
-
+        setListView(id);
+        // 设置点击事件
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -192,64 +132,60 @@ public class AddFriendActivity extends AppCompatActivity {
     private static final String queryInfo = "http://119.29.238.202:8000/query/";
     private static final String queryIsFriend = "http://119.29.238.202:8000/isFriend";
     private static  String avatar, city, nickname, sex, signature, tips = "test";
-    private CountDownLatch mDownLatch;
-    private void getInfo(final String id) {
+    private static final int USER_DATA = 1;
+    private static final int USER_AVATAR = 2;
+    private static final int CLICK_BUTTON = 3;
+    private static User user;
+
+    private void setListView(final String id_) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
-                try {
-                    connection = (HttpURLConnection) ((new URL(queryInfo+id).openConnection()));
-                    // 设置请求方式和响应时间
-                    connection.setRequestMethod("GET");
-                    connection.setReadTimeout(8000);
-                    connection.setConnectTimeout(8000);
+                user = DataManager.getLatestData(getApplicationContext(), id_); // 获取用户信息
+                // 正常取得用户资料
+                if (user != null) {
+                    details = new String[]{user.getNickname(), id_, user.getSex(), user.getCity(), user.getSignature()};
+                    // 写入ListView的信息
+                    list = new ArrayList<>();
+                    for (int i = 0; i < 5; ++i) {
+                        Map<String, String> listItem = new HashMap<>();
+                        listItem.put("name", names[i]);
+                        listItem.put("detail", details[i]);
+                        list.add(listItem);
+                    }
+                    Message message_ = new Message();
+                    message_.what = USER_DATA;
+                    handler.sendMessage(message_);
 
-                    // 取回的数据
-                    InputStream inputStream = connection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    // 从返回的json中提取信息
-                    JSONObject result = new JSONObject(response.toString());
-                    String code = result.getString("code");
-                    String message = result.getString("message");
-                    if (code.equals("0")) {
-                        JSONObject information = new JSONObject(message);
-                        localTimeStamp = information.getString("timestamp");
-                        avatar = information.getString("avatar");
-                        city = information.getString("city");
-                        nickname = information.getString("nickname");
-                        sex = information.getString("sex");
-                        signature = information.getString("signature");
-                        details = new String[] {nickname, id, sex, city, signature};
-                    } else {
-                        // 输出错误提示
-                    }
-                } catch (Exception e) {
-                    Log.e("Error", "getInfo");
-                    e.printStackTrace();
-                } finally {
-                    if (connection != null) connection.disconnect();
-                    try {
-                        bm = ImageUtil.getImage(avatar);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    } finally {
-                        mDownLatch.countDown();
-                    }
-                    userDB db = new userDB(getApplicationContext());
-                    // 删除后重新插入
-                    db.deleteUser(id);
-                    db.insert2Table(id, nickname, sex, city,signature,avatar,localTimeStamp);
-                    mDownLatch.countDown();
+                } else {
+                    Looper.prepare();
+                    Toast.makeText(AddFriendActivity.this, "无法获取用户数据,请确保网络通畅", Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 }
             }
         }).start();
     }
+
+    // 利用Handler 更新数据
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case USER_DATA:
+                    Bitmap bitmap = ImageUtil.openImage(user.getAvatar());
+                    the_avatar.setImageBitmap(bitmap);
+                    simpleAdapter = new SimpleAdapter(getApplicationContext(), list, R.layout.personal_information_item,
+                            new String[] {"name", "detail"}, new int[] {R.id.name, R.id.detail});
+                    if (simpleAdapter == null) Log.e("simpleAdapter is", "null");
+                    listView.setAdapter(simpleAdapter);
+                    break;
+                case CLICK_BUTTON:
+                    button.setText(tips);
+                    break;
+                default: break;
+            }
+        }
+    };
     private void isFriend(final String id) {
         new Thread(new Runnable() {
             @Override
@@ -285,18 +221,20 @@ public class AddFriendActivity extends AppCompatActivity {
                     } else {
                         tips = "您未登录";
                     }
+                    // 发送消息使更新button显示的内容
+                    Message message1 = new Message();
+                    message1.what = CLICK_BUTTON;
+                    handler.sendMessage(message1);
                 } catch (Exception e) {
                     Log.e("Error", "idFriend");
                     e.printStackTrace();
                 } finally {
                     if (connection != null) connection.disconnect();
-                    mDownLatch.countDown();
                 }
             }
         }).start();
     }
 
-    private static Bitmap bm;
 
     private void sendRequire(final String id) {
         new Thread(new Runnable() {
