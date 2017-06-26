@@ -147,26 +147,9 @@ public class register extends AppCompatActivity {
                 }
             });
 
-            // 给AppCompatActivity的标题栏上加上返回按钮
-            android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) {
-                actionBar.setHomeButtonEnabled(true);
-                actionBar.setDisplayHomeAsUpEnabled(true);
-            }
         } catch (Exception e) {
             Log.e("error", e.toString());
         }
-    }
-
-    // 返回按钮
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish(); // back button
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private static final String url_register = "http://119.29.238.202:8000/register";
