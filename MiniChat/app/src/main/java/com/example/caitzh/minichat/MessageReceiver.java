@@ -81,7 +81,6 @@ public class MessageReceiver extends XGPushBaseReceiver {
             // message.getTitle() 通知的标题
 
 
-
             // 获取自定义key-value
             // 这是一个Json字符串, 格式如下：{"type": 1, "sender": "1234567892@qq.com"}
             String customContent = message.getCustomContent();

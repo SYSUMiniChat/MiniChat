@@ -57,6 +57,7 @@
         style="@style/myButton"
         android:text="添加为好友"/>
     <LinearLayout
+        android:paddingTop="16dp"
         android:id="@+id/addTwoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">

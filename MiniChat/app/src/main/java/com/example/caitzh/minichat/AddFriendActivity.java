@@ -81,6 +81,7 @@ public class AddFriendActivity extends AppCompatActivity {
         } else {
             button.setVisibility(View.GONE);
         }
+
         setListView(id);
         // 设置点击事件
         button.setOnClickListener(new View.OnClickListener() {
