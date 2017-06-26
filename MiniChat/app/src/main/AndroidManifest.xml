@@ -37,7 +37,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".signIn"
+            android:label="登录MiniChat"
             android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -154,9 +155,9 @@
         <activity
             android:name=".register"
             android:label="注册MiniChat" />
-        <activity
-            android:name=".signIn"
-            android:label="登录MiniChat" />
+        <!--<activity-->
+            <!--android:name=".signIn"-->
+            <!--android:label="登录MiniChat" />-->
         <activity android:name=".forgetPassword"
             android:label="忘记密码"/>
         <activity
