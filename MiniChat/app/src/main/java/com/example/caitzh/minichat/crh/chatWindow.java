@@ -38,7 +38,6 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         GestureDetector.OnGestureListener {
     private recordDB myRecordDB;
     private recentListDB myRecentListDB;
-    private userDB myUserDB;
     private ListView chatWindowListView;
 
     private LinearLayout linearLayout;
@@ -56,7 +55,6 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         // Log.e("当前Activity是", getRunningActivityName());
         myRecordDB = new recordDB(chatWindow.this);
         myRecentListDB = new recentListDB(chatWindow.this);
-        myUserDB = new userDB(chatWindow.this);
         setView();
         setChatWindowAdapter();
     }
@@ -85,11 +83,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             Cursor lastItemCursor = myRecordDB.getLastItem(senderID, recentListIDs[i]);
             String recendChatInformation = "";
             String recendChatTime = "";
-            String path = "";
-            Cursor cursor = myUserDB.findOneByNumber(recentListIDs[i]);
-            if (cursor.moveToFirst()) {
-                path = cursor.getString(cursor.getColumnIndex("avatar"));
-            }
+
             resultCounts = lastItemCursor.getCount();
             if (resultCounts != 0 && lastItemCursor.moveToLast()) {
                 recendChatInformation = lastItemCursor.getString(lastItemCursor.getColumnIndex("content"));
@@ -100,7 +94,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             String recendChatNickName = "";
             recendChatNickName = DataManager.getLatestData(getApplicationContext(),recentListIDs[i]).getNickname();
             ChatWindowItemInformation temp = new ChatWindowItemInformation(recentListIDs[i],
-                    recendChatNickName, recendChatInformation, recendChatTime, path);
+                    recendChatNickName, recendChatInformation, recendChatTime);
             data.add(temp);
         }
         chatWindowListView.setAdapter(new ChatWindowAdapter(data, chatWindow.this));
@@ -152,6 +146,9 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                         Log.e("从数据库删除的最近联系人的id", data.get(position).getUserID());
                         myRecentListDB.deleteItem(MyCookieManager.getUserId(), data.get(position).getUserID());
                         myRecordDB.deleteItems(MyCookieManager.getUserId(), data.get(position).getUserID());
+                        /**
+                         * todo 
+                         */
                     }
                 });
                 android.app.AlertDialog alertDialog = alertdialogbuilder.create();

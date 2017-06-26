@@ -20,6 +20,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.DataManager;
 import com.example.caitzh.minichat.MyCookieManager;
 import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.recordDB;
@@ -99,7 +100,6 @@ public class PersonalChatWindow extends AppCompatActivity {
                 if (!messageContent.equals("")) {
                     if (checkHasNet(getApplicationContext())) {  // 判断当前是否有可用网络
                         editText.setText("");
-                        addTODB();
                         sendRequestWithHttpConnection();  // 发送Http请求
                     } else {
                         Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
@@ -154,8 +154,8 @@ public class PersonalChatWindow extends AppCompatActivity {
 
                     // 获取登录时输入内容等参数，并将其以流的形式写入connection中
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
-                    messageContent = URLEncoder.encode(messageContent, "utf-8");
-                    outputStream.writeBytes("receiver=" + receiveid + "&message=" + messageContent);
+                    String messageUtf8 = URLEncoder.encode(messageContent, "utf-8");
+                    outputStream.writeBytes("receiver=" + receiveid + "&message=" + messageUtf8);
 
                     // 提交到的数据转化为字符串
                     InputStream inputStream = connection.getInputStream();
@@ -173,14 +173,16 @@ public class PersonalChatWindow extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 发送成功
-
+                        addTODB();
                         Log.e("接收方的id", receiveid);
                         Message message_ = new Message();
                         message_.what = UPDATE_LIST_VIEW;
                         handler.sendMessage(message_);
+                    } else {
+                        Looper.prepare();
+                        Toast.makeText(getApplicationContext(), "发送失败", Toast.LENGTH_LONG).show();
+                        Looper.loop();
                     }
-                    Looper.prepare();
-                    Looper.loop();
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {  // 关闭connection
@@ -207,8 +209,7 @@ public class PersonalChatWindow extends AppCompatActivity {
         }
     };
     private void addTODB() {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = simpleDateFormat.format(new java.util.Date());
+        String date = DataManager.getCurrentDate();
         myRecordDB.insertOne(0, MyCookieManager.getUserId(),
                 receiveid, messageContent, date);
     }

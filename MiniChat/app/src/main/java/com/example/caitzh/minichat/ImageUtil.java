@@ -68,6 +68,7 @@ public class ImageUtil {
             return bitmap;
         } catch (Exception e) {
             e.printStackTrace();
+            // 如果本地图片不存在，则获取
             Bitmap bm = getImage(path);
             return bm;
         }

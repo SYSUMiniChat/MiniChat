@@ -7,23 +7,17 @@ import com.example.caitzh.minichat.MyDB.userDB;
  */
 
 public class ChatWindowItemInformation {
-    private String path;
     private String username;
     private String information;
     private String time;
     private String userID;
 
     protected ChatWindowItemInformation(String inputUserID, String inputUsername,
-                                        String inputInformation, String inputTime, String inputPath) {
+                                        String inputInformation, String inputTime) {
         this.userID = inputUserID;
         this.username = inputUsername;
         this.information = inputInformation;
         this.time = inputTime;
-        this.path = inputPath;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public void setUserID(String userID) {
@@ -39,7 +33,4 @@ public class ChatWindowItemInformation {
         return userID;
     }
 
-    public String getPath() {
-        return path;
-    }
 }

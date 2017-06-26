@@ -72,12 +72,13 @@ public class DataManager {
                         // 插入
                         db.insertUser(user);
                     }
+                    // 获取头像并保存
                     ImageUtil.getImage(user.getAvatar());
                 } else {
                     // 输出错误提示
                 }
                 connection.disconnect();
-                // 获取头像并保存
+
             } catch (Exception e) {
                 e.printStackTrace();
             } finally {

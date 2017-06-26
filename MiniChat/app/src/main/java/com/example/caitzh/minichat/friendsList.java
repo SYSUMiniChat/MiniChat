@@ -21,10 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.caitzh.minichat.MyDB.recentListDB;
-import com.example.caitzh.minichat.MyDB.userDB;
-import com.example.caitzh.minichat.crh.PersonalChatWindow;
 import com.example.caitzh.minichat.middlewares.Check;
 import com.example.caitzh.minichat.crh.chatWindow;
 import com.example.caitzh.minichat.view.EditTextWithDel;
@@ -32,17 +28,13 @@ import com.example.caitzh.minichat.view.PinyinComparator;
 import com.example.caitzh.minichat.view.PinyinUtils;
 import com.example.caitzh.minichat.view.SideBar;
 import com.example.caitzh.minichat.view.SortModel;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,8 +71,6 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //addTestData();
-        addTestData();
         chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
         personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
         chatWindowLinearLayout.setOnClickListener(new View.OnClickListener() {
@@ -105,22 +95,6 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         linearLayout.setLongClickable(true);
         gestureDetector = new GestureDetector((GestureDetector.OnGestureListener)this);
         initViews();
-    }
-
-    /**
-     * 手动添加测试数据
-     * 同时测试数据的DATETIME
-     */
-    private void addTestData() {
-        userDB db = new userDB(getBaseContext());
-        int id = 0;
-        String nickname = "test";
-        String date = "";
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        for (int i = 0; i < 10; ++i, ++id) {
-            date = simpleDateFormat.format(new java.util.Date());
-            //db.insert2Table(String.valueOf(id), nickname+id, date);
-        }
     }
 
     @Override
