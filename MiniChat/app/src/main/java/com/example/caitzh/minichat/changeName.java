@@ -115,8 +115,7 @@ public class changeName extends AppCompatActivity {
                     String input = editText.getText().toString();
                     DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
                     input = URLEncoder.encode(input, "utf-8");
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-                    String date = simpleDateFormat.format(new java.util.Date());
+                    String date = DataManager.getCurrentDate();
                     switch (parameter) {
                         case "name":
                             outputStream.writeBytes("nickname=" + input + "&timestamp=" + date); break;

@@ -63,9 +63,12 @@ public class Check {
             String code = result.getString("code");
             String message = result.getString("message");
             // test
-            Log.i("code:", code);
+            Log.i("Check update code:", code);
             Log.i("message", message);
-            if (code == "0" && message.compareTo(localTimeStamp) > 0) {
+            Log.e("localTimeStamp", localTimeStamp);
+            Log.e("compareto", String.valueOf(message.compareTo(localTimeStamp)));
+            if (code.equals("0") && message.compareTo(localTimeStamp) > 0) {
+                Log.e("Check", "yes update");
                 hasUpdate = true;
             }
         } catch (Exception e) {

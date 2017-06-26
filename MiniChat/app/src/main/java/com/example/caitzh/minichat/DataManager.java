@@ -2,6 +2,7 @@ package com.example.caitzh.minichat;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 import com.example.caitzh.minichat.MyDB.userDB;
 import com.example.caitzh.minichat.middlewares.Check;
@@ -28,10 +29,12 @@ public class DataManager {
             isexist = true;
             String timeStamp = user.getFinalDate();
             if (!Check.hasUpdate(id_, timeStamp)) {
+                Log.e("UserInfoDate", user.getFinalDate());
                 return user;
             }
         }
         if (Check.checkHasNet(context)) {
+            Log.e("UserInfo", "GET from server");
             try {
                 HttpURLConnection connection = null;
                 connection = (HttpURLConnection) ((new URL(queryInfo+id_).openConnection()));
