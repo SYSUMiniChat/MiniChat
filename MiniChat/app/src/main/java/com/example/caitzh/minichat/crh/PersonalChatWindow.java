@@ -62,6 +62,7 @@ public class PersonalChatWindow extends AppCompatActivity {
     private String receiveid;
     private String messageContent;
     private recordDB myRecordDB;
+    private recentListDB myRecentListDB;
 
     private static final int UPDATE_LIST_VIEW = 1;
 
@@ -81,6 +82,7 @@ public class PersonalChatWindow extends AppCompatActivity {
         }
         IntentFilter filter = new IntentFilter(MessageReceiver.PERSONALCHATWINDOWUPDATE);
         registerReceiver(broadcastReceiver, filter);
+        myRecentListDB = new recentListDB(getApplicationContext());
     }
 
     // 返回按钮
@@ -218,6 +220,7 @@ public class PersonalChatWindow extends AppCompatActivity {
         String date = DataManager.getCurrentDate();
         myRecordDB.insertOne(0, MyCookieManager.getUserId(),
                 receiveid, messageContent, date);
+        myRecentListDB.insertOne(MyCookieManager.getUserId(), receiveid);
         mData.add(new MiniChatMessage(0, messageContent));
     }
 

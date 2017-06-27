@@ -55,6 +55,10 @@ public class recentListDB extends SQLiteOpenHelper {
      */
     public boolean insertOne(String sender, String receiver) {
         SQLiteDatabase db = getWritableDatabase();
+        Cursor cursorSearch = searchItem(sender, receiver);
+        if (cursorSearch.getCount() != 0 && cursorSearch.moveToFirst()) {
+            deleteItem(sender, receiver);
+        }
         ContentValues cv = new ContentValues();
         cv.put("sender", sender);
         cv.put("receiver", receiver);
@@ -88,5 +92,15 @@ public class recentListDB extends SQLiteOpenHelper {
     public void deleteItem(String sender, String receiver) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NAME, "sender=? AND receiver=?", new String[] {sender, receiver});
+    }
+
+    /**
+     * 搜索记录，根据用户id和对面id搜索
+     * @param sender
+     * @param receiver
+     */
+    public Cursor searchItem(String sender, String receiver) {
+        SQLiteDatabase db = getWritableDatabase();
+        return db.query(TABLE_NAME, null, "sender=? AND receiver=?", new String[]{sender, receiver},null, null, null);
     }
 }
