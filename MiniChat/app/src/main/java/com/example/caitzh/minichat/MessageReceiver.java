@@ -25,14 +25,12 @@ import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
 import com.tencent.android.tpush.XGPushShowedResult;
 import com.tencent.android.tpush.XGPushTextMessage;
-import com.tencent.android.tpush.data.RegisterEntity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
 
-import static android.app.Activity.RESULT_FIRST_USER;
 
 /**
  * Created by Administrator on 2017/5/16.
@@ -117,6 +115,8 @@ public class MessageReceiver extends XGPushBaseReceiver {
     }
 
     // 当通知出现(即收到消息时)被调用
+    public static final String PERSONALCHATWINDOWUPDATE = "jason.broadcast.action1";
+    public static final String CHATWINDOWUPDATE = "jason.broadcast.action2";
     @Override
     public void onNotifactionShowedResult(Context context, XGPushShowedResult message) {
         Log.v("TEST", message.getContent());
@@ -148,16 +148,28 @@ public class MessageReceiver extends XGPushBaseReceiver {
         }
         if (type == 0) {
             myRecentListDB = new recentListDB(context);
-            myRecordDB = new recordDB(context);
             myRecentListDB.insertOne(MyCookieManager.getUserId(), sender);
+            myRecordDB = new recordDB(context);
             myRecordDB.insertOne(1, MyCookieManager.getUserId(), sender, message.getContent(), time);
             Log.e("聊天窗口是否在前台", context.getClass().getName());
-            // 收到消息应该判断当前的activity并作出相应操作而不是直接跳转
-            Intent intent = new Intent(context, PersonalChatWindow.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("receiveid", sender);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
+            String pkg = "com.example.caitzh.minichat";
+            // 根据当前的Activity发送相应广播进行相应更新
+            if (isActivityAtRunningTop(pkg, pkg+".crh.chatWindow", context)) {
+                // 当前在最近联系人界面
+                Log.e("当前Activity", "最近联系人窗口");
+                Intent intent = new Intent(CHATWINDOWUPDATE);
+                intent.putExtra("content", message.getContent());
+                intent.putExtra("time", time);
+                context.sendBroadcast(intent);
+            } else if (isActivityAtRunningTop(pkg, pkg+".crh.PersonalChatWindow", context)) {
+                // 当前在聊天界面
+                Log.e("当前Activity", "聊天窗口");
+                Intent intent = new Intent(PERSONALCHATWINDOWUPDATE);
+                intent.putExtra("content", message.getContent());
+                intent.putExtra("time", time);
+                intent.putExtra("receiver", sender);
+                context.sendBroadcast(intent);
+            }
         } else if (type == 1) {
             Intent intent = new Intent(context, AddFriendActivity.class);
             Bundle bundle = new Bundle();
@@ -171,19 +183,6 @@ public class MessageReceiver extends XGPushBaseReceiver {
 
         }
     }
-    public static boolean isForeground(Context context, String className) {
-        if (context == null || TextUtils.isEmpty(className))
-            return false;
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> list = am.getRunningTasks(1);
-        if (list != null && list.size() > 0) {
-            ComponentName cpn = list.get(0).topActivity;
-            if (className.equals(cpn.getClassName()))
-                return true;
-        }
-        return false;
-    }
-
     private static final int GET_IMAGE_OK = 0;
     // 获取路径下的图片
     private void getImage(final String path) {
@@ -224,4 +223,21 @@ public class MessageReceiver extends XGPushBaseReceiver {
             }
         }
     };
+    // 判断某个Activity是否在前台
+    public static boolean isActivityAtRunningTop(String pkg, String cls, Context context) {
+
+        ActivityManager am =(ActivityManager)context.getSystemService(Context.ACTIVITY_SERVICE);
+
+        List<ActivityManager.RunningTaskInfo> tasks = am.getRunningTasks(1);
+
+        ActivityManager.RunningTaskInfo task = tasks.get(0);
+
+        if (task != null) {
+            return TextUtils.equals(task.topActivity.getPackageName(), pkg) && TextUtils.equals(task.topActivity.getClassName(), cls);
+        }
+
+        return false;
+
+    }
+
 }

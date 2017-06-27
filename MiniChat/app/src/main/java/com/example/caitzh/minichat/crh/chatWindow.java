@@ -1,9 +1,11 @@
 package com.example.caitzh.minichat.crh;
 
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caitzh.minichat.DataManager;
+import com.example.caitzh.minichat.MessageReceiver;
 import com.example.caitzh.minichat.MyCookieManager;
 import com.example.caitzh.minichat.R;
 import com.example.caitzh.minichat.friendsList;
@@ -58,6 +61,8 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         myRecentListDB = new recentListDB(chatWindow.this);
         setView();
         setChatWindowAdapter();
+        IntentFilter filter = new IntentFilter(MessageReceiver.CHATWINDOWUPDATE);
+        registerReceiver(broadcastReceiver, filter);
     }
 
     @Override
@@ -231,5 +236,19 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             setChatWindowAdapter();
         }
     }
+    // 接收到新消息的广播接收器
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
 
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("收到的消息", intent.getStringExtra("content"));
+            setChatWindowAdapter();
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
 }

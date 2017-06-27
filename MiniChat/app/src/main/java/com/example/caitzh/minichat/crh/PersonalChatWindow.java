@@ -1,6 +1,9 @@
 package com.example.caitzh.minichat.crh;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -21,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caitzh.minichat.DataManager;
+import com.example.caitzh.minichat.MessageReceiver;
 import com.example.caitzh.minichat.MyCookieManager;
 import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.recordDB;
@@ -58,7 +62,6 @@ public class PersonalChatWindow extends AppCompatActivity {
     private String receiveid;
     private String messageContent;
     private recordDB myRecordDB;
-    private TextView receivenickname;
 
     private static final int UPDATE_LIST_VIEW = 1;
 
@@ -76,6 +79,8 @@ public class PersonalChatWindow extends AppCompatActivity {
             actionBar.setHomeButtonEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+        IntentFilter filter = new IntentFilter(MessageReceiver.PERSONALCHATWINDOWUPDATE);
+        registerReceiver(broadcastReceiver, filter);
     }
 
     // 返回按钮
@@ -200,6 +205,7 @@ public class PersonalChatWindow extends AppCompatActivity {
                     try {
                         Log.e("setAdapter", "测试");
                         personalChatWindowAdapter.notifyDataSetChanged();
+                        listView.setSelection(mData.size() - 1);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -213,5 +219,25 @@ public class PersonalChatWindow extends AppCompatActivity {
         myRecordDB.insertOne(0, MyCookieManager.getUserId(),
                 receiveid, messageContent, date);
         mData.add(new MiniChatMessage(0, messageContent));
+    }
+
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("收到的消息", intent.getStringExtra("content"));
+            if (intent.getStringExtra("receiver").equals(receiveid)) {
+                mData.add(new MiniChatMessage(1, intent.getStringExtra("content")));
+                personalChatWindowAdapter.notifyDataSetChanged();
+                listView.setSelection(mData.size() - 1);
+            }
+        }
+    };
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
     }
 }
