@@ -375,6 +375,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                             }
                         } else if (url.equals(url_logout)) { // 退出成功
                             unregister(getApplicationContext());
+                            MyCookieManager.deleteCookie();
                             finish();  // 结束当前activity
                             Intent intent = new Intent(personalInformation.this, signIn.class); // 跳转到登录页面
                             startActivity(intent);
@@ -388,6 +389,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                             String sex = information.getString("sex");
                             String signature = information.getString("signature");
                             details = new String[] {nickname, id, sex, city, signature, "", ""};
+                            db.insert2Table(id, nickname, sex, city, signature, avatars, DataManager.getCurrentDate());
                             getImage(avatars);  // 通过访问返回的图片路径去获取图片
                             // 利用message传递信息给handler
                             Message message_ = new Message();
