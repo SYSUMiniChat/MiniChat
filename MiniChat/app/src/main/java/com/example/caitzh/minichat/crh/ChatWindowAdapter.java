@@ -87,7 +87,7 @@ public class ChatWindowAdapter extends BaseAdapter{
             view = LayoutInflater.from(context).inflate(R.layout.activity_chat_window_listview, null);
         }
         avatar = (ImageView)view.findViewById(R.id.chat_window_listview_icon);
-        new Thread(new Runnable() {
+        Thread setAvatar = new Thread(new Runnable() {
             @Override
             public void run() {
                 User user = DataManager.getLatestData(context, list.get(i).getUserID());
@@ -96,13 +96,17 @@ public class ChatWindowAdapter extends BaseAdapter{
                     Toast.makeText(context, "没有可用网络", Toast.LENGTH_LONG).show();
                     Looper.loop();
                 } else {
-                    Message message = new Message();
-                    message.what = GET_IMAGE_OK;
-                    message.obj = ImageUtil.openImage(user.getAvatar());
-                    handler.sendMessage(message);
+                    Bitmap bm = ImageUtil.openImage(user.getAvatar());
+                    avatar.setImageBitmap(bm);
                 }
             }
-        }).start();
+        });
+        setAvatar.start();
+        try {
+            setAvatar.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         TextView information = (TextView)view.findViewById(R.id.chat_window_listview_information);
         TextView time = (TextView)view.findViewById(R.id.chat_window_listview_time);
         TextView username = (TextView)view.findViewById(R.id.chat_window_listview_username);
@@ -113,23 +117,6 @@ public class ChatWindowAdapter extends BaseAdapter{
         userid.setText(list.get(i).getUserID());
         return view;
     }
-
-    private static final int GET_IMAGE_OK = 2;
-    // 利用Handler来更新UI
-    private android.os.Handler handler = new android.os.Handler() {
-        public void handleMessage(Message message) {
-            switch (message.what) {
-                case GET_IMAGE_OK:
-                    try {
-                        avatar.setImageBitmap((Bitmap)message.obj); // 头像设置
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    break;
-                default: break;
-            }
-        }
-    };
 
     private String timeFormat(String time) {
         if (time.equals("")) {

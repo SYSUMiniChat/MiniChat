@@ -66,7 +66,7 @@ public class MessageReceiver extends XGPushBaseReceiver {
 
     // 通知被点击时调用
     @Override
-    public void onNotifactionClickedResult(Context context, XGPushClickedResult message) {
+    public void onNotifactionClickedResult(final Context context, XGPushClickedResult message) {
         if (context == null || message == null) {
             return;
         }
@@ -75,16 +75,10 @@ public class MessageReceiver extends XGPushBaseReceiver {
             // APP自己处理点击的相关动作
             Log.v("TEST", "通知被点击 :" + message);
 
-            // message.getContent() 通知内容
-            // message.getTitle() 通知的标题
-
-
-            // 获取自定义key-value
-            // 这是一个Json字符串, 格式如下：{"type": 1, "sender": "1234567892@qq.com"}
             String customContent = message.getCustomContent();
             Integer type = 0;  // 0表示聊天消息，1表示添加好友请求，2表示对方同意你的好友请求，3表示对方拒绝你的好友请求
             String sender = ""; // 发送者 id
-            String time = "";
+            String time = ""; // 发送时间
             if (customContent != null && customContent.length() != 0) {
                 try {
                     JSONObject obj = new JSONObject(customContent);
@@ -103,6 +97,25 @@ public class MessageReceiver extends XGPushBaseReceiver {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+            if (type == 0) {
+                Intent intent = new Intent(context, PersonalChatWindow.class);
+                intent.putExtra("receiveid", sender);
+                intent.putExtra("receivenickname", "test");
+                context.startActivity(intent);
+            } else if (type == 1) {
+                Intent intent = new Intent(context, AddFriendActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", sender);
+                bundle.putInt("type", 1);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
+            } else if (type == 2) {
+                Intent intent = new Intent(context, chatWindow.class);
+                context.startActivity(intent);
+            } else {
+                Intent intent = new Intent(context, chatWindow.class);
+                context.startActivity(intent);
             }
             // 通知被点击时启动对应的activity, 比如聊天界面，或者添加好友界面
             //Intent intent = new Intent(context, XXXActivity.class);
@@ -171,12 +184,12 @@ public class MessageReceiver extends XGPushBaseReceiver {
                 context.sendBroadcast(intent);
             }
         } else if (type == 1) {
-            Intent intent = new Intent(context, AddFriendActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putString("id", sender);
-            bundle.putInt("type", 1);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
+//            Intent intent = new Intent(context, AddFriendActivity.class);
+//            Bundle bundle = new Bundle();
+//            bundle.putString("id", sender);
+//            bundle.putInt("type", 1);
+//            intent.putExtras(bundle);
+//            context.startActivity(intent);
         } else if (type == 2) {
 
         } else {
