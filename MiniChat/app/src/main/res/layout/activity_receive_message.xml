@@ -9,8 +9,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_margin="3dp"
-        android:contentDescription="接受者头像"
-        android:src="@mipmap/test_icon" />
+        android:contentDescription="接受者头像"/>
     <TextView
         android:id="@+id/Receive_Content"
         android:layout_width="wrap_content"

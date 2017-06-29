@@ -10,8 +10,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_margin="3dp"
-        android:contentDescription="接受者头像"
-        android:src="@mipmap/test_icon" />
+        android:contentDescription="接受者头像" />
     <TextView
         android:id="@+id/Send_Content"
         android:layout_width="wrap_content"

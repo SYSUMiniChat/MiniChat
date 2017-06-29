@@ -13,7 +13,6 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginRight="10dp"
-        android:src="@mipmap/avatar"
         android:id="@+id/chat_window_listview_icon"/>
     <LinearLayout
         android:layout_width="0dp"

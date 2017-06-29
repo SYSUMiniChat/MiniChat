@@ -27,6 +27,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.middlewares.Check;
 import com.example.caitzh.minichat.crh.chatWindow;
 import com.example.caitzh.minichat.view.EditTextWithDel;
@@ -113,6 +115,15 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e("onResume", "begin");
+        SourceDateList.clear();
+        data.clear();
+        setAdapter();
+    }
+
     private void initViews() {
         mEtSearchName = (EditTextWithDel) findViewById(R.id.et_search);
         sideBar = (SideBar) findViewById(R.id.sidrbar);
@@ -122,7 +133,6 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         sortListView.setLongClickable(true);
         initDatas();
         initEvents();
-        setAdapter();
     }
 
     /**
@@ -302,10 +312,10 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
                         sortModel.setSortLetters("#");
                     }
                     // 数据同步
-                    synchronized (this) {
-                        SourceDateList.add(sortModel);
+                    {
                         Message message = new Message();
                         message.what = INIT_CODE;
+                        message.obj = sortModel;
                         handler.sendMessage(message);
                     }
                 } else {
@@ -339,8 +349,11 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case INIT_CODE: {
-                    Collections.sort(SourceDateList, new PinyinComparator());
-                    adapter.updateListView(SourceDateList);
+                    synchronized (this) {
+                        SourceDateList.add((SortModel) msg.obj);
+                        Collections.sort(SourceDateList, new PinyinComparator());
+                        adapter.updateListView(SourceDateList);
+                    }
                     break;
                 }
                 case DELETE_CODE: {

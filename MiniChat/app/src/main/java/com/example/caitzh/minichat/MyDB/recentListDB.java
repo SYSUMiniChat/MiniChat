@@ -26,8 +26,8 @@ public class recentListDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 +TABLE_NAME
-                +" (sender TEXT, receiver TEXT," +
-                " Primary key (sender, receiver))";
+                +" (sender TEXT, receiver TEXT, fdate DATETIME" +
+                " )";
         db.execSQL(CREATE_TABLE);
         Log.e("RecentDB", TABLE_NAME);
     }
@@ -36,8 +36,8 @@ public class recentListDB extends SQLiteOpenHelper {
     public void onOpen(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 +TABLE_NAME
-                +" (sender TEXT, receiver TEXT," +
-                " Primary key (sender, receiver))";
+                +" (sender TEXT, receiver TEXT" +
+                " )";
         db.execSQL(CREATE_TABLE);
         super.onOpen(db);
     }
@@ -53,20 +53,18 @@ public class recentListDB extends SQLiteOpenHelper {
      * @param receiver
      * @return
      */
-    public boolean insertOne(String sender, String receiver) {
+    public void insertOne(String sender, String receiver, String ftime) {
         SQLiteDatabase db = getWritableDatabase();
-        deleteItem(sender, receiver);
         ContentValues cv = new ContentValues();
         cv.put("sender", sender);
         cv.put("receiver", receiver);
-        long result = 0;
-        try {
+        cv.put("fdate", ftime);
+        if (ifExist(sender, receiver)) {
+            db.update(TABLE_NAME, cv, "sender=? AND receiver=?", new String[] {sender, receiver});
+        } else {
             db.insert(TABLE_NAME, null, cv);
-        } catch (Exception e) {
-            Log.e("Insert Recent Eroor", e.toString());
         }
         db.close();
-        return result != -1;
     }
 
     /**
@@ -76,7 +74,7 @@ public class recentListDB extends SQLiteOpenHelper {
      */
     public Cursor getItems(String sender) {
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursor = db.query(TABLE_NAME, null, "sender=?", new String[]{sender},null, null, null);
+        Cursor cursor = db.query(TABLE_NAME, null, "sender=?", new String[]{sender},null, null, "fdate ASC");
         cursor.moveToFirst();
         return cursor;
     }
@@ -96,8 +94,8 @@ public class recentListDB extends SQLiteOpenHelper {
      * @param sender
      * @param receiver
      */
-    public Cursor searchItem(String sender, String receiver) {
+    public boolean ifExist(String sender, String receiver) {
         SQLiteDatabase db = getWritableDatabase();
-        return db.query(TABLE_NAME, null, "sender=? AND receiver=?", new String[]{sender, receiver},null, null, null);
+        return db.query(TABLE_NAME, null, "sender=? AND receiver=?", new String[]{sender, receiver},null, null, null).moveToFirst();
     }
 }

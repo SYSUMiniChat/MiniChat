@@ -161,7 +161,7 @@ public class MessageReceiver extends XGPushBaseReceiver {
         }
         if (type == 0) {
             myRecentListDB = new recentListDB(context);
-            myRecentListDB.insertOne(MyCookieManager.getUserId(), sender);
+            myRecentListDB.insertOne(MyCookieManager.getUserId(), sender, DataManager.getCurrentDate());
             myRecordDB = new recordDB(context);
             myRecordDB.insertOne(1, MyCookieManager.getUserId(), sender, message.getContent(), time);
             Log.e("聊天窗口是否在前台", context.getClass().getName());

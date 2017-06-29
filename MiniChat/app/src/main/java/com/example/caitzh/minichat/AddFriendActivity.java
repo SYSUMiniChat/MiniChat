@@ -95,8 +95,6 @@ public class AddFriendActivity extends AppCompatActivity {
                         bundle.putString("receivenickname", user.getNickname());
                         Intent intent1 = new Intent(AddFriendActivity.this, PersonalChatWindow.class);
                         intent1.putExtras(bundle);
-                        recentListDB db = new recentListDB(getBaseContext());
-                        db.insertOne(MyCookieManager.getUserId(), id);
                         finish();
                         startActivity(intent1);
                     } else {

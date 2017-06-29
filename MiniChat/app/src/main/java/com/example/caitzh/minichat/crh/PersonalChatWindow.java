@@ -221,7 +221,7 @@ public class PersonalChatWindow extends AppCompatActivity {
         String date = DataManager.getCurrentDate();
         myRecordDB.insertOne(0, MyCookieManager.getUserId(),
                 receiveid, messageContent, date);
-        myRecentListDB.insertOne(MyCookieManager.getUserId(), receiveid);
+        myRecentListDB.insertOne(MyCookieManager.getUserId(), receiveid, DataManager.getCurrentDate());
         mData.add(new MiniChatMessage(0, messageContent));
     }
 
