@@ -130,7 +130,6 @@ public class AddFriendActivity extends AppCompatActivity {
             }
         });
     }
-    private static final String queryInfo = "http://119.29.238.202:8000/query/";
     private static final String queryIsFriend = "http://119.29.238.202:8000/isFriend";
     private static  String avatar, city, nickname, sex, signature, tips = "test";
     private static final int USER_DATA = 1;
