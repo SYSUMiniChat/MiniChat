@@ -55,10 +55,7 @@ public class recentListDB extends SQLiteOpenHelper {
      */
     public boolean insertOne(String sender, String receiver) {
         SQLiteDatabase db = getWritableDatabase();
-        Cursor cursorSearch = searchItem(sender, receiver);
-        if (cursorSearch.getCount() != 0 && cursorSearch.moveToFirst()) {
-            deleteItem(sender, receiver);
-        }
+        deleteItem(sender, receiver);
         ContentValues cv = new ContentValues();
         cv.put("sender", sender);
         cv.put("receiver", receiver);
