@@ -173,7 +173,9 @@ public class AddFriendActivity extends AppCompatActivity {
             switch (msg.what) {
                 case USER_DATA:
                     Bitmap bitmap = ImageUtil.openImage(user.getAvatar());
+                    Log.e("头像设置", "开始");
                     the_avatar.setImageBitmap(bitmap);
+                    Log.e("头像设置", "结束");
                     simpleAdapter = new SimpleAdapter(getApplicationContext(), list, R.layout.personal_information_item,
                             new String[] {"name", "detail"}, new int[] {R.id.name, R.id.detail});
                     if (simpleAdapter == null) Log.e("simpleAdapter is", "null");
