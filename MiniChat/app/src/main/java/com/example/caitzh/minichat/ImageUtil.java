@@ -63,11 +63,13 @@ public class ImageUtil {
     public static Bitmap openImage(String path) {
         String localPath = dir+path.substring(path.lastIndexOf('/'));
         try {
+            Log.e("打开图片", "本地存在");
             FileInputStream stream = new FileInputStream(localPath);
             Bitmap bitmap = BitmapFactory.decodeStream(stream);
             return bitmap;
         } catch (Exception e) {
             e.printStackTrace();
+            Log.e("打开图片", "本地不存在");
             // 如果本地图片不存在，则获取
             Bitmap bm = getImage(path);
             return bm;

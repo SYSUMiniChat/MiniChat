@@ -1,9 +1,12 @@
 package com.example.caitzh.minichat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -47,14 +50,11 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         GestureDetector.OnGestureListener {
     private ListView sortListView;
     private SideBar sideBar;
-    private TextView dialog, mTvTitle;
+    private TextView dialog;
     private SortAdapter adapter;
     private EditTextWithDel mEtSearchName;
-    private List<SortModel> SourceDateList;
+    private List<SortModel> SourceDateList = new ArrayList<SortModel>();
     private ArrayList<String> data = new ArrayList<String>();
-    private ArrayList<String> nicknames = new ArrayList<String>();
-    private ArrayList<String> ids = new ArrayList<String>();
-    private static CountDownLatch mDownLatch;
 
 
     private LinearLayout linearLayout;
@@ -68,7 +68,7 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends_list);
-
+        adapter = new SortAdapter(getApplicationContext(), SourceDateList);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
@@ -114,7 +114,6 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         mEtSearchName = (EditTextWithDel) findViewById(R.id.et_search);
         sideBar = (SideBar) findViewById(R.id.sidrbar);
         dialog = (TextView) findViewById(R.id.dialog);
-//        mTvTitle = (TextView) findViewById(R.id.tv_title);
         sortListView = (ListView) findViewById(R.id.lv_contact);
         sortListView.setOnTouchListener(this);
         sortListView.setLongClickable(true);
@@ -122,40 +121,18 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         initEvents();
         setAdapter();
     }
-    // 插入列表数据
 
     /**
      * 从数据库添加数据
      */
     private void setAdapter() {
         Log.e("Info", "进入setAdapter");
-        getFriends();
-        Log.e("Info", "取得好友列表成功");
-
-        try {
-            Log.e("Info", "开始setAdapter");
-            mDownLatch = new CountDownLatch(data.size());
-            for (int i = 0; i < data.size(); ++i) {
-                getInfo(data.get(i));
-            }
-            mDownLatch.await(); // 等待多线程结束
-            Log.e("Info", "多线程结束");
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]),
-                    (String[])ids.toArray(new String[nicknames.size()]));
-            Collections.sort(SourceDateList, new PinyinComparator());
-            adapter = new SortAdapter(this, SourceDateList);
-            sortListView.setAdapter(adapter);
-        }
-
-        SourceDateList = filledData((String[])nicknames.toArray(new String[nicknames.size()]),
-                (String[])ids.toArray(new String[nicknames.size()]));
-        Collections.sort(SourceDateList, new PinyinComparator());
-        adapter = new SortAdapter(this, SourceDateList);
         sortListView.setAdapter(adapter);
-        //SourceDateList = filledData(getResources().getStringArray(R.array.contacts));
+        if (Check.checkHasNet(getApplicationContext())) {
+            getFriendListFromServer(getApplicationContext());
+        } else {
+            Toast.makeText(getApplication(), "当前网络不可用", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initEvents() {
@@ -190,9 +167,6 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
                 } else {
                     Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
                 }
-
-                // mTvTitle.setText(((SortModel) adapter.getItem(position)).getName());
-                 //Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -242,53 +216,10 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         Collections.sort(mSortList, new PinyinComparator());
         adapter.updateListView(mSortList);
     }
-
-    private List<SortModel> filledData(String[] date, String[] id) {
-        List<SortModel> mSortList = new ArrayList<>();
-        ArrayList<String> indexString = new ArrayList<>();
-
-        for (int i = 0; i < date.length; i++) {
-            SortModel sortModel = new SortModel();
-            sortModel.setName(date[i]);
-            sortModel.setId(id[i]);
-            String pinyin = PinyinUtils.getPingYin(date[i]);
-            String sortString = pinyin.substring(0, 1).toUpperCase();
-            if (sortString.matches("[A-Z]")) {
-                sortModel.setSortLetters(sortString.toUpperCase());
-                if (!indexString.contains(sortString)) {
-                    indexString.add(sortString);
-                }
-            } else {
-                sortModel.setSortLetters("#");
-            }
-            mSortList.add(sortModel);
-        }
-        Collections.sort(indexString);
-        // sideBar.setIndexText(indexString);
-        return mSortList;
-    }
     private static final String getFriendsUrl = "http://119.29.238.202:8000/getFriends";
-    private static final String queryInfo = "http://119.29.238.202:8000/query/";
-    private ArrayList<String> getFriends() {
-        String userId = MyCookieManager.getUserId();
-        ArrayList<String> data = new ArrayList<String>();
-        if (Check.checkHasNet(getApplicationContext())) {
-            try {
-                // 发送请求获得好友列表
-                mDownLatch = new CountDownLatch(1);
-                getFriendListFromServer();
-                mDownLatch.await();
-                Log.e("线程状态:", "结束");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            Toast.makeText(getApplicationContext(), "当前没有可用网络", Toast.LENGTH_LONG).show();
-        }
-        return data;
-    }
 
-    private void getFriendListFromServer() {
+     // 获取好友列表
+    private void getFriendListFromServer(final Context context) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -320,62 +251,53 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
                         Log.e("list:", resultList.getString(i));
                     }
                     data = Flist;
+                    for (int i = 0; i < data.size(); ++i) {
+                        getAndSetUserInfo(context, data.get(i));
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
                     if (connection != null) connection.disconnect();
-                    mDownLatch.countDown();
                 }
             }
         }).start();
     }
-    // 获取好友信息
-    private void getInfo(final String id) {
+    private void getAndSetUserInfo(final Context context,final String id) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection connection = null;
-                try {
-                    connection = (HttpURLConnection) ((new URL(queryInfo+id).openConnection()));
-                    // 设置请求方式和响应时间
-                    connection.setRequestMethod("GET");
-                    connection.setReadTimeout(8000);
-                    connection.setConnectTimeout(8000);
-
-                    // 取回的数据
-                    InputStream inputStream = connection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    // 从返回的json中提取信息
-                    JSONObject result = new JSONObject(response.toString());
-                    String code = result.getString("code");
-                    String message = result.getString("message");
-                    if (code.equals("0")) {
-                        JSONObject information = new JSONObject(message);
-                        String avatar = information.getString("avatar");
-                        String city = information.getString("city");
-                        String id = information.getString("id");
-                        String nickname = information.getString("nickname");
-                        String sex = information.getString("sex");
-                        String signature = information.getString("signature");
-                        nicknames.add(nickname);
-                        ids.add(id);
+                User user = DataManager.getLatestData(context, id);
+                if (user != null) {
+                    SortModel sortModel = new SortModel();
+                    sortModel.setName(user.getNickname());
+                    sortModel.setId(id);
+                    sortModel.setBm(ImageUtil.openImage(user.getAvatar()));
+                    String pinyin = PinyinUtils.getPingYin(user.getNickname());
+                    String sortString = pinyin.substring(0, 1).toUpperCase();
+                    if (sortString.matches("[A-Z]")) {
+                        sortModel.setSortLetters(sortString.toUpperCase());
                     } else {
-                        // 输出错误提示
+                        sortModel.setSortLetters("#");
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (connection != null) connection.disconnect();
-                    mDownLatch.countDown();
+                    // 数据同步
+                    synchronized (this) {
+                        SourceDateList.add(sortModel);
+                        handler.sendMessage(new Message());
+                    }
+                } else {
+                    Log.e("好友列表", "用户为空");
                 }
             }
         }).start();
     }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            Collections.sort(SourceDateList, new PinyinComparator());
+            adapter.updateListView(SourceDateList);
+        }
+    };
     @Override
     public boolean onDown(MotionEvent e) {
         return false;

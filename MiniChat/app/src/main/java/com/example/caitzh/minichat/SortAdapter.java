@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
@@ -55,6 +56,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer {
             viewHolder.tvTitle = (TextView) view.findViewById(R.id.tv_city_name);
             view.setTag(viewHolder);
             viewHolder.tvLetter = (TextView) view.findViewById(R.id.tv_catagory);
+            viewHolder.tvAvatar = (ImageView) view.findViewById(R.id.tv_avatar);
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
@@ -69,6 +71,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer {
         }
 
         viewHolder.tvTitle.setText(this.list.get(position).getName());
+        viewHolder.tvAvatar.setImageBitmap(this.list.get(position).getBm());
 
         return view;
 
@@ -78,6 +81,7 @@ public class SortAdapter extends BaseAdapter implements SectionIndexer {
     final static class ViewHolder {
         TextView tvLetter;
         TextView tvTitle;
+        ImageView tvAvatar;
     }
 
     public int getSectionForPosition(int position) {

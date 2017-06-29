@@ -5,74 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/colorWhite"
-    android:orientation="vertical"
-    android:id="@+id/friends_list_linear_layout">
-
-
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@color/colorWhite"
+        android:orientation="vertical"
+        android:id="@+id/friends_list_linear_layout">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+
+        <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-    </android.support.design.widget.AppBarLayout>
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <com.example.caitzh.minichat.view.EditTextWithDel
-        android:id="@+id/et_search"
-        android:hint="   搜索联系人"
-        android:singleLine="true"
-        android:paddingLeft="16dp"
-        android:textSize="14dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/shape_border_grey"
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
+        </android.support.design.widget.AppBarLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <ListView
-            android:id="@+id/lv_contact"
+        <com.example.caitzh.minichat.view.EditTextWithDel
+            android:id="@+id/et_search"
+            android:hint="   搜索联系人"
+            android:singleLine="true"
+            android:paddingLeft="16dp"
+            android:textSize="14dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/shape_border_grey"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:divider="@null"
-            android:scrollbars="none" />
+            android:layout_height="40dp" />
 
-        <TextView
-            android:id="@+id/dialog"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_gravity="center"
-            android:background="@drawable/shape_slide_grey"
-            android:gravity="center"
-            android:text="A"
-            android:textColor="@android:color/white"
-            android:textSize="36sp"
-            android:visibility="gone"
-            tools:visibility="visible" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <com.example.caitzh.minichat.view.SideBar
-            android:id="@+id/sidrbar"
-            android:layout_width="24dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="right|center" />
-    </FrameLayout>
-    <include layout="@layout/activity_slider_bottom"/>
-</LinearLayout>
+            <ListView
+                android:id="@+id/lv_contact"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:divider="@null"
+                android:scrollbars="none" />
+
+            <TextView
+                android:id="@+id/dialog"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_gravity="center"
+                android:background="@drawable/shape_slide_grey"
+                android:gravity="center"
+                android:text="A"
+                android:textColor="@android:color/white"
+                android:textSize="36sp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.example.caitzh.minichat.view.SideBar
+                android:id="@+id/sidrbar"
+                android:layout_width="24dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="right|center" />
+        </FrameLayout>
+        <include layout="@layout/activity_slider_bottom"/>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

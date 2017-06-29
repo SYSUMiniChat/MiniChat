@@ -130,7 +130,6 @@ public class AddFriendActivity extends AppCompatActivity {
             }
         });
     }
-    private static final String queryInfo = "http://119.29.238.202:8000/query/";
     private static final String queryIsFriend = "http://119.29.238.202:8000/isFriend";
     private static  String avatar, city, nickname, sex, signature, tips = "test";
     private static final int USER_DATA = 1;
@@ -174,7 +173,9 @@ public class AddFriendActivity extends AppCompatActivity {
             switch (msg.what) {
                 case USER_DATA:
                     Bitmap bitmap = ImageUtil.openImage(user.getAvatar());
+                    Log.e("头像设置", "开始");
                     the_avatar.setImageBitmap(bitmap);
+                    Log.e("头像设置", "结束");
                     simpleAdapter = new SimpleAdapter(getApplicationContext(), list, R.layout.personal_information_item,
                             new String[] {"name", "detail"}, new int[] {R.id.name, R.id.detail});
                     if (simpleAdapter == null) Log.e("simpleAdapter is", "null");
