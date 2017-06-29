@@ -92,4 +92,6 @@ public class DataManager {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return simpleDateFormat.format(new java.util.Date());
     }
+
+
 }

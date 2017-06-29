@@ -92,7 +92,7 @@ public class AddFriendActivity extends AppCompatActivity {
                         // 跳转到聊天界面
                         Bundle bundle = new Bundle();
                         bundle.putString("receiveid", id);
-                        bundle.putString("receivenickname", nickname);
+                        bundle.putString("receivenickname", user.getNickname());
                         Intent intent1 = new Intent(AddFriendActivity.this, PersonalChatWindow.class);
                         intent1.putExtras(bundle);
                         recentListDB db = new recentListDB(getBaseContext());
@@ -155,6 +155,7 @@ public class AddFriendActivity extends AppCompatActivity {
                     }
                     Message message_ = new Message();
                     message_.what = USER_DATA;
+                    message_.obj = ImageUtil.openImage(user.getAvatar());
                     handler.sendMessage(message_);
 
                 } else {
@@ -172,7 +173,7 @@ public class AddFriendActivity extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case USER_DATA:
-                    Bitmap bitmap = ImageUtil.openImage(user.getAvatar());
+                    Bitmap bitmap =(Bitmap) msg.obj;
                     Log.e("头像设置", "开始");
                     the_avatar.setImageBitmap(bitmap);
                     Log.e("头像设置", "结束");

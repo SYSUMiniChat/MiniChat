@@ -1,11 +1,14 @@
 package com.example.caitzh.minichat;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -169,6 +172,25 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
                 }
             }
         });
+        // 设置长按删除好友
+        sortListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(friendsList.this);
+                builder.setTitle("删除好友");
+                builder.setMessage("确定删除好友?");
+                builder.setNegativeButton("取消", null);
+                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteFriend(position);
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return true;
+            }
+        });
 
         //根据输入框输入值的改变来过滤搜索
         mEtSearchName.addTextChangedListener(new TextWatcher() {
@@ -282,10 +304,31 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
                     // 数据同步
                     synchronized (this) {
                         SourceDateList.add(sortModel);
-                        handler.sendMessage(new Message());
+                        Message message = new Message();
+                        message.what = INIT_CODE;
+                        handler.sendMessage(message);
                     }
                 } else {
                     Log.e("好友列表", "用户为空");
+                }
+            }
+        }).start();
+    }
+    private static final int INIT_CODE = 0;
+    private static final int DELETE_CODE =1;
+    private void deleteFriend(final int position) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (AccessServerUtil.deleteFriendFromServer(SourceDateList.get(position).getId())) {
+                    Message message = new Message();
+                    message.what = DELETE_CODE;
+                    message.arg1 = position;
+                    handler.sendMessage(message);
+                } else {
+                    Looper.prepare();
+                    Toast.makeText(getApplicationContext(), "删除失败", Toast.LENGTH_LONG).show();
+                    Looper.loop();
                 }
             }
         }).start();
@@ -294,8 +337,20 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            Collections.sort(SourceDateList, new PinyinComparator());
-            adapter.updateListView(SourceDateList);
+            switch (msg.what) {
+                case INIT_CODE: {
+                    Collections.sort(SourceDateList, new PinyinComparator());
+                    adapter.updateListView(SourceDateList);
+                    break;
+                }
+                case DELETE_CODE: {
+                    int position = msg.arg1;
+                    SourceDateList.remove(position);
+                    adapter.updateListView(SourceDateList);
+                    break;
+                }
+                default: break;
+            }
         }
     };
     @Override

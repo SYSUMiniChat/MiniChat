@@ -18,6 +18,7 @@ public class AccessServerUtil {
     private static String ip = "http://119.29.238.202:8000";
     private static String addRequest = "/friend/addRequest";
     private static String answer = "/friend/answer";
+    private static String dFriend = "/friend/delete";
     private static String send = "/send";
     private static String post = "POST";
     public final static int SEND_TYPE = 0;
@@ -117,6 +118,41 @@ public class AccessServerUtil {
                 }
             }
             default: break;
+        }
+    }
+    public static boolean deleteFriendFromServer(String id_) {
+        HttpURLConnection connection = null;
+        String code = null;
+        try {
+            connection = (HttpURLConnection) ((new URL(ip+dFriend).openConnection()));
+            // 设置请求方式和响应时间
+            MyCookieManager.setCookie(connection);
+            connection.setRequestMethod(post);
+            connection.setReadTimeout(8000);
+            connection.setConnectTimeout(8000);
+            // 数据写入
+            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());
+            outputStream.writeBytes("friend=" + id_);
+
+            // 取回的数据
+            InputStream inputStream = connection.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            // 从返回的json中提取信息
+            JSONObject result = new JSONObject(response.toString());
+            code = result.getString("code");
+            String message = result.getString("message");
+            Log.e("Detele code", code);
+            Log.e("Delete Message", message);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) connection.disconnect();
+            return code.equals("0");
         }
     }
 }
