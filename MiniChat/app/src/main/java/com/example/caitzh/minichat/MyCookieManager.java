@@ -1,5 +1,7 @@
 package com.example.caitzh.minichat;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.net.CookieHandler;
@@ -16,13 +18,14 @@ import java.util.Map;
 public class MyCookieManager {
     private static CookieManager cookieManager = null;
     private static String userId = null;
+    static SharedPreferences share = null;
     private static void createCookieManager() {
         Log.i("cookie:", "create manager");
         cookieManager = new java.net.CookieManager();
         CookieHandler.setDefault(cookieManager);
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
     }
-    public static void getCookie(HttpURLConnection connection) {
+    public static void getCookie(Context context, HttpURLConnection connection) {
         if (cookieManager == null) {
             createCookieManager();
         }
@@ -32,6 +35,10 @@ public class MyCookieManager {
 
         if (cookiesHeader != null) {
             for (String cookie : cookiesHeader) {
+                share = context.getSharedPreferences("MyCookie", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = share.edit();
+                editor.putString("cookie", cookie);
+                editor.commit();
                 cookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
             }
         }
@@ -54,11 +61,37 @@ public class MyCookieManager {
         }
     }
 
+    public static boolean loadCookie(Context context) {
+        if (cookieManager == null) {
+            createCookieManager();
+        }
+        share = context.getSharedPreferences("MyCookie", Context.MODE_PRIVATE);
+        String cookie = share.getString("cookie", "");
+        if (cookie.equals("")) return false;
+        cookieManager.getCookieStore().add(null, HttpCookie.parse(cookie).get(0));
+        return true;
+    }
+
     public static void setUserId(String id) {
         userId = id;
+        SharedPreferences.Editor editor = share.edit();
+        editor.putString("userId", id);
+        editor.commit();
     }
 
     public static String getUserId() {
+        if (userId == null && share != null) {
+            userId = share.getString("userId", "");
+        }
         return userId;
+    }
+
+    public static void deleteCookie() {
+        if (share != null) {
+            SharedPreferences.Editor editor = share.edit();
+            editor.clear();
+            editor.commit();
+            Log.v("TEST", "delete");
+        }
     }
 }

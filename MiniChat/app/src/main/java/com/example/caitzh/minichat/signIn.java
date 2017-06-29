@@ -118,7 +118,6 @@ public class signIn extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     private static final String url = "http://119.29.238.202:8000/login";
@@ -158,7 +157,7 @@ public class signIn extends AppCompatActivity {
                     Log.i("code:", code);
                     Log.i("message", message);
                     if (code.equals("0")) {  // 登录成功
-                        MyCookieManager.getCookie(connection);  // 获取cookie
+                        MyCookieManager.getCookie(getApplicationContext(), connection);  // 获取cookie
                         MyCookieManager.setUserId(id);
                         registerApplication(getApplicationContext(), id);
                         finish();  // 结束当前activity
@@ -178,5 +177,14 @@ public class signIn extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (MyCookieManager.loadCookie(getApplicationContext())) {
+            Intent intent = new Intent(signIn.this, chatWindow.class);
+            startActivity(intent);
+        }
     }
 }
