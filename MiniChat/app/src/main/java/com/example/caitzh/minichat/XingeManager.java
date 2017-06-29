@@ -1,8 +1,10 @@
 package com.example.caitzh.minichat;
 
 import android.content.Context;
+import android.content.Intent;
 
 import com.tencent.android.tpush.XGPushManager;
+import com.tencent.android.tpush.service.XGPushServiceV3;
 
 /**
  * Created by Administrator on 2017/6/22.
@@ -13,6 +15,8 @@ public class XingeManager {
     // 对应用注册，在应用启动时调用一次即可
     public static void registerApplication(Context context) {
         XGPushManager.registerPush(context);
+        Intent service = new Intent(context, XGPushServiceV3.class);
+        context.startService(service);
     }
 
     //在用户登录后执行，account为用户id

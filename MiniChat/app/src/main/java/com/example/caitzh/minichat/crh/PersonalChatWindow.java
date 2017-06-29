@@ -30,6 +30,7 @@ import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.recordDB;
 import com.example.caitzh.minichat.MyDB.userDB;
 import com.example.caitzh.minichat.R;
+import com.example.caitzh.minichat.User;
 import com.example.caitzh.minichat.signIn;
 
 import org.json.JSONObject;

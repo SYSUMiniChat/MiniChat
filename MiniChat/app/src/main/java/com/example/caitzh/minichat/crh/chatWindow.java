@@ -8,6 +8,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -52,6 +55,8 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     private LinearLayout personalInformationLinearLayout;
     private ChatWindowAdapter chatWindowAdapter;
 
+    private static final int UPDATE_LIST_VIEW = 1;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +65,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         myRecordDB = new recordDB(chatWindow.this);
         myRecentListDB = new recentListDB(chatWindow.this);
         setView();
-        setChatWindowAdapter();
+//        setChatWindowAdapter();
         IntentFilter filter = new IntentFilter(MessageReceiver.CHATWINDOWUPDATE);
         registerReceiver(broadcastReceiver, filter);
     }
@@ -72,7 +77,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     }
 
     public void setChatWindowAdapter() {
-        String senderID = MyCookieManager.getUserId() ;
+        final String senderID = MyCookieManager.getUserId() ;
         Cursor recendCursor = myRecentListDB.getItems(senderID);
         int resultCounts = recendCursor.getCount();
         final String[] recentListIDs = new String[resultCounts];
@@ -84,27 +89,35 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             }
         }
         data.clear();
-        for (int i = 0; i < recentListIDs.length; i++) {
-            // 获取最后一条聊天信息和相应聊天时间
-            Cursor lastItemCursor = myRecordDB.getLastItem(senderID, recentListIDs[i]);
-            String recendChatInformation = "";
-            String recendChatTime = "";
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < recentListIDs.length; i++) {
+                    // 获取最后一条聊天信息和相应聊天时间
+                    Cursor lastItemCursor = myRecordDB.getLastItem(senderID, recentListIDs[i]);
+                    String recendChatInformation = "";
+                    String recendChatTime = "";
 
-            resultCounts = lastItemCursor.getCount();
-            if (resultCounts != 0 && lastItemCursor.moveToLast()) {
-                recendChatInformation = lastItemCursor.getString(lastItemCursor.getColumnIndex("content"));
-                recendChatTime = lastItemCursor.getString(lastItemCursor.getColumnIndex("time"));
-                Log.e("最后一条聊天消息内容", recendChatInformation);
+                    int resultCounts = lastItemCursor.getCount();
+                    if (resultCounts != 0 && lastItemCursor.moveToLast()) {
+                        recendChatInformation = lastItemCursor.getString(lastItemCursor.getColumnIndex("content"));
+                        recendChatTime = lastItemCursor.getString(lastItemCursor.getColumnIndex("time"));
+                        Log.e("最后一条聊天消息内容", recendChatInformation);
+                    }
+                    // 获取用户名
+                    String recendChatNickName = "";
+                    recendChatNickName = DataManager.getLatestData(getApplicationContext(),recentListIDs[i]).getNickname();
+                    ChatWindowItemInformation temp = new ChatWindowItemInformation(recentListIDs[i],
+                            recendChatNickName, recendChatInformation, recendChatTime);
+                    data.add(0, temp);
+                }
+                Looper.prepare();
+                chatWindowAdapter = new ChatWindowAdapter(data, chatWindow.this);
+                Message message_ = new Message();
+                message_.what = UPDATE_LIST_VIEW;
+                handler.sendMessage(message_);
             }
-            // 获取用户名
-            String recendChatNickName = "";
-            recendChatNickName = DataManager.getLatestData(getApplicationContext(),recentListIDs[i]).getNickname();
-            ChatWindowItemInformation temp = new ChatWindowItemInformation(recentListIDs[i],
-                    recendChatNickName, recendChatInformation, recendChatTime);
-            data.add(0, temp);
-        }
-        chatWindowAdapter = new ChatWindowAdapter(data, chatWindow.this);
-        chatWindowListView.setAdapter(chatWindowAdapter);
+        }).start();
     }
 
     private void setView() {
@@ -251,4 +264,20 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
     }
+
+    // 利用Handler来更新UI
+    private Handler handler = new Handler() {
+        public void handleMessage(Message message) {
+            switch (message.what) {
+                case UPDATE_LIST_VIEW:
+                    try {
+                        chatWindowListView.setAdapter(chatWindowAdapter);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default: break;
+            }
+        }
+    };
 }
