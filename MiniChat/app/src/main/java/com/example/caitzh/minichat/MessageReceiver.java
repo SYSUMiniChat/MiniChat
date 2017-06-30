@@ -9,6 +9,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.example.caitzh.minichat.MyDB.addRequestDB;
 import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.recordDB;
 import com.example.caitzh.minichat.Util.DataManager;
@@ -160,12 +161,8 @@ public class MessageReceiver extends XGPushBaseReceiver {
                 context.sendBroadcast(intent);
             }
         } else if (type == 1) {
-//            Intent intent = new Intent(context, AddFriendActivity.class);
-//            Bundle bundle = new Bundle();
-//            bundle.putString("id", sender);
-//            bundle.putInt("type", 1);
-//            intent.putExtras(bundle);
-//            context.startActivity(intent);
+            addRequestDB db = new addRequestDB(context);
+            db.insertOne(MyCookieManager.getUserId(), sender, DataManager.getCurrentDate());
         } else if (type == 2) {
 
         } else {
