@@ -75,6 +75,7 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
     // 底部的按钮切换
     private LinearLayout chatWindowLinearLayout;
     private LinearLayout personalInformationLinearLayout;
+    private LinearLayout friendsListLinearLayout;
     // 底部的按钮
     private ImageButton chat_img, maillist_img, information_img;
 
@@ -104,6 +105,13 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         information_img.setImageDrawable(getResources().getDrawable(R.mipmap.person));
         chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
         personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
+        friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
+        friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         chatWindowLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

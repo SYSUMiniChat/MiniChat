@@ -82,6 +82,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
     // 底部的按钮切换
     private LinearLayout chatWindowLinearLayout;
     private LinearLayout friendsListLinearLayout;
+    private LinearLayout personalInformationLinearLayout;
     // 底部的按钮
     private ImageButton chat_img, maillist_img, information_img;
 
@@ -103,6 +104,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
 
         chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
         friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
+        personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
         chat_img = (ImageButton) findViewById(R.id.id_tab_chat_img);
         maillist_img = (ImageButton) findViewById(R.id.id_tab_mail_list_img);
         information_img = (ImageButton) findViewById(R.id.id_tab_personal_information_img);
@@ -110,6 +112,14 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         chat_img.setImageDrawable(getResources().getDrawable(R.mipmap.chat));
         maillist_img.setImageDrawable(getResources().getDrawable(R.mipmap.maillist));
         information_img.setImageDrawable(getResources().getDrawable(R.mipmap.person_black));
+
+        // 点击个人信息图标，不操作
+        personalInformationLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                
+            }
+        });
 
         // 点击聊天图标
         chatWindowLinearLayout.setOnClickListener(new View.OnClickListener() {
