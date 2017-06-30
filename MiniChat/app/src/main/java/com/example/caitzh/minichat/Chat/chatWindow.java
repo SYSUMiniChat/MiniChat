@@ -65,6 +65,10 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK){
             moveTaskToBack(true);
+            Intent backHome = new Intent(Intent.ACTION_MAIN);
+            backHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            backHome.addCategory(Intent.CATEGORY_HOME);
+            startActivity(backHome);
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -159,7 +163,6 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(chatWindow.this,friendsList.class);
-                finish();
                 startActivity(intent);
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
@@ -168,7 +171,6 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(chatWindow.this, personalInformation.class);
-                finish();
                 startActivity(intent);
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
@@ -255,7 +257,6 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         //左
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(chatWindow.this,friendsList.class);
-            finish();
             startActivity(intent);
             overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
