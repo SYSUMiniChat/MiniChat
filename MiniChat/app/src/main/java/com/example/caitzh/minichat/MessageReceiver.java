@@ -98,25 +98,6 @@ public class MessageReceiver extends XGPushBaseReceiver {
                     e.printStackTrace();
                 }
             }
-            if (type == 0) {
-                Intent intent = new Intent(context, PersonalChatWindow.class);
-                intent.putExtra("receiveid", sender);
-                intent.putExtra("receivenickname", "test");
-                context.startActivity(intent);
-            } else if (type == 1) {
-                Intent intent = new Intent(context, AddFriendActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("id", sender);
-                bundle.putInt("type", 1);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
-            } else if (type == 2) {
-                Intent intent = new Intent(context, chatWindow.class);
-                context.startActivity(intent);
-            } else {
-                Intent intent = new Intent(context, chatWindow.class);
-                context.startActivity(intent);
-            }
             // 通知被点击时启动对应的activity, 比如聊天界面，或者添加好友界面
             //Intent intent = new Intent(context, XXXActivity.class);
             //context.startActivity(intent);

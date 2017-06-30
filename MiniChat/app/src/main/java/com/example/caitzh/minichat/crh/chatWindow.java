@@ -56,6 +56,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     private ChatWindowAdapter chatWindowAdapter;
 
     private static final int UPDATE_LIST_VIEW = 1;
+    private boolean sync = false; // 用于防止多线程修改data
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -73,10 +74,11 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     @Override
     protected void onResume() {
         super.onResume();
-        setChatWindowAdapter();
+        if (!sync) setChatWindowAdapter();
     }
 
     public void setChatWindowAdapter() {
+        sync = true;
         final String senderID = MyCookieManager.getUserId() ;
         Cursor recendCursor = myRecentListDB.getItems(senderID);
         int resultCounts = recendCursor.getCount();
@@ -116,6 +118,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 Message message_ = new Message();
                 message_.what = UPDATE_LIST_VIEW;
                 handler.sendMessage(message_);
+                sync = false;
             }
         }).start();
     }
