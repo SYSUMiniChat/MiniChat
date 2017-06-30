@@ -16,6 +16,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -77,6 +78,16 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
     // 底部的按钮
     private ImageButton chat_img, maillist_img, information_img;
 
+    // 按返回键时不销毁当前Activity
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(true);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +108,7 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(friendsList.this,chatWindow.class);
+                finish();
                 startActivity(intent);
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
@@ -105,6 +117,7 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(friendsList.this, personalInformation.class);
+                finish();
                 startActivity(intent);
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
@@ -198,7 +211,6 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
                     bundle.putInt("type", 0);
                     Intent intent1 = new Intent(friendsList.this, AddFriendActivity.class);
                     intent1.putExtras(bundle);
-                    finish();
                     startActivity(intent1);
                 } else {
                     Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
@@ -426,15 +438,14 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(friendsList.this,personalInformation.class);
             startActivity(intent);
-            finish();
             overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
 
         //右
         if(e1.getX() - e2.getX() < -FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(friendsList.this,chatWindow.class);
-            startActivity(intent);
             finish();
+            startActivity(intent);
             overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
 

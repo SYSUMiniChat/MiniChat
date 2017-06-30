@@ -14,6 +14,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,6 +59,16 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     private ImageButton chat_img, maillist_img, information_img;
     private static final int UPDATE_LIST_VIEW = 1;
     private boolean sync = false; // 用于防止多线程修改data
+
+    // 按返回键时不销毁当前Activity
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(true);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -148,6 +159,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(chatWindow.this,friendsList.class);
+                finish();
                 startActivity(intent);
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
@@ -156,6 +168,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(chatWindow.this, personalInformation.class);
+                finish();
                 startActivity(intent);
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
@@ -242,8 +255,8 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
         //左
         if(e1.getX() - e2.getX() > FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(chatWindow.this,friendsList.class);
-            startActivity(intent);
             finish();
+            startActivity(intent);
             overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out);
         }
 

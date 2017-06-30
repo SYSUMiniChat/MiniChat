@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -84,6 +85,17 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
     // 底部的按钮
     private ImageButton chat_img, maillist_img, information_img;
 
+
+    // 按返回键时不销毁当前Activity
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(true);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +116,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(personalInformation.this, chatWindow.class);
+                finish();
                 startActivity(intent);
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
@@ -113,6 +126,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(personalInformation.this,friendsList.class);
+                finish();
                 startActivity(intent);
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
@@ -519,8 +533,8 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
         //右
         if(e1.getX() - e2.getX() < - FLING_MIN_DISTANCE && Math.abs(velocityX) > FLING_MIN_VELOCITY){
             Intent intent = new Intent(personalInformation.this, friendsList.class);
-            startActivity(intent);
             finish();
+            startActivity(intent);
             overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out);
         }
 

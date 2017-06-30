@@ -144,14 +144,14 @@ public class MessageReceiver extends XGPushBaseReceiver {
             Log.e("聊天窗口是否在前台", context.getClass().getName());
             String pkg = "com.example.caitzh.minichat";
             // 根据当前的Activity发送相应广播进行相应更新
-            if (isActivityAtRunningTop(pkg, pkg+".crh.chatWindow", context)) {
+            if (isActivityAtRunningTop(pkg, pkg+".Chat.chatWindow", context)) {
                 // 当前在最近联系人界面
                 Log.e("当前Activity", "最近联系人窗口");
                 Intent intent = new Intent(CHATWINDOWUPDATE);
                 intent.putExtra("content", message.getContent());
                 intent.putExtra("time", time);
                 context.sendBroadcast(intent);
-            } else if (isActivityAtRunningTop(pkg, pkg+".crh.PersonalChatWindow", context)) {
+            } else if (isActivityAtRunningTop(pkg, pkg+".Chat.PersonalChatWindow", context)) {
                 // 当前在聊天界面
                 Log.e("当前Activity", "聊天窗口");
                 Intent intent = new Intent(PERSONALCHATWINDOWUPDATE);
