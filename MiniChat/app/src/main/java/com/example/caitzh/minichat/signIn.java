@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +38,20 @@ public class signIn extends AppCompatActivity {
     boolean visible = false;
     Button signin_btn;
     TextView forgetPw,gotoRegister;
+
+    // 按返回键时不销毁当前Activity
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if(keyCode == KeyEvent.KEYCODE_BACK){
+            moveTaskToBack(true);
+            Intent backHome = new Intent(Intent.ACTION_MAIN);
+            backHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            backHome.addCategory(Intent.CATEGORY_HOME);
+            startActivity(backHome);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
