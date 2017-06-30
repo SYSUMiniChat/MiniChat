@@ -108,12 +108,12 @@ public class recordDB extends SQLiteOpenHelper {
     /**
      * status表示消息的状态  true表示已读 false表示未读
      * @param sender
-     * @param recceiver
+     * @param receiver
      */
-    public void updateAllState(String sender, String recceiver) {
+    public void updateAllState(String sender, String receiver) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("status", true);
-        db.update(TABLE_NAME, cv, "sender=? AND recceiver=?", new String[] {sender, recceiver});
+        db.update(TABLE_NAME, cv, "sender=? AND receiver=?", new String[] {sender, receiver});
     }
 }

@@ -115,6 +115,10 @@ public class ChatWindowAdapter extends BaseAdapter{
         time.setText(timeFormat(list.get(i).getTime()));
         username.setText(list.get(i).getUsername());
         userid.setText(list.get(i).getUserID());
+        TextView radius_text = (TextView)view.findViewById(R.id.radius_text);
+        if (!list.get(i).getReaded()) {
+            radius_text.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 

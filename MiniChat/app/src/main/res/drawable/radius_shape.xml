@@ -7,6 +7,6 @@
 <!-- 圆角 -->
 <corners android:radius="360dp"/>
 <!-- 边距 -->
-    <size android:width="2dp"
-        android:height="2dp"/>
+    <size android:width="8dp"
+        android:height="8dp"/>
 </shape>

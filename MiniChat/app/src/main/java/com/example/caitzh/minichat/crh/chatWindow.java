@@ -97,18 +97,20 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                     Cursor lastItemCursor = myRecordDB.getLastItem(senderID, recentListIDs[i]);
                     String recendChatInformation = "";
                     String recendChatTime = "";
-
+                    boolean isReaded = true;
                     int resultCounts = lastItemCursor.getCount();
                     if (resultCounts != 0 && lastItemCursor.moveToLast()) {
                         recendChatInformation = lastItemCursor.getString(lastItemCursor.getColumnIndex("content"));
                         recendChatTime = lastItemCursor.getString(lastItemCursor.getColumnIndex("time"));
+                        isReaded = lastItemCursor.getInt(lastItemCursor.getColumnIndex("status"))>0;
                         Log.e("最后一条聊天消息内容", recendChatInformation);
+                        Log.e("最后一条聊天是否已读", recendChatInformation);
                     }
                     // 获取用户名
                     String recendChatNickName = "";
                     recendChatNickName = DataManager.getLatestData(getApplicationContext(),recentListIDs[i]).getNickname();
                     ChatWindowItemInformation temp = new ChatWindowItemInformation(recentListIDs[i],
-                            recendChatNickName, recendChatInformation, recendChatTime);
+                            recendChatNickName, recendChatInformation, recendChatTime, isReaded);
                     data.add(0, temp);
                 }
                 Looper.prepare();
@@ -176,7 +178,7 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
                 });
                 android.app.AlertDialog alertDialog = alertdialogbuilder.create();
                 alertDialog.show();
-                setChatWindowAdapter();
+                // setChatWindowAdapter();
                 return true;
             }
         });

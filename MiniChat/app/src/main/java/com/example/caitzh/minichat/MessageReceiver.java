@@ -163,7 +163,8 @@ public class MessageReceiver extends XGPushBaseReceiver {
             myRecentListDB = new recentListDB(context);
             myRecentListDB.insertOne(MyCookieManager.getUserId(), sender, DataManager.getCurrentDate());
             myRecordDB = new recordDB(context);
-            myRecordDB.insertOne(1, MyCookieManager.getUserId(), sender, message.getContent(), time);
+            myRecordDB.insertOne(1, MyCookieManager.getUserId(), sender,
+                    message.getContent(), time, false);
             Log.e("聊天窗口是否在前台", context.getClass().getName());
             String pkg = "com.example.caitzh.minichat";
             // 根据当前的Activity发送相应广播进行相应更新

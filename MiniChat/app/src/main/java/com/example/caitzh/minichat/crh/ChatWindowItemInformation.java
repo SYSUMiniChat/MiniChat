@@ -11,13 +11,20 @@ public class ChatWindowItemInformation {
     private String information;
     private String time;
     private String userID;
+    private boolean isReaded;
 
     protected ChatWindowItemInformation(String inputUserID, String inputUsername,
-                                        String inputInformation, String inputTime) {
+                                        String inputInformation, String inputTime,
+                                        boolean inputIsReaded) {
         this.userID = inputUserID;
         this.username = inputUsername;
         this.information = inputInformation;
         this.time = inputTime;
+        this.isReaded = inputIsReaded;
+    }
+
+    public void setReaded(boolean readed) {
+        isReaded = readed;
     }
 
     public void setUserID(String userID) {
@@ -32,5 +39,7 @@ public class ChatWindowItemInformation {
     public String getUserID() {
         return userID;
     }
-
+    public boolean getReaded() {
+        return isReaded;
+    }
 }

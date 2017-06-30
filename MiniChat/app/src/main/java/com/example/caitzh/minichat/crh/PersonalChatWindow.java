@@ -73,6 +73,8 @@ public class PersonalChatWindow extends AppCompatActivity {
         setContentView(R.layout.activity_personal_chat_window);
         Bundle bundle = this.getIntent().getExtras();
         receiveid = bundle.getString("receiveid");
+        myRecordDB = new recordDB(getBaseContext());
+        myRecordDB.updateAllState(MyCookieManager.getUserId(), receiveid);
         setTitle(bundle.getString("receivenickname"));
         initViews();
         // 给AppCompatActivity的标题栏上加上返回按钮
@@ -220,7 +222,7 @@ public class PersonalChatWindow extends AppCompatActivity {
     private void addTODBAndDataList() {
         String date = DataManager.getCurrentDate();
         myRecordDB.insertOne(0, MyCookieManager.getUserId(),
-                receiveid, messageContent, date);
+                receiveid, messageContent, date, true);
         myRecentListDB.insertOne(MyCookieManager.getUserId(), receiveid, DataManager.getCurrentDate());
         mData.add(new MiniChatMessage(0, messageContent));
     }
@@ -231,6 +233,8 @@ public class PersonalChatWindow extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             Log.e("收到的消息", intent.getStringExtra("content"));
             if (intent.getStringExtra("receiver").equals(receiveid)) {
+                myRecordDB = new recordDB(getBaseContext());
+                myRecordDB.updateAllState(MyCookieManager.getUserId(), receiveid);
                 mData.add(new MiniChatMessage(1, intent.getStringExtra("content")));
                 personalChatWindowAdapter.notifyDataSetChanged();
                 listView.setSelection(mData.size() - 1);
