@@ -175,6 +175,8 @@
             android:label="用户信息"/>
         <activity android:name=".SearchUser"
             android:label="查找用户"/>
+        <activity android:name=".RequestList"
+            android:label="好友请求列表"/>
     </application>
 
 </manifest>

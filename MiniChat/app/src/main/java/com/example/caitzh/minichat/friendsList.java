@@ -63,7 +63,7 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
     private ArrayList<String> data = new ArrayList<String>();
 
 
-    private LinearLayout linearLayout;
+    private LinearLayout linearLayout, requesetLayout;
     private GestureDetector gestureDetector;
 
     // 底部的按钮切换
@@ -108,6 +108,14 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         linearLayout = (LinearLayout)findViewById(R.id.friends_list_linear_layout);
         linearLayout.setOnTouchListener(this);
         linearLayout.setLongClickable(true);
+        requesetLayout = (LinearLayout) findViewById(R.id.FriendListAddView);
+        requesetLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(friendsList.this, RequestList.class);
+                startActivity(intent);
+            }
+        });
         gestureDetector = new GestureDetector((GestureDetector.OnGestureListener)this);
         initViews();
     }

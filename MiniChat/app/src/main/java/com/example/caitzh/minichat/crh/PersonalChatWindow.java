@@ -190,7 +190,7 @@ public class PersonalChatWindow extends AppCompatActivity {
                         handler.sendMessage(message_);
                     } else {
                         Looper.prepare();
-                        Toast.makeText(getApplicationContext(), "发送失败", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "发送失败"+message, Toast.LENGTH_LONG).show();
                         Looper.loop();
                     }
                 } catch (Exception e) {
