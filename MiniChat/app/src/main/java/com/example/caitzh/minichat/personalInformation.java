@@ -7,11 +7,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Looper;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -37,16 +36,13 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -58,8 +54,6 @@ import com.example.caitzh.minichat.crh.chatWindow;
 import static com.example.caitzh.minichat.XingeManager.unregister;
 import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
 import static com.example.caitzh.minichat.middlewares.Check.hasUpdate;
-
-import com.example.caitzh.minichat.crh.chatWindow;
 
 
 public class personalInformation extends AppCompatActivity implements View.OnTouchListener,
@@ -80,6 +74,8 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
     // 底部的按钮切换
     private LinearLayout chatWindowLinearLayout;
     private LinearLayout friendsListLinearLayout;
+    // 底部的按钮
+    private ImageButton chat_img, maillist_img, information_img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +84,15 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
 
         chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
         friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
+        chat_img = (ImageButton) findViewById(R.id.id_tab_chat_img);
+        maillist_img = (ImageButton) findViewById(R.id.id_tab_mail_list_img);
+        information_img = (ImageButton) findViewById(R.id.id_tab_personal_information_img);
+        // 在当前页面 信息图标黑色，其他图标浅色
+        chat_img.setImageDrawable(getResources().getDrawable(R.mipmap.chat));
+        maillist_img.setImageDrawable(getResources().getDrawable(R.mipmap.maillist));
+        information_img.setImageDrawable(getResources().getDrawable(R.mipmap.person_black));
+
+        // 点击聊天图标
         chatWindowLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,6 +101,7 @@ public class personalInformation extends AppCompatActivity implements View.OnTou
                 overridePendingTransition(R.anim.finish_immediately, R.anim.finish_immediately);
             }
         });
+        // 点击联系人图标
         friendsListLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

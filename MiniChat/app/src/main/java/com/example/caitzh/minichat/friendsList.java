@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -68,6 +69,8 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
     // 底部的按钮切换
     private LinearLayout chatWindowLinearLayout;
     private LinearLayout personalInformationLinearLayout;
+    // 底部的按钮
+    private ImageButton chat_img, maillist_img, information_img;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,6 +79,13 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         adapter = new SortAdapter(getApplicationContext(), SourceDateList);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        chat_img = (ImageButton) findViewById(R.id.id_tab_chat_img);
+        maillist_img = (ImageButton) findViewById(R.id.id_tab_mail_list_img);
+        information_img = (ImageButton) findViewById(R.id.id_tab_personal_information_img);
+        // 在当前页面 联系人图标黑色，其他图标浅色
+        chat_img.setImageDrawable(getResources().getDrawable(R.mipmap.chat));
+        maillist_img.setImageDrawable(getResources().getDrawable(R.mipmap.maillist_black));
+        information_img.setImageDrawable(getResources().getDrawable(R.mipmap.person));
         chatWindowLinearLayout = (LinearLayout)findViewById(R.id.id_tab_chat);
         personalInformationLinearLayout = (LinearLayout)findViewById(R.id.id_tab_personal_information);
         chatWindowLinearLayout.setOnClickListener(new View.OnClickListener() {

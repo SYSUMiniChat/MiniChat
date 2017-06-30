@@ -18,6 +18,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -54,7 +55,8 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     private LinearLayout friendsListLinearLayout;
     private LinearLayout personalInformationLinearLayout;
     private ChatWindowAdapter chatWindowAdapter;
-
+    // 底部的按钮
+    private ImageButton chat_img, maillist_img, information_img;
     private static final int UPDATE_LIST_VIEW = 1;
     private boolean sync = false; // 用于防止多线程修改data
 
@@ -126,6 +128,13 @@ public class chatWindow extends AppCompatActivity implements View.OnTouchListene
     }
 
     private void setView() {
+        chat_img = (ImageButton) findViewById(R.id.id_tab_chat_img);
+        maillist_img = (ImageButton) findViewById(R.id.id_tab_mail_list_img);
+        information_img = (ImageButton) findViewById(R.id.id_tab_personal_information_img);
+        // 在当前页面 聊天图标黑色，其他图标浅色
+        chat_img.setImageDrawable(getResources().getDrawable(R.mipmap.chat_black));
+        maillist_img.setImageDrawable(getResources().getDrawable(R.mipmap.maillist));
+        information_img.setImageDrawable(getResources().getDrawable(R.mipmap.person));
         // 设置触摸的布局
         chatWindowListView = (ListView)findViewById(R.id.chat_window_list_view);
         friendsListLinearLayout = (LinearLayout)findViewById(R.id.id_tab_mail_list);
