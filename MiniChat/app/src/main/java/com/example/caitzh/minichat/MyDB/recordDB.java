@@ -22,7 +22,8 @@ public class recordDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 + TABLE_NAME
-                + " (ID INTEGER PRIMARY KEY autoincrement, type INTEGER, sender TEXT, receiver TEXT, content TEXT, time DATETIME)";
+                + " (id INTEGER PRIMARY KEY autoincrement, type INTEGER, sender TEXT, receiver TEXT," +
+                " content TEXT, time DATETIME, status Boolean)";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -35,7 +36,8 @@ public class recordDB extends SQLiteOpenHelper {
         }
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 + TABLE_NAME
-                + " (ID INTEGER PRIMARY KEY autoincrement, type INTEGER, sender TEXT, receiver TEXT, content TEXT, time DATETIME)";
+                + " (id INTEGER PRIMARY KEY autoincrement, type INTEGER, sender TEXT, receiver TEXT," +
+                " content TEXT, time DATETIME, status Boolean)";
         db.execSQL(CREATE_TABLE);
     }
 
@@ -51,7 +53,8 @@ public class recordDB extends SQLiteOpenHelper {
      * @param content 消息内容
      * @return
      */
-    public boolean insertOne(int type, String sender, String receiver, String content, String time) {
+    public boolean insertOne(int type, String sender, String receiver,
+                             String content, String time, boolean read) {
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("type", type);
@@ -59,6 +62,7 @@ public class recordDB extends SQLiteOpenHelper {
         cv.put("receiver", receiver);
         cv.put("content", content);
         cv.put("time", time);
+        cv.put("status", read);
         long result = 0;
         try {
             result = db.insert(TABLE_NAME, null, cv);
@@ -99,5 +103,17 @@ public class recordDB extends SQLiteOpenHelper {
     public void deleteItems(String sender, String receiver) {
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NAME, "sender=? AND receiver=?", new String[] {sender, receiver});
+    }
+
+    /**
+     * status表示消息的状态  true表示已读 false表示未读
+     * @param sender
+     * @param recceiver
+     */
+    public void updateAllState(String sender, String recceiver) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("status", true);
+        db.update(TABLE_NAME, cv, "sender=? AND recceiver=?", new String[] {sender, recceiver});
     }
 }
