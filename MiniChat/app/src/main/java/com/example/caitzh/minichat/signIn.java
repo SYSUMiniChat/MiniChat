@@ -184,6 +184,7 @@ public class signIn extends AppCompatActivity {
         super.onResume();
         if (MyCookieManager.loadCookie(getApplicationContext())) {
             Intent intent = new Intent(signIn.this, chatWindow.class);
+            finish();
             startActivity(intent);
         }
     }
