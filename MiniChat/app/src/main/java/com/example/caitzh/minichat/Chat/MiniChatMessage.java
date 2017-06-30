@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat.crh;
+package com.example.caitzh.minichat.Chat;
 
 /**
  * 消息类：封装聊天消息

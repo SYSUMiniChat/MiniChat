@@ -1,49 +1,26 @@
-package com.example.caitzh.minichat.crh;
+package com.example.caitzh.minichat.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.example.caitzh.minichat.DataManager;
-import com.example.caitzh.minichat.ImageUtil;
-import com.example.caitzh.minichat.MyCookieManager;
-import com.example.caitzh.minichat.MyDB.userDB;
+import com.example.caitzh.minichat.Util.DataManager;
+import com.example.caitzh.minichat.Util.ImageUtil;
 import com.example.caitzh.minichat.R;
-import com.example.caitzh.minichat.User;
-import com.example.caitzh.minichat.changePassword;
-import com.example.caitzh.minichat.personalInformation;
-import com.example.caitzh.minichat.signIn;
+import com.example.caitzh.minichat.view.User;
+import com.example.caitzh.minichat.view.ChatWindowItemInformation;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.Handler;
-
-import static com.example.caitzh.minichat.XingeManager.unregister;
-import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
-import static com.example.caitzh.minichat.middlewares.Check.hasUpdate;
 
 /**
  * 聊天窗口每个item的适配器

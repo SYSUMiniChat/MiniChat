@@ -143,14 +143,14 @@
             android:value="AA2MH1Z88Y3N" />
 
         <activity
-            android:name=".personalInformation"
+            android:name=".Personal.personalInformation"
             android:label="个人信息"
             android:launchMode="singleTask" />
         <activity
-            android:name=".changeName"
+            android:name=".Personal.changeInfo"
             android:label="更改昵称" />
         <activity
-            android:name=".changePassword"
+            android:name=".Personal.changePassword"
             android:label="设置密码" />
         <activity
             android:name=".register"
@@ -162,20 +162,20 @@
             android:label="忘记密码"/>
         <activity
             android:theme="@style/AppTheme.NoActionBar"
-            android:name=".friendsList"
+            android:name=".Friends.friendsList"
             android:label="好友列表"
             android:launchMode="singleTask"/>
 
-        <activity android:name=".crh.chatWindow"
+        <activity android:name=".Chat.chatWindow"
             android:launchMode="singleTask"/>
-        <activity android:name=".crh.PersonalChatWindow"
+        <activity android:name=".Chat.PersonalChatWindow"
             android:launchMode="singleTask"/>
 
-        <activity android:name=".AddFriendActivity"
+        <activity android:name=".Friends.AddFriendActivity"
             android:label="用户信息"/>
-        <activity android:name=".SearchUser"
+        <activity android:name=".Friends.SearchUser"
             android:label="查找用户"/>
-        <activity android:name=".RequestList"
+        <activity android:name=".Friends.RequestList"
             android:label="好友请求列表"/>
     </application>
 

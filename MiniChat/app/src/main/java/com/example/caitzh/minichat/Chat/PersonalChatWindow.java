@@ -1,11 +1,10 @@
-package com.example.caitzh.minichat.crh;
+package com.example.caitzh.minichat.Chat;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,23 +14,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.caitzh.minichat.DataManager;
+import com.example.caitzh.minichat.Adapter.PersonalChatWindowAdapter;
+import com.example.caitzh.minichat.Util.DataManager;
 import com.example.caitzh.minichat.MessageReceiver;
-import com.example.caitzh.minichat.MyCookieManager;
+import com.example.caitzh.minichat.Util.MyCookieManager;
 import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.recordDB;
-import com.example.caitzh.minichat.MyDB.userDB;
 import com.example.caitzh.minichat.R;
-import com.example.caitzh.minichat.User;
-import com.example.caitzh.minichat.signIn;
 
 import org.json.JSONObject;
 
@@ -42,12 +36,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.caitzh.minichat.XingeManager.registerApplication;
-import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
+import static com.example.caitzh.minichat.Util.XingeManager.registerApplication;
+import static com.example.caitzh.minichat.Util.Check.checkHasNet;
 
 /**
  * 具体和某个人的聊天界面

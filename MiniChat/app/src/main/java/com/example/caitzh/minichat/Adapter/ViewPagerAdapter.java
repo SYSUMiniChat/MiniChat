@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat.crh;
+package com.example.caitzh.minichat.Adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:id="@+id/personal_information_linear_layout"
-    tools:context="com.example.caitzh.minichat.personalInformation">
+    tools:context=".Personal.personalInformation">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"

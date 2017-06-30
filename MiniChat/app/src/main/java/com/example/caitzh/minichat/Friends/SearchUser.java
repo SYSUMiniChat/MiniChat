@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.Friends;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.caitzh.minichat.middlewares.Check;
+import com.example.caitzh.minichat.R;
+import com.example.caitzh.minichat.Util.Check;
 
 import org.json.JSONObject;
 

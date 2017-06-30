@@ -1,11 +1,10 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.Util;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.util.Log;
 
 import com.example.caitzh.minichat.MyDB.userDB;
-import com.example.caitzh.minichat.middlewares.Check;
+import com.example.caitzh.minichat.view.User;
 
 import org.json.JSONObject;
 

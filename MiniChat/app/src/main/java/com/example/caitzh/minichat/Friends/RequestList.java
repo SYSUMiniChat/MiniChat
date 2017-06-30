@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.Friends;
 
 
 import android.content.Context;
@@ -16,10 +16,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.Adapter.RequestListAdapter;
 import com.example.caitzh.minichat.MyDB.addRequestDB;
 import com.example.caitzh.minichat.R;
-import com.example.caitzh.minichat.middlewares.Check;
+import com.example.caitzh.minichat.Util.Check;
+import com.example.caitzh.minichat.Util.DataManager;
+import com.example.caitzh.minichat.Util.ImageUtil;
+import com.example.caitzh.minichat.Util.MyCookieManager;
 import com.example.caitzh.minichat.view.SortModel;
+import com.example.caitzh.minichat.view.User;
 
 import java.util.ArrayList;
 import java.util.List;

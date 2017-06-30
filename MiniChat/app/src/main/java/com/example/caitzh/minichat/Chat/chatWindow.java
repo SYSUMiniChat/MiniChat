@@ -1,6 +1,5 @@
-package com.example.caitzh.minichat.crh;
+package com.example.caitzh.minichat.Chat;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,17 +21,17 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.caitzh.minichat.DataManager;
+import com.example.caitzh.minichat.Adapter.ChatWindowAdapter;
+import com.example.caitzh.minichat.Util.DataManager;
 import com.example.caitzh.minichat.MessageReceiver;
-import com.example.caitzh.minichat.MyCookieManager;
+import com.example.caitzh.minichat.Util.MyCookieManager;
 import com.example.caitzh.minichat.R;
-import com.example.caitzh.minichat.friendsList;
+import com.example.caitzh.minichat.Friends.friendsList;
 import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.recordDB;
-import com.example.caitzh.minichat.MyDB.userDB;
-import com.example.caitzh.minichat.personalInformation;
+import com.example.caitzh.minichat.Personal.personalInformation;
+import com.example.caitzh.minichat.view.ChatWindowItemInformation;
 
 import java.util.LinkedList;
 import java.util.List;

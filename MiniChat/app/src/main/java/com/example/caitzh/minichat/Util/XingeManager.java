@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.Util;
 
 import android.content.Context;
 import android.content.Intent;

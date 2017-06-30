@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.Util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

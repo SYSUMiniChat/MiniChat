@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.view;
 
 /**
  * Created by littlestar on 2017/6/25.

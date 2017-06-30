@@ -9,7 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:id="@+id/add_friend_linear_layout"
-    tools:context="com.example.caitzh.minichat.personalInformation">
+    tools:context=".Personal.personalInformation">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"

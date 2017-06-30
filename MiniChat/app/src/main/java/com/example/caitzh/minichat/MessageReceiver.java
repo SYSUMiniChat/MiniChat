@@ -1,25 +1,19 @@
 package com.example.caitzh.minichat;
 
 import android.app.ActivityManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.example.caitzh.minichat.MyDB.recentListDB;
 import com.example.caitzh.minichat.MyDB.recordDB;
-import com.example.caitzh.minichat.crh.PersonalChatWindow;
-import com.example.caitzh.minichat.crh.chatWindow;
+import com.example.caitzh.minichat.Util.DataManager;
+import com.example.caitzh.minichat.Util.ImageUtil;
+import com.example.caitzh.minichat.Util.MyCookieManager;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;

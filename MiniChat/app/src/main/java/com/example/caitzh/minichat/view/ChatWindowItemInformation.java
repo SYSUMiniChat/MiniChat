@@ -1,6 +1,4 @@
-package com.example.caitzh.minichat.crh;
-
-import com.example.caitzh.minichat.MyDB.userDB;
+package com.example.caitzh.minichat.view;
 
 /**
  * 聊天窗口每个聊天的item
@@ -13,7 +11,7 @@ public class ChatWindowItemInformation {
     private String userID;
     private boolean isReaded;
 
-    protected ChatWindowItemInformation(String inputUserID, String inputUsername,
+    public ChatWindowItemInformation(String inputUserID, String inputUsername,
                                         String inputInformation, String inputTime,
                                         boolean inputIsReaded) {
         this.userID = inputUserID;

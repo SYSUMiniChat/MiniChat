@@ -1,30 +1,18 @@
 package com.example.caitzh.minichat;
 
-import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Looper;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Selection;
-import android.text.Spannable;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.caitzh.minichat.MyDB.userDB;
 
 import org.json.JSONObject;
 
@@ -33,13 +21,12 @@ import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 
-import static com.example.caitzh.minichat.XingeManager.registerApplication;
-import static com.example.caitzh.minichat.middlewares.Check.checkHasNet;
+import static com.example.caitzh.minichat.Util.XingeManager.registerApplication;
+import static com.example.caitzh.minichat.Util.Check.checkHasNet;
 
 public class register extends AppCompatActivity {
 

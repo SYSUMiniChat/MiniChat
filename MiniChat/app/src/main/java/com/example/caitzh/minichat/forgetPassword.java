@@ -15,6 +15,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.Personal.changePassword;
+
 import org.json.JSONObject;
 
 import java.io.BufferedReader;

@@ -1,10 +1,8 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.Friends;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,14 +27,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.caitzh.minichat.MyDB.recentListDB;
-import com.example.caitzh.minichat.middlewares.Check;
-import com.example.caitzh.minichat.crh.chatWindow;
+import com.example.caitzh.minichat.Adapter.SortAdapter;
+import com.example.caitzh.minichat.Personal.personalInformation;
+import com.example.caitzh.minichat.R;
+import com.example.caitzh.minichat.Util.AccessServerUtil;
+import com.example.caitzh.minichat.Util.Check;
+import com.example.caitzh.minichat.Util.DataManager;
+import com.example.caitzh.minichat.Util.ImageUtil;
+import com.example.caitzh.minichat.Util.MyCookieManager;
+import com.example.caitzh.minichat.Chat.chatWindow;
 import com.example.caitzh.minichat.view.EditTextWithDel;
 import com.example.caitzh.minichat.view.PinyinComparator;
 import com.example.caitzh.minichat.view.PinyinUtils;
 import com.example.caitzh.minichat.view.SideBar;
 import com.example.caitzh.minichat.view.SortModel;
+import com.example.caitzh.minichat.view.User;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -47,7 +53,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by littlestar on 2017/6/21.

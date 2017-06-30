@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.Adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.SectionIndexer;
 import android.widget.TextView;
 
+import com.example.caitzh.minichat.R;
 import com.example.caitzh.minichat.view.SortModel;
 
 import java.util.List;

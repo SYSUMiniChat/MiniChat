@@ -1,10 +1,7 @@
-package com.example.caitzh.minichat;
+package com.example.caitzh.minichat.Friends;
 
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,7 +9,6 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,10 +17,14 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import com.example.caitzh.minichat.MyDB.recentListDB;
-import com.example.caitzh.minichat.MyDB.userDB;
-import com.example.caitzh.minichat.crh.PersonalChatWindow;
-import com.example.caitzh.minichat.middlewares.Check;
+import com.example.caitzh.minichat.Util.DataManager;
+import com.example.caitzh.minichat.R;
+import com.example.caitzh.minichat.view.User;
+import com.example.caitzh.minichat.Util.AccessServerUtil;
+import com.example.caitzh.minichat.Util.ImageUtil;
+import com.example.caitzh.minichat.Util.MyCookieManager;
+import com.example.caitzh.minichat.Chat.PersonalChatWindow;
+import com.example.caitzh.minichat.Util.Check;
 
 import org.json.JSONObject;
 
@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by littlestar on 2017/6/23.

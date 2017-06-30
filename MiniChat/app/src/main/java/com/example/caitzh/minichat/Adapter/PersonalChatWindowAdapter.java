@@ -1,4 +1,4 @@
-package com.example.caitzh.minichat.crh;
+package com.example.caitzh.minichat.Adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,11 +12,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.caitzh.minichat.DataManager;
-import com.example.caitzh.minichat.ImageUtil;
-import com.example.caitzh.minichat.MyCookieManager;
+import com.example.caitzh.minichat.Util.DataManager;
+import com.example.caitzh.minichat.Util.ImageUtil;
+import com.example.caitzh.minichat.Util.MyCookieManager;
 import com.example.caitzh.minichat.R;
-import com.example.caitzh.minichat.User;
+import com.example.caitzh.minichat.view.User;
+import com.example.caitzh.minichat.Chat.MiniChatMessage;
+
 import java.util.List;
 
 /**

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.example.caitzh.minichat.User;
+import com.example.caitzh.minichat.view.User;
 
 /**
  * Created by littlestar on 2017/6/18.
