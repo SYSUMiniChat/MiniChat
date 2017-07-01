@@ -70,7 +70,18 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
                 Content=(TextView)mView.findViewById(R.id.Send_Content);
                 Content.setText(mData.get(Index).getContent());
                 if (senderBitmap == null) {
-                    setImage(MyCookieManager.getUserId(), SENDRR);
+                    Thread setAvatar = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setImage(MyCookieManager.getUserId(), SENDER);
+                        }
+                    });
+                    setAvatar.start();
+                    try {
+                        setAvatar.join();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     avader.setImageBitmap(senderBitmap); // 头像设置
                 }
@@ -81,7 +92,18 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
                 Content=(TextView)mView.findViewById(R.id.Receive_Content);
                 Content.setText(mData.get(Index).getContent());
                 if (receiverBitmap == null) {
-                    setImage(receiveid, RECEIVER);
+                    Thread setAvatar = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setImage(receiveid, RECEIVER);
+                        }
+                    });
+                    setAvatar.start();
+                    try {
+                        setAvatar.join();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     avader.setImageBitmap(receiverBitmap); // 头像设置
                 }
@@ -90,11 +112,11 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
         return mView;
     }
 
-    private static final int SENDRR = 0;
+    private static final int SENDER = 0;
     private static final int RECEIVER = 1;
 
     private void setImage(final String id, final int type) {
-        new Thread(new Runnable() {
+        Thread set = new Thread(new Runnable() {
             @Override
             public void run() {
                 User user = DataManager.getLatestData(mContext, id);
@@ -106,7 +128,7 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
                     // 动态更新
                     Message msg = new Message();
                     msg.what = GET_IMAGE_OK;
-                    if (type == SENDRR) {
+                    if (type == SENDER) {
                         msg.obj = senderBitmap = ImageUtil.openImage(user.getAvatar());
                     } else {
                         msg.obj = receiverBitmap = ImageUtil.openImage(user.getAvatar());
@@ -114,7 +136,13 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
                     handler.sendMessage(msg);
                 }
             }
-        }).start();
+        });
+        set.start();
+        try {
+            set.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     private static final int GET_IMAGE_OK = 2;
 
