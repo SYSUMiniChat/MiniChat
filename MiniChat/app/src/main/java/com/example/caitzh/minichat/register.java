@@ -129,8 +129,6 @@ public class register extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     finish();  // 结束当前activity
-                    Intent intent = new Intent(register.this, signIn.class); // 跳转到登录页面
-                    startActivity(intent);
                 }
             });
 
@@ -194,8 +192,6 @@ public class register extends AppCompatActivity {
                     if (code.equals("0")) {
                         if (url.equals(url_register)) {   // 注册成功
                             finish();  // 结束当前activity
-                            Intent intent = new Intent(register.this, signIn.class); // 跳转到登录页面
-                            startActivity(intent);
                         } else {
                             getCode.setText("发送成功!");
                         }

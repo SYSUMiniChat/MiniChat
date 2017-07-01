@@ -1,9 +1,11 @@
 package com.example.caitzh.minichat.Friends;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -29,6 +31,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.caitzh.minichat.Adapter.SortAdapter;
+import com.example.caitzh.minichat.MessageReceiver;
+import com.example.caitzh.minichat.MyDB.addRequestDB;
 import com.example.caitzh.minichat.Personal.personalInformation;
 import com.example.caitzh.minichat.R;
 import com.example.caitzh.minichat.Util.AccessServerUtil;
@@ -65,11 +69,12 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
     private TextView dialog;
     private SortAdapter adapter;
     private EditTextWithDel mEtSearchName;
+    private TextView addRequestTip;
     private List<SortModel> SourceDateList = new ArrayList<SortModel>();
     private ArrayList<String> data = new ArrayList<String>();
 
 
-    private LinearLayout linearLayout, requesetLayout;
+    private LinearLayout linearLayout, requestLayout;
     private GestureDetector gestureDetector;
 
     // 底部的按钮切换
@@ -100,6 +105,7 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         adapter = new SortAdapter(getApplicationContext(), SourceDateList);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        addRequestTip = (TextView) findViewById(R.id.newAddRequestTip);
         chat_img = (ImageButton) findViewById(R.id.id_tab_chat_img);
         maillist_img = (ImageButton) findViewById(R.id.id_tab_mail_list_img);
         information_img = (ImageButton) findViewById(R.id.id_tab_personal_information_img);
@@ -136,16 +142,20 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         linearLayout = (LinearLayout)findViewById(R.id.friends_list_linear_layout);
         linearLayout.setOnTouchListener(this);
         linearLayout.setLongClickable(true);
-        requesetLayout = (LinearLayout) findViewById(R.id.FriendListAddView);
-        requesetLayout.setOnClickListener(new View.OnClickListener() {
+        requestLayout = (LinearLayout) findViewById(R.id.FriendListAddView);
+        requestLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(friendsList.this, RequestList.class);
                 startActivity(intent);
+                addRequestDB db = new addRequestDB(getApplicationContext());
+                db.updateAllFlag(MyCookieManager.getUserId());
             }
         });
         gestureDetector = new GestureDetector((GestureDetector.OnGestureListener)this);
         initViews();
+        IntentFilter filter = new IntentFilter(MessageReceiver.NEWADDREQUESTUPDATE);
+        registerReceiver(broadcastReceiver, filter);
     }
 
     @Override
@@ -168,6 +178,12 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
         SourceDateList.clear();
         data.clear();
         setAdapter();
+        addRequestDB db = new addRequestDB(getApplicationContext());
+        if (db.getLastFlag(MyCookieManager.getUserId()) == 1) {
+            addRequestTip.setVisibility(View.VISIBLE);
+        } else {
+            addRequestTip.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void initViews() {
@@ -388,7 +404,13 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
             }
         }).start();
     }
-
+    BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.e("进入广播接收", "YES");
+            addRequestTip.setVisibility(View.VISIBLE);
+        }
+    };
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -411,6 +433,13 @@ public class friendsList extends AppCompatActivity implements View.OnTouchListen
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(broadcastReceiver);
+    }
+
     @Override
     public boolean onDown(MotionEvent e) {
         return false;

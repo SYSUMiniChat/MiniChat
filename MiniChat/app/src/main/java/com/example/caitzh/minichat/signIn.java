@@ -128,7 +128,6 @@ public class signIn extends AppCompatActivity {
         gotoRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();  // 结束当前activity
                 Intent intent = new Intent(signIn.this, register.class);
                 startActivity(intent);
             }

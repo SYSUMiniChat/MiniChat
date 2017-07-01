@@ -44,13 +44,25 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <ImageView
-                android:paddingLeft="10dp"
-                android:src="@mipmap/newfriend"
-                android:layout_width="40dp"
-                android:layout_height="40dp" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:paddingLeft="15dp"
+                    android:src="@mipmap/newfriend"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp" />
+                <TextView
+                    android:id="@+id/newAddRequestTip"
+                    android:layout_width="8dp"
+                    android:layout_height="8dp"
+                    android:background="@drawable/radius_shape"
+                    android:visibility="invisible"
+                    android:layout_marginLeft="41dp"/>
+            </RelativeLayout>
+
             <TextView
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="18dp"
                 android:text="新的朋友"
                 android:textColor="@color/colorBlack"
                 android:gravity="center_vertical"
@@ -98,6 +110,8 @@
                 android:id="@+id/sidrbar"
                 android:layout_width="24dp"
                 android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:paddingTop="3dp"
                 android:layout_gravity="right|center" />
         </FrameLayout>
         <include layout="@layout/activity_slider_bottom"/>

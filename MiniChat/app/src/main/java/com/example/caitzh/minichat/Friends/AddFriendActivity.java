@@ -133,6 +133,7 @@ public class AddFriendActivity extends AppCompatActivity {
                     sendAgree(id);
                     twoButon.setVisibility(View.GONE);
                     button.setVisibility(View.VISIBLE);
+                    button.setText("发送消息");
                 } else {
                     Toast.makeText(AddFriendActivity.this, "网络不可用" , Toast.LENGTH_LONG).show();
                 }

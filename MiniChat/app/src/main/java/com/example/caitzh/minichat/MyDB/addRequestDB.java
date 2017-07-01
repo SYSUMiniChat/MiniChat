@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by littlestar on 2017/6/30.
@@ -18,7 +19,7 @@ public class addRequestDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 +TABLE_NAME
-                +" (user TEXT, sender TEXT, status INTEGER, finalDate DATETIME, flag INTEGER" +
+                +" (user TEXT, sender TEXT, status INTEGER, finalDate DATETIME, flag INTEGER," +
                 "Primary key (user, sender))";
         db.execSQL(CREATE_TABLE);
     }
@@ -28,7 +29,7 @@ public class addRequestDB extends SQLiteOpenHelper {
         super.onOpen(db);
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 +TABLE_NAME
-                +" (user TEXT, sender TEXT, status INTEGER, finalDate DATETIME,flag INTEGER" +
+                +" (user TEXT, sender TEXT, status INTEGER, finalDate DATETIME,flag INTEGER," +
                 "Primary key (user, sender))";
         db.execSQL(CREATE_TABLE);
     }
@@ -56,6 +57,8 @@ public class addRequestDB extends SQLiteOpenHelper {
             ContentValues cv1 = new ContentValues();
             cv1.put("finalDate", ftime);
             cv1.put("status", 0);
+            cv1.put("flag", 1);
+            Log.e("插入已存在", "更新");
             db.update(TABLE_NAME, cv1,"user=? AND sender=?", new String[] {user, sender});
         }
     }

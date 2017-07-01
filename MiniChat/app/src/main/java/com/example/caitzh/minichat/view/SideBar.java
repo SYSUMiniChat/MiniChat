@@ -49,7 +49,7 @@ public class SideBar extends View {
     }
 
     private void init() {
-        setBackgroundColor(Color.parseColor("#FFFFFF"));
+        setBackground(new ColorDrawable(0x00000000));
         letterList = Arrays.asList(INDEX_STRING);
     }
 
@@ -57,13 +57,13 @@ public class SideBar extends View {
         super.onDraw(canvas);
         int height = getHeight();// 获取对应高度
         int width = getWidth();// 获取对应宽度
-        int singleHeight = height / (letterList.size()+1);// 获取每一个字母的高度
+        int singleHeight = height / (letterList.size());// 获取每一个字母的高度
         Log.e("letterList size = :", String.valueOf(letterList.size()));
         for (int i = 0; i < letterList.size(); i++) {
             paint.setColor(Color.parseColor("#606060"));
             paint.setTypeface(Typeface.DEFAULT_BOLD);
             paint.setAntiAlias(true);
-            paint.setTextSize(50);
+            paint.setTextSize(singleHeight);
             // 选中的状态
             if (i == choose) {
                 paint.setColor(Color.parseColor("#4F41FD"));
@@ -71,7 +71,7 @@ public class SideBar extends View {
             }
             // x坐标等于中间-字符串宽度的一半.
             float xPos = width / 2 - paint.measureText(letterList.get(i)) / 2;
-            float yPos = singleHeight * i + singleHeight / 2;
+            float yPos = singleHeight * i + singleHeight;
             canvas.drawText(letterList.get(i), xPos, yPos, paint);
             paint.reset();// 重置画笔
         }
@@ -87,7 +87,7 @@ public class SideBar extends View {
 
         switch (action) {
             case MotionEvent.ACTION_UP:
-                setBackgroundColor(Color.parseColor("#FFFFFF"));
+                setBackground(new ColorDrawable(0x00000000));
                 choose = -1;
                 invalidate();
                 if (mTextDialog != null) {

@@ -106,6 +106,7 @@ public class MessageReceiver extends XGPushBaseReceiver {
     // 当通知出现(即收到消息时)被调用
     public static final String PERSONALCHATWINDOWUPDATE = "jason.broadcast.action1";
     public static final String CHATWINDOWUPDATE = "jason.broadcast.action2";
+    public static final String NEWADDREQUESTUPDATE = "jason.broadcast.action3";
     @Override
     public void onNotifactionShowedResult(Context context, XGPushShowedResult message) {
         Log.v("TEST", message.getContent());
@@ -161,8 +162,16 @@ public class MessageReceiver extends XGPushBaseReceiver {
                 context.sendBroadcast(intent);
             }
         } else if (type == 1) {
+            String pkg = "com.example.caitzh.minichat";
             addRequestDB db = new addRequestDB(context);
             db.insertOne(MyCookieManager.getUserId(), sender, DataManager.getCurrentDate());
+            if (isActivityAtRunningTop(pkg, pkg+".Friends.friendsList", context)) {
+                Log.e("当前Activity", "通讯录");
+                Intent intent = new Intent(NEWADDREQUESTUPDATE);
+                context.sendBroadcast(intent);
+            } else {
+                Log.e("当前Activity", "不是通讯录");
+            }
         } else if (type == 2) {
 
         } else {
