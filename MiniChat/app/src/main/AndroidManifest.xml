@@ -38,8 +38,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".signIn"
-            android:label="MiniChat"
-            android:launchMode="singleInstance">
+            android:label="MiniChat">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
