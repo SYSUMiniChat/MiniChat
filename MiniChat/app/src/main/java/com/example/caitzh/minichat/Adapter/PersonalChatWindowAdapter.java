@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,7 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
         return Index;
     }
 
+    private static View tmView = null;
     @Override
     public View getView(int Index, View mView, ViewGroup mParent)
     {
@@ -66,8 +68,9 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
         {
             case MiniChatMessage.MessageType_Send:
                 mView=LayoutInflater.from(mContext).inflate(R.layout.activity_send_message, null);
-                avader = (ImageView)mView.findViewById(R.id.Send_Image);
+                tmView = mView;
                 Content=(TextView)mView.findViewById(R.id.Send_Content);
+                avader = (ImageView)mView.findViewById(R.id.Send_Image);
                 Content.setText(mData.get(Index).getContent());
                 if (senderBitmap == null) {
                     Thread setAvatar = new Thread(new Runnable() {
@@ -88,8 +91,8 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
                 break;
             case MiniChatMessage.MessageType_Receive:
                 mView=LayoutInflater.from(mContext).inflate(R.layout.activity_receive_message, null);
-                avader = (ImageView)mView.findViewById(R.id.Receive_Image);
                 Content=(TextView)mView.findViewById(R.id.Receive_Content);
+                avader = (ImageView)mView.findViewById(R.id.Receive_Image);
                 Content.setText(mData.get(Index).getContent());
                 if (receiverBitmap == null) {
                     Thread setAvatar = new Thread(new Runnable() {
@@ -129,8 +132,10 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
                     Message msg = new Message();
                     msg.what = GET_IMAGE_OK;
                     if (type == SENDER) {
+                        msg.arg1 = SENDER;
                         msg.obj = senderBitmap = ImageUtil.openImage(user.getAvatar());
                     } else {
+                        msg.arg1 = RECEIVER;
                         msg.obj = receiverBitmap = ImageUtil.openImage(user.getAvatar());
                     }
                     handler.sendMessage(msg);
@@ -153,6 +158,10 @@ public class PersonalChatWindowAdapter extends BaseAdapter{
             switch (message.what) {
                 case GET_IMAGE_OK:
                     try {
+                        if (message.arg1 == RECEIVER) {
+                        } else {
+                            avader = (ImageView)tmView.findViewById(R.id.Send_Image);
+                        }
                         avader.setImageBitmap((Bitmap)message.obj); // 头像设置
                     } catch (Exception e) {
                         e.printStackTrace();
