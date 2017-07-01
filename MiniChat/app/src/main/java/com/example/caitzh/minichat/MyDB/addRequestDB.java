@@ -18,7 +18,7 @@ public class addRequestDB extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 +TABLE_NAME
-                +" (user TEXT, sender TEXT, status INTEGER, finalDate DATETIME," +
+                +" (user TEXT, sender TEXT, status INTEGER, finalDate DATETIME, flag INTEGER" +
                 "Primary key (user, sender))";
         db.execSQL(CREATE_TABLE);
     }
@@ -28,7 +28,7 @@ public class addRequestDB extends SQLiteOpenHelper {
         super.onOpen(db);
         String CREATE_TABLE = "CREATE TABLE if not exists "
                 +TABLE_NAME
-                +" (user TEXT, sender TEXT, status INTEGER, finalDate DATETIME," +
+                +" (user TEXT, sender TEXT, status INTEGER, finalDate DATETIME,flag INTEGER" +
                 "Primary key (user, sender))";
         db.execSQL(CREATE_TABLE);
     }
@@ -51,6 +51,7 @@ public class addRequestDB extends SQLiteOpenHelper {
         cv.put("sender", sender);
         cv.put("status", 0);
         cv.put("finalDate", ftime);
+        cv.put("flag", 1);
         if (db.insert(TABLE_NAME, null, cv) == -1) {
             ContentValues cv1 = new ContentValues();
             cv1.put("finalDate", ftime);
@@ -70,6 +71,13 @@ public class addRequestDB extends SQLiteOpenHelper {
         cv.put("status", 1);
         db.update(TABLE_NAME, cv, "user=? AND sender=?", new String[] {user, sender});
     }
+
+    public void updateAllFlag(String user) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("flag", 0);
+        db.update(TABLE_NAME, cv, "user=?", new String[] {user});
+    }
     public void deleteOne(String user, String sender) {
         SQLiteDatabase db= getWritableDatabase();
         db.delete(TABLE_NAME, "user=? AND sender=?", new String[] {user, sender});
@@ -80,5 +88,15 @@ public class addRequestDB extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_NAME, null, "user=?", new String[]{user}, null, null, "finalDate DESC");
         cursor.moveToFirst();
         return cursor;
+    }
+    public int getLastFlag(String user) {
+        SQLiteDatabase db = getWritableDatabase();
+        Cursor cursor = db.query(TABLE_NAME, null, "user=?", new String[]{user}, null, null, "finalDate DESC");
+        if (cursor.moveToFirst()) {
+            return cursor.getInt(cursor.getColumnIndex("flag"));
+        } else {
+            return 0;
+        }
+
     }
 }

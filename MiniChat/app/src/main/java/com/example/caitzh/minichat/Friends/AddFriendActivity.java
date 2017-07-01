@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import com.example.caitzh.minichat.MyDB.addRequestDB;
 import com.example.caitzh.minichat.Util.DataManager;
 import com.example.caitzh.minichat.R;
 import com.example.caitzh.minichat.view.User;
@@ -114,16 +115,27 @@ public class AddFriendActivity extends AppCompatActivity {
         refuse.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddFriendActivity.this, "点击了拒绝" , Toast.LENGTH_LONG).show();
-                sendRefuse(id);
+                if (Check.checkHasNet(getApplicationContext())) {
+                    sendRefuse(id);
+                } else {
+                    Toast.makeText(AddFriendActivity.this, "网络不可用", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
         agree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(AddFriendActivity.this, "点击了同意" , Toast.LENGTH_LONG).show();
-                sendAgree(id);
+                if (Check.checkHasNet(getApplicationContext())) {
+                    addRequestDB db = new addRequestDB(getApplicationContext());
+                    db.updateStatus(MyCookieManager.getUserId(), id);
+                    sendAgree(id);
+                    twoButon.setVisibility(View.GONE);
+                    button.setVisibility(View.VISIBLE);
+                } else {
+                    Toast.makeText(AddFriendActivity.this, "网络不可用" , Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
